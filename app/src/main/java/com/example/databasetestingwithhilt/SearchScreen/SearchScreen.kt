@@ -3,6 +3,7 @@ package com.example.databasetestingwithhilt.SearchScreen
 import androidx.compose.runtime.Composable
 
 import android.annotation.SuppressLint
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -78,12 +79,12 @@ fun SearchScreen(navController: NavController, viewModel: UserViewModel = hiltVi
                     tint = MaterialTheme.colorScheme.primary
                 )
             },
-            colors = TextFieldDefaults.outlinedTextFieldColors(
-                containerColor = MaterialTheme.colorScheme.surface,
-                focusedBorderColor = MaterialTheme.colorScheme.primary,
-                unfocusedBorderColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f),
-                cursorColor = MaterialTheme.colorScheme.primary
-            ),
+//            colors = TextFieldDefaults.outlinedTextFieldColors(
+//                containerColor = MaterialTheme.colorScheme.surface,
+//                focusedBorderColor = MaterialTheme.colorScheme.primary,
+//                unfocusedBorderColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f),
+//                cursorColor = MaterialTheme.colorScheme.primary
+//            ),
             shape = MaterialTheme.shapes.medium,
             singleLine = true
         )
@@ -136,6 +137,7 @@ fun SearchScreen(navController: NavController, viewModel: UserViewModel = hiltVi
                                         )
                                     }
                                     Toast.makeText(context.applicationContext,"Food Logged !",Toast.LENGTH_LONG).show()
+                                  //  Log.d("TAG", "SearchScreen: $error ")
                                 },
                                 shape = RoundedCornerShape(100),
                                 modifier = Modifier

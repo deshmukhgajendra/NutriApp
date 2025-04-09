@@ -5,6 +5,7 @@ import androidx.room.Room
 import com.example.databasetestingwithhilt.Database.AppDatabase
 import com.example.databasetestingwithhilt.Database.FoodDao
 import com.example.databasetestingwithhilt.Database.NutrientRepository
+import com.google.firebase.auth.FirebaseAuth
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -22,7 +23,8 @@ object AppModule {
     fun providesDatabase(@ApplicationContext context: Context): AppDatabase {
         return Room.databaseBuilder(context.applicationContext
         , AppDatabase::class.java
-        , AppDatabase.databaseName).fallbackToDestructiveMigration()
+        , AppDatabase.databaseName)
+            .fallbackToDestructiveMigration()
             .build()
     }
 
@@ -36,4 +38,8 @@ object AppModule {
     fun providesRepository(dao : FoodDao): NutrientRepository {
         return NutrientRepository(dao)
     }
+
+    @Provides
+    @Singleton
+    fun providesFirebaseAuth(): FirebaseAuth = FirebaseAuth.getInstance()
 }

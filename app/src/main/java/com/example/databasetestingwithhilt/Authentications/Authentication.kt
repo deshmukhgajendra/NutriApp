@@ -12,8 +12,12 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.databasetestingwithhilt.PersonalInformation.PersonalInformation
+import com.example.databasetestingwithhilt.UserViewModel
 import com.example.databasetestingwithhilt.ui.theme.DatabaseTestingWithHiltTheme
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class Authentication : ComponentActivity() {
 
 

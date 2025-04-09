@@ -1,9 +1,14 @@
 package com.example.databasetestingwithhilt
 
+import android.util.Log
+import android.widget.Toast
 import androidx.compose.runtime.mutableStateOf
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.databasetestingwithhilt.Authentications.AuthRepository
 import com.example.databasetestingwithhilt.Database.FoodEntity
 import com.example.databasetestingwithhilt.Database.NutrientRepository
 import com.example.databasetestingwithhilt.Database.PersonalEntity
@@ -12,7 +17,10 @@ import com.example.databasetestingwithhilt.NutritionScreen.NutritionixApiObject
 import com.example.databasetestingwithhilt.NutritionScreen.NutritionixResponse
 import com.example.databasetestingwithhilt.SearchScreen.FoodItem
 import com.example.databasetestingwithhilt.SearchScreen.SearchApiObject
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -25,8 +33,10 @@ import javax.inject.Inject
 
 @HiltViewModel
 class UserViewModel @Inject constructor(
-    val repository: NutrientRepository
+    val repository: NutrientRepository,
+    val authRepository: AuthRepository
 ): ViewModel() {
+
     // for search suggestions
     val searchResults = MutableStateFlow<List<FoodItem>>(emptyList())
     val errorMessage = mutableStateOf<String?>(null)
@@ -40,6 +50,9 @@ class UserViewModel @Inject constructor(
     private val _liveCalorieCount = MutableStateFlow(0f)
     val liveCalorieCount : StateFlow<Float> = _liveCalorieCount.asStateFlow()
     private var searchJob: Job? = null
+
+    val requiredcaloriecount = MutableStateFlow(0)
+
     val nutrientMapping = mapOf(
         203 to "Protein",
         204 to "Total lipid (fat)",
@@ -144,6 +157,12 @@ class UserViewModel @Inject constructor(
         646 to "Polysaturated Fatty acids"
     )
 
+    // for Authentication
+    private val _authState = MutableStateFlow<FirebaseUser?>(null)
+    val authState: StateFlow<FirebaseUser?> = _authState
+
+    private val _autherror = MutableStateFlow<String?>(null)
+    val autherror: StateFlow<String?> =_autherror
 
 
     fun insertPersonalData(personalEntity: PersonalEntity){
@@ -176,13 +195,10 @@ class UserViewModel @Inject constructor(
 
     fun getLiveCalorieCount(){
         viewModelScope.launch {
-            val totalCalories=repository.getTotalCalories()
+            val totalCalories= repository.getTotalCalories()?.toFloat() ?:0f
             _liveCalorieCount.value=totalCalories
         }
     }
-
-
-
 
     // to get nutrition
     fun fetchNutrients(query: NutrientRequest) {
@@ -191,6 +207,7 @@ class UserViewModel @Inject constructor(
             try {
                 val response = NutritionixApiObject.API.getNutrients(query)
                 _foods.value = response.foods
+                Log.d("TAG", "fetchNutrients: ${_foods.value}")
                 _error.value = null
             } catch (e: Exception) {
                 _error.value = e.localizedMessage
@@ -320,4 +337,44 @@ class UserViewModel @Inject constructor(
     }
 
 
+
+    fun login(email : String, password: String){
+        viewModelScope.launch {
+            authRepository.login(email,password).addOnCompleteListener{ task ->
+                if (task.isSuccessful){
+                    _authState.value = authRepository.firebaseAuth.currentUser
+
+                }else{
+                    _autherror.value = task.exception?.message
+                }
+
+            }
+        }
+    }
+
+    fun register(email: String, password: String){
+        viewModelScope.launch {
+            authRepository.register(email,password).addOnCompleteListener { task ->
+                if (task.isSuccessful){
+                    _authState.value= authRepository.firebaseAuth.currentUser
+                }else{
+                    _autherror.value = task.exception?.message
+
+                }
+
+            }
+        }
+    }
+
+    fun logout(){
+        authRepository.logout()
+        _authState.value=null
+    }
+
+    fun getRequiredCalories(){
+        viewModelScope.launch {
+            val _requiredcalories =repository.getRequiredCalories()?.toInt() ?:0
+           requiredcaloriecount.value=_requiredcalories
+        }
+    }
 }

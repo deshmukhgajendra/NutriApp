@@ -13,5 +13,9 @@ data class PersonalEntity(
     val height : Float,
     val activityLevel : String,
     val exerciseFrequency : Int,
-    val occupationType : String
+    val occupationType : String,
+    val RequiredCalorie : Float,
+    val RequiredProtein : Float,
+    val RequiredCarbs : Float,
+    val RequiredFats : Float
 )

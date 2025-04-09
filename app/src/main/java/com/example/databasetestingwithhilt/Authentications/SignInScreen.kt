@@ -1,5 +1,8 @@
 package com.example.databasetestingwithhilt.Authentications
 
+import android.app.Activity
+import android.content.Intent
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -27,6 +30,9 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -34,6 +40,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextStyle
@@ -42,12 +49,32 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import com.example.databasetestingwithhilt.MainActivity
 import com.example.databasetestingwithhilt.R
+import com.example.databasetestingwithhilt.UserViewModel
+import dagger.hilt.android.lifecycle.HiltViewModel
 
 
 @Composable
-fun SignInScreen(navController: NavController){
+fun SignInScreen(navController: NavController,
+                 viewModel: UserViewModel= hiltViewModel()
+){
+
+    val state by  viewModel.authState.collectAsState()
+    val context = LocalContext.current
+    LaunchedEffect(state) {
+        if (state != null){
+            try {
+                val intent = Intent(context, MainActivity::class.java)
+                context.startActivity(intent)
+                (context as? Activity)?.finish()
+            } catch (e: Exception) {
+                Log.e("AuthNavigation", "Navigation crash: ${e.message}", e)
+            }
+        }
+    }
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -60,7 +87,7 @@ fun SignInScreen(navController: NavController){
                 .padding(16.dp),
             contentAlignment = Alignment.TopStart
         ) {
-            IconButton(onClick = { /* Handle back navigation */ }) {
+            IconButton(onClick = { navController.navigate("IntroScreen") }) {
                 Icon(
                     imageVector = Icons.Default.ArrowBack,
                     contentDescription = "Back",
@@ -161,7 +188,9 @@ fun SignInScreen(navController: NavController){
 
                     // Sign-Up Button
                     Button(
-                        onClick = { /* Handle Sign-Up */ },
+                        onClick = {
+                            viewModel.login(email.value,password.value)
+                        },
                         modifier = Modifier
                             .fillMaxWidth()
                             .height(50.dp),

@@ -18,5 +18,8 @@ interface FoodDao {
     suspend fun getAllFoods(): List<FoodEntity>
 
     @Query("SELECT SUM(Energy) FROM food_log")
-    suspend fun getCalories(): Float
+    suspend fun getCalories(): Float?
+
+    @Query("SELECT RequiredCalorie FROM PersonalData_table")
+    suspend fun getRequiredCalories(): Float?
 }

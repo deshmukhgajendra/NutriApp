@@ -12,4 +12,6 @@ class NutrientRepository @Inject constructor(
 
     suspend fun insertPersonalData(personalEntity: PersonalEntity)
     = dao.insertPersonalData(personalEntity)
+
+    suspend fun getRequiredCalories()=dao.getRequiredCalories()
 }

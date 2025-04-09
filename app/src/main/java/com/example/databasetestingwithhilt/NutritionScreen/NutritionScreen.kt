@@ -69,12 +69,13 @@ fun NutritionScreen(viewModel: UserViewModel = hiltViewModel()){
     val error by viewModel.error.collectAsState()
     val scrollState = rememberScrollState()
     val liveClorieCount by viewModel.liveCalorieCount.collectAsState()
+    val requiredCalories by viewModel.requiredcaloriecount.collectAsState()
 
     Column (modifier = Modifier
         .fillMaxSize()
         .verticalScroll(scrollState)
     ){
-        CircularProgressBarCards(liveClorieCount.toFloat(),2000f)
+        CircularProgressBarCards(liveClorieCount.toFloat(),requiredCalories.toFloat())
         MacrosCard()
         HabitCard()
     }
@@ -82,16 +83,18 @@ fun NutritionScreen(viewModel: UserViewModel = hiltViewModel()){
     LaunchedEffect(Unit) {
        viewModel.getLiveCalorieCount()
     }
-
 }
 
 @Composable
 fun CircularProgressBarCards(Progress : Float, max :Float){
 
-    val progressFraction = (Progress /max).coerceIn(0f,1f)
+    val progressFraction = if (max > 0) (Progress / max).coerceIn(0f, 1f) else 0f
+    val remainingCalories = (max - Progress).coerceAtLeast(0f).toInt()
+
+
     Card(
             modifier = Modifier
-                .padding(16.dp) // Padding for spacing
+                .padding(16.dp)
                 .fillMaxWidth()
                 .shadow(
                     elevation = 6.dp,
@@ -110,19 +113,18 @@ fun CircularProgressBarCards(Progress : Float, max :Float){
                 Column(
                     modifier = Modifier.fillMaxWidth()
                 ) {
-                    // Title Texts
                     Column(
                         modifier = Modifier.fillMaxWidth()
                     ) {
                         Text(
                             text = stringResource(R.string.calories),
-                            fontSize = 24.sp, // Larger font size for title
+                            fontSize = 24.sp,
                             fontStyle = FontStyle.Normal,
                             color = colorResource(R.color.white),
                             textAlign = TextAlign.Start
                         )
                         Text(
-                            text = "Daily Goal: 1500 kcal", // Subtitle
+                            text = "Daily Goal: 1500 kcal",
                             fontSize = 16.sp,
                             color = Color.Gray,
                             textAlign = TextAlign.Start
@@ -131,7 +133,6 @@ fun CircularProgressBarCards(Progress : Float, max :Float){
 
                     Spacer(modifier = Modifier.height(16.dp))
 
-                    // Row for Progress Bar and Icons
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         verticalAlignment = Alignment.CenterVertically,
@@ -149,7 +150,7 @@ fun CircularProgressBarCards(Progress : Float, max :Float){
                                 ,modifier = Modifier.size(130.dp) // Adjusted size
                             )
                             Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                                Text(text = "5456"
+                                Text(text = "$remainingCalories"
                                     , color = Color.White)
                                 Text(text = "Remaining"
                                     , color = Color.White)

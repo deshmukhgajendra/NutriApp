@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "734412278725",
+    "project_id": "nutriapp-be007",
+    "storage_bucket": "nutriapp-be007.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:734412278725:android:b904e3727f8601f77419ac",
+        "android_client_info": {
+          "package_name": "com.example.databasetestingwithhilt"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBS8ckE0vd189ha_GaVq9beS-fjSB58UPU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
