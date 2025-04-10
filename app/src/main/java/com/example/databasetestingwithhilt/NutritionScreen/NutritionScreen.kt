@@ -68,25 +68,44 @@ fun NutritionScreen(viewModel: UserViewModel = hiltViewModel()){
     val foods by viewModel.foods.collectAsState()
     val error by viewModel.error.collectAsState()
     val scrollState = rememberScrollState()
-    val liveClorieCount by viewModel.liveCalorieCount.collectAsState()
     val requiredCalories by viewModel.requiredcaloriecount.collectAsState()
+    val requiredProtein by viewModel.requiredproteincount.collectAsState()
+    val requiredCarbs by viewModel.requiredcarbscount.collectAsState()
+    val requiredFats by viewModel.requiredfatscount.collectAsState()
+    val liveClorieCount by viewModel.liveCalorieCount.collectAsState()
+    val liveProteinCount by viewModel.liveProteinCount.collectAsState()
+    val liveCarbsCount by viewModel.liveCarbsCount.collectAsState()
+    val liveFatsCount by viewModel.liveFatsCount.collectAsState()
+
 
     Column (modifier = Modifier
         .fillMaxSize()
         .verticalScroll(scrollState)
     ){
-        CircularProgressBarCards(liveClorieCount.toFloat(),requiredCalories.toFloat())
-        MacrosCard()
+
+        CircularProgressBarCards(liveClorieCount.toFloat(),requiredCalories.toFloat(),requiredCalories)
+        MacrosCard(liveProteinCount,liveFatsCount,liveCarbsCount,requiredCarbs.toFloat(),requiredProtein.toFloat(),requiredFats.toFloat())
         HabitCard()
     }
 
     LaunchedEffect(Unit) {
-       viewModel.getLiveCalorieCount()
+        viewModel.getRequiredCalories()
+        viewModel.getRequiredProteins()
+        viewModel.getRequiredCarbs()
+        viewModel.getRequiredFats()
+        viewModel.getLiveCalorieCount()
+        viewModel.getLiveFatsCount()
+        viewModel.getLiveCarbsCount()
+        viewModel.getLiveProteinCount()
+
+//        Log.d("xyz", "RequiredProtein: $requiredProtein")
+//        Log.d("xyz", "RequiredFats: $requiredFats")
+//        Log.d("xyz", "RequiredCarbs: $requiredCarbs")
     }
 }
 
 @Composable
-fun CircularProgressBarCards(Progress : Float, max :Float){
+fun CircularProgressBarCards(Progress : Float, max :Float, requiredCalories:Int){
 
     val progressFraction = if (max > 0) (Progress / max).coerceIn(0f, 1f) else 0f
     val remainingCalories = (max - Progress).coerceAtLeast(0f).toInt()
@@ -124,7 +143,7 @@ fun CircularProgressBarCards(Progress : Float, max :Float){
                             textAlign = TextAlign.Start
                         )
                         Text(
-                            text = "Daily Goal: 1500 kcal",
+                            text = "Daily Goal: ${requiredCalories} kcal",
                             fontSize = 16.sp,
                             color = Color.Gray,
                             textAlign = TextAlign.Start
@@ -175,7 +194,7 @@ fun CircularProgressBarCards(Progress : Float, max :Float){
 
                                     Column {
                                         Text(text = "Base Goal")
-                                        Text(text = "2585")
+                                        Text(text = "$requiredCalories")
                                     }
                                 }
                             }
@@ -230,7 +249,12 @@ fun CircularProgressBarCards(Progress : Float, max :Float){
     }
 
 @Composable
-fun MacrosCard() {
+fun MacrosCard(liveProtein: Float, liveCarbs: Float, liveFats: Float,
+               requiredProtein: Float, requiredFats: Float, requiredCarbs: Float) {
+//    Log.d("xyz", "Live Fats: $liveFats, Required Fats: $requiredFats")
+//    Log.d("xyz", "Live Protein: $liveProtein, Required Protein: $requiredProtein")
+//    Log.d("xyz", "Live Carbs: $liveCarbs, Required Carbs: $requiredCarbs")
+
     Card(
         modifier = Modifier
             .padding(16.dp)
@@ -263,22 +287,24 @@ fun MacrosCard() {
                 horizontalArrangement = Arrangement.SpaceEvenly,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                MacroProgress("Protein", 0.7f, sea)
-                MacroProgress("Carbs", 0.5f, Color.Blue)
-                MacroProgress("Fats", 0.3f, Color.Yellow)
+                MacroProgress("Protein", liveProtein,requiredProtein, sea)
+                MacroProgress("Carbs", liveCarbs,requiredCarbs, Color.Blue)
+                MacroProgress("Fats", liveFats,requiredFats, Color.Yellow)
             }
         }
     }
 }
 
 @Composable
-fun MacroProgress(label: String, progress: Float, color: Color) {
+fun MacroProgress(label: String, Progress: Float, max: Float, color: Color) {
+    val progressFraction = if (max > 0) (Progress / max).coerceIn(0f, 1f) else 0f
+
     Column(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Box(contentAlignment = Alignment.Center) {
             CircularProgressIndicator(
-                progress = progress,
+                progress = progressFraction,
                 color = color,
                 strokeWidth = 8.dp,
                 strokeCap = StrokeCap.Round,
@@ -286,7 +312,7 @@ fun MacroProgress(label: String, progress: Float, color: Color) {
                 modifier = Modifier.size(80.dp)
             )
             Text(
-                text = "${(progress * 100).toInt()}%", // Showing percentage
+                text = "${(progressFraction * 100).toInt()}%",
                 color = Color.White,
                 fontSize = 14.sp,
                 textAlign = TextAlign.Center

@@ -47,11 +47,25 @@ class UserViewModel @Inject constructor(
     val foods: StateFlow<List<NutritionixResponse.Food>> = _foods
     private val _error = MutableStateFlow<String?>(null)
     val error: StateFlow<String?> = _error
+    // for live calories
     private val _liveCalorieCount = MutableStateFlow(0f)
     val liveCalorieCount : StateFlow<Float> = _liveCalorieCount.asStateFlow()
+    // for live proteins
+    private val _liveProteinCount = MutableStateFlow(0f)
+    val liveProteinCount : StateFlow<Float> = _liveProteinCount.asStateFlow()
+    // for live carbs
+    private val _liveCarbsCount = MutableStateFlow(0f)
+    val liveCarbsCount : StateFlow<Float> = _liveCarbsCount.asStateFlow()
+    // for live fats
+    private val _liveFatsCount = MutableStateFlow(0f)
+    val liveFatsCount: StateFlow<Float> = _liveFatsCount.asStateFlow()
+
     private var searchJob: Job? = null
 
     val requiredcaloriecount = MutableStateFlow(0)
+    val requiredproteincount = MutableStateFlow(0)
+    val requiredfatscount = MutableStateFlow(0)
+    val requiredcarbscount= MutableStateFlow(0)
 
     val nutrientMapping = mapOf(
         203 to "Protein",
@@ -197,8 +211,36 @@ class UserViewModel @Inject constructor(
         viewModelScope.launch {
             val totalCalories= repository.getTotalCalories()?.toFloat() ?:0f
             _liveCalorieCount.value=totalCalories
+        //    Log.d("Requirement", "getLiveCalorieCount: $totalCalories")
         }
     }
+
+    fun getLiveProteinCount(){
+        viewModelScope.launch {
+            val totalProteins =repository.getTotalProtein()?.toFloat()?:0f
+            _liveProteinCount.value=totalProteins
+         //   Log.d("Requirement", "getLiveProteinCount: $totalProteins")
+        }
+    }
+
+    fun getLiveCarbsCount(){
+        viewModelScope.launch {
+            val totalCarbs = repository.getTotalCarbs()?.toFloat()?:0f
+            _liveCarbsCount.value=totalCarbs
+        //    Log.d("Requirement", "getLiveCarbsCount:$totalCarbs ")
+
+        }
+    }
+
+    fun getLiveFatsCount(){
+        viewModelScope.launch {
+            val totalFats = repository.getTotalFats()?.toFloat()?:0f
+            _liveFatsCount.value=totalFats
+      //      Log.d("Requirement", "getLiveFatCount: $totalFats")
+
+        }
+    }
+
 
     // to get nutrition
     fun fetchNutrients(query: NutrientRequest) {
@@ -375,6 +417,32 @@ class UserViewModel @Inject constructor(
         viewModelScope.launch {
             val _requiredcalories =repository.getRequiredCalories()?.toInt() ?:0
            requiredcaloriecount.value=_requiredcalories
+          // Log.d("Requirement", "getRequiredCalories: $_requiredcalories")
+        }
+    }
+
+    fun getRequiredProteins(){
+        viewModelScope.launch {
+            val _requiredprotein = repository.getRequiredProteins()?.toInt()?:0
+            requiredproteincount.value=_requiredprotein
+         //   Log.d("Requirement", "getRequiredProteins: $_requiredprotein")
+        }
+    }
+
+    fun getRequiredFats(){
+        viewModelScope.launch {
+            val _requiredFats = repository.getRequiredFats()?.toInt()?:0
+            requiredfatscount.value=_requiredFats
+        //    Log.d("Requirement", "getRequiredFats: $_requiredFats")
+        }
+    }
+
+    fun getRequiredCarbs(){
+        viewModelScope.launch {
+            val _requiredCarbs = repository.getRequiredCarbs()?.toInt()?:0
+            requiredcarbscount.value=_requiredCarbs
+          //  Log.d("Requirement", "getRequiredCarbs: $_requiredCarbs")
+
         }
     }
 }
