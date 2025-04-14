@@ -1,7 +1,9 @@
 package com.example.databasetestingwithhilt
 
+import android.gesture.GestureLibrary
 import android.util.Log
 import android.widget.Toast
+import androidx.activity.compose.ReportDrawn
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -59,6 +61,87 @@ class UserViewModel @Inject constructor(
     // for live fats
     private val _liveFatsCount = MutableStateFlow(0f)
     val liveFatsCount: StateFlow<Float> = _liveFatsCount.asStateFlow()
+    // for live trans fat
+    private val _liveTransFatCount = MutableStateFlow(0f)
+    val liveTransfatCount: StateFlow<Float> = _liveTransFatCount.asStateFlow()
+    // for vitaminA
+    private val _liveVitaminACount= MutableStateFlow(0f)
+    val liveVitaminACount: StateFlow<Float> = _liveVitaminACount.asStateFlow()
+    // for vitamin b6
+    private val _liveVitaminB6Count = MutableStateFlow(0f)
+    val liveVitaminB6Count: StateFlow<Float> = _liveVitaminB6Count.asStateFlow()
+    // for vitamin b12
+    private val _liveVitaminB12Count = MutableStateFlow(0f)
+    val liveVitaminB12Count:StateFlow<Float> =_liveVitaminB12Count.asStateFlow()
+    // for vitamin c
+    private val _liveVitaminCCount = MutableStateFlow(0f)
+    val liveVitaminCCount : StateFlow<Float> = _liveVitaminCCount.asStateFlow()
+    // for vitamin D
+    private val _liveVitaminDCount = MutableStateFlow(0f)
+    val liveVitaminDCount:StateFlow<Float> =_liveVitaminDCount.asStateFlow()
+    // for vitamin E
+    private val _liveVitaminECount = MutableStateFlow(0f)
+    val liveVitaminECount:StateFlow<Float> =_liveVitaminECount.asStateFlow()
+    // for vitamin K
+    private val _liveVitaminKCount = MutableStateFlow(0f)
+    val liveVitaminKCount:StateFlow<Float> = _liveVitaminKCount.asStateFlow()
+    // for copper
+    private val _liveCopperCount = MutableStateFlow(0f)
+    val liveCopperCount: StateFlow<Float> = _liveCopperCount.asStateFlow()
+    // for zinc
+    private val _liveZincCount = MutableStateFlow(0f)
+    val liveZincCount: StateFlow<Float> =_liveZincCount.asStateFlow()
+    // for sodium
+    private val _liveSodiumCount = MutableStateFlow(0f)
+    val liveSodiumCount: StateFlow<Float> = _liveSodiumCount.asStateFlow()
+    // for potassium
+    private val _livePotassiumCount = MutableStateFlow(0f)
+    val livePotassiumCount: StateFlow<Float> =_livePotassiumCount.asStateFlow()
+    // for Iron
+    private val _liveIronCount = MutableStateFlow(0f)
+    val liveIronCount:StateFlow<Float> = _liveIronCount.asStateFlow()
+    // for calcium
+    private val _liveCalciumCount = MutableStateFlow(0f)
+    val liveCalcuimCount:StateFlow<Float> =_liveCalciumCount.asStateFlow()
+    // for fibar
+    private val _liveFibarCount = MutableStateFlow(0f)
+    val liveFibarCount:StateFlow<Float> =_liveFibarCount.asStateFlow()
+    // for suger
+    private val _liveSugerCount = MutableStateFlow(0f)
+    val liveSugerCount:StateFlow<Float> =_liveSugerCount.asStateFlow()
+    // for water
+    private val _liveWaterCount = MutableStateFlow(0f)
+    val liveWaterCount:StateFlow<Float> = _liveWaterCount.asStateFlow()
+    //for glucode
+    private val _liveGlucoseCount = MutableStateFlow(0f)
+    val liveGlucoseCount: StateFlow<Float> = _liveGlucoseCount.asStateFlow()
+    // for Folic acid
+    private val _liveFolicAcidCount = MutableStateFlow(0f)
+    val liveFolicAcidCount:StateFlow<Float> = _liveFolicAcidCount.asStateFlow()
+    // for Niacin
+    private val _liveNiacinCount = MutableStateFlow(0f)
+    val liveNiacinCount:StateFlow<Float>  = _liveNiacinCount.asStateFlow()
+    // for Retinol
+    private val _liveRetinolCount = MutableStateFlow(0f)
+    val liveRetinolCount:StateFlow<Float> = _liveRetinolCount.asStateFlow()
+    // for magnesium
+    private val _liveMagnesiumCount = MutableStateFlow(0f)
+    val liveMagnesiumCount:StateFlow<Float> = _liveMagnesiumCount
+    // for folate
+    private val _liveFolateCount = MutableStateFlow(0f)
+    val liveFolateCount:StateFlow<Float> = _liveFolateCount.asStateFlow()
+    // for cholesterol
+    private val _liveCholesterolCount =MutableStateFlow(0f)
+    val liveCholesteralCount:StateFlow<Float> = _liveCholesterolCount.asStateFlow()
+    // for monosaturated fat
+    private val _liveMonosaturateFatCount = MutableStateFlow(0f)
+    val liveMonosaturatedFatCount:StateFlow<Float> = _liveMonosaturateFatCount.asStateFlow()
+    // for polysaturate count
+    private val _livePolysauratedFatCount = MutableStateFlow(0f)
+    val livePolysaturatedFatCount:StateFlow<Float> = _livePolysauratedFatCount.asStateFlow()
+
+    private val _foodNames=MutableStateFlow<List<String>>(emptyList())
+    val foodNames:StateFlow<List<String>> = _foodNames
 
     private var searchJob: Job? = null
 
@@ -443,6 +526,182 @@ class UserViewModel @Inject constructor(
             requiredcarbscount.value=_requiredCarbs
           //  Log.d("Requirement", "getRequiredCarbs: $_requiredCarbs")
 
+        }
+    }
+    fun getAllFoodName(){
+        viewModelScope.launch {
+            val foodNamesFromDb = repository.getAllFoodName()
+           // Log.d("FoodNames", "Fetched Food Names: $foodNamesFromDb")
+            _foodNames.value=foodNamesFromDb
+        }
+    }
+    // Add this method in the ViewModel
+    fun removeFood(foodName: String) {
+        val currentList = foodNames.value.toMutableList()
+        currentList.remove(foodName)
+        _foodNames.value = _foodNames.value.filter { it != foodName }
+    }
+
+
+    fun deleteFoodRecord(foodname : String){
+        viewModelScope.launch {
+            repository.deleteFoodRecord(foodname)
+        }
+    }
+    fun getTransFatCount(){
+        viewModelScope.launch {
+            val TransFat = repository.getTransFat()
+            _liveTransFatCount.value=TransFat
+        }
+    }
+    fun getVitaminACount(){
+        viewModelScope.launch {
+            val VitaminA = repository.getVitaminA()
+            _liveVitaminACount.value=VitaminA
+        }
+    }
+    fun getVitaminB6(){
+        viewModelScope.launch {
+            val VitaminB6 = repository.getVitaminB6()
+            _liveVitaminB6Count.value=VitaminB6
+        }
+    }
+    fun getVitaminB12(){
+        viewModelScope.launch {
+            val VitaminB12 = repository.getVitaminB12()
+            _liveVitaminB12Count.value=VitaminB12
+        }
+    }
+    fun getVitaminCCount(){
+        viewModelScope.launch {
+            val VitaminC = repository.getVitaminC()
+            _liveVitaminCCount.value=VitaminC
+        }
+    }
+    fun getVitaminD(){
+        viewModelScope.launch {
+            val VitaminD= repository.getVitaminD()
+            _liveVitaminDCount.value=VitaminD
+        }
+    }
+    fun getVitaminE(){
+        viewModelScope.launch {
+            val VitaminE = repository.getVitaminE()
+            _liveVitaminECount.value=VitaminE
+        }
+    }
+    fun getVitaminK(){
+        viewModelScope.launch {
+            val VitaminK = repository.getVitaminK()
+            _liveVitaminKCount.value=VitaminK
+        }
+    }
+    fun getCopper(){
+        viewModelScope.launch {
+            val Copper = repository.getCopper()
+            _liveCopperCount.value=Copper
+        }
+    }
+    fun getZinc(){
+        viewModelScope.launch {
+            val Zinc = repository.getZinc()
+            _liveZincCount.value=Zinc
+        }
+    }
+    fun getSodium(){
+        viewModelScope.launch {
+            val Sodium = repository.getSodium()
+            _liveSodiumCount.value=Sodium
+        }
+    }
+    fun getPotassium(){
+        viewModelScope.launch {
+            val Potassium = repository.getPotassium()
+            _livePotassiumCount.value=Potassium
+        }
+    }
+    fun getIron(){
+        viewModelScope.launch {
+            val Iron = repository.getIron()
+            _liveIronCount.value=Iron
+        }
+    }
+    fun getCalcium(){
+        viewModelScope.launch {
+            val Calcium = repository.getCalcium()
+            _liveCalciumCount.value= Calcium
+        }
+    }
+    fun getFibar(){
+        viewModelScope.launch {
+            val Fibar = repository.getFibar()
+            _liveFibarCount.value=Fibar
+        }
+    }
+    fun getSuger(){
+        viewModelScope.launch {
+            val Suger = repository.getSuger()
+            _liveSugerCount.value=Suger
+        }
+    }
+    fun getWater(){
+        viewModelScope.launch {
+            val water = repository.getWater()
+            _liveWaterCount.value= water
+        }
+    }
+    fun getGlucose(){
+        viewModelScope.launch {
+            val Glucose= repository.getGlucose()
+            _liveGlucoseCount.value=Glucose
+        }
+    }
+    fun getFolicAcid(){
+        viewModelScope.launch {
+            val FolicAcid = repository.getFolicAcid()
+            _liveFolicAcidCount.value=FolicAcid
+        }
+    }
+    fun getNiacin(){
+        viewModelScope.launch {
+            val Niacin = repository.getNiacine()
+            _liveNiacinCount.value=Niacin
+        }
+    }
+    fun getRetinol(){
+        viewModelScope.launch {
+            val Retinol = repository.getRetinol()
+            _liveRetinolCount.value=Retinol
+        }
+    }
+    fun getMagnesium(){
+        viewModelScope.launch {
+            val Magnesium = repository.getMagnesium()
+            _liveMagnesiumCount.value=Magnesium
+        }
+    }
+    fun getFolate(){
+        viewModelScope.launch {
+            val Folate= repository.getFolate()
+            _liveFolateCount.value=Folate
+        }
+    }
+    fun getCholesterol(){
+        viewModelScope.launch {
+            val Cholesterol = repository.getCholestrol()
+            _liveCholesterolCount.value=Cholesterol
+        }
+    }
+    fun getMonosaturatedFatCount(){
+        viewModelScope.launch {
+            val MonosaturatedFat = repository.getMonosaturatedFat()
+            _liveMonosaturateFatCount.value=MonosaturatedFat
+        }
+    }
+    fun getPolysaturatedFatCount(){
+        viewModelScope.launch {
+            val PolysaturatedCount = repository.getPolysatiratedFat()
+            _livePolysauratedFatCount.value=PolysaturatedCount
         }
     }
 }

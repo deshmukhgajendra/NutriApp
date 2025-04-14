@@ -39,6 +39,8 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.databasetestingwithhilt.DashboardScreen.DashBoardScreen
 import com.example.databasetestingwithhilt.MenuScreen.MenuScreen
+import com.example.databasetestingwithhilt.NutritionScreen.FoodLogDetails
+import com.example.databasetestingwithhilt.NutritionScreen.NutritionDetailsScreen
 import com.example.databasetestingwithhilt.NutritionScreen.NutritionScreen
 import com.example.databasetestingwithhilt.SearchScreen.SearchScreen
 import com.example.databasetestingwithhilt.SleepScreen.SleepScreen
@@ -215,7 +217,7 @@ fun NavigateToScreen(navController: NavHostController, innerPadding: PaddingValu
         ,modifier = Modifier.padding(innerPadding)) {
 
         composable(route = "Nutrition"){
-            NutritionScreen()
+            NutritionScreen(navController)
         }
         composable(route = "Sleep"){
             SleepScreen()
@@ -228,6 +230,12 @@ fun NavigateToScreen(navController: NavHostController, innerPadding: PaddingValu
         }
         composable(route = "Search"){
             SearchScreen(navController)
+        }
+        composable(route ="FoodLog"){
+            FoodLogDetails()
+        }
+        composable(route = "NutritionDetails"){
+            NutritionDetailsScreen()
         }
 
     }
