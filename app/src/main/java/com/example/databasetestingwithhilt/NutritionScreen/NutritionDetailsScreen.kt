@@ -1,6 +1,8 @@
 package com.example.databasetestingwithhilt.NutritionScreen
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.gestures.rememberScrollableState
+import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -8,7 +10,9 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Card
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -25,11 +29,32 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.databasetestingwithhilt.UserViewModel
+import com.example.databasetestingwithhilt.ui.theme.Copper
+import com.example.databasetestingwithhilt.ui.theme.Water
+import com.example.databasetestingwithhilt.ui.theme.White
+import com.example.databasetestingwithhilt.ui.theme.beige
+import com.example.databasetestingwithhilt.ui.theme.blood
+import com.example.databasetestingwithhilt.ui.theme.coral
+import com.example.databasetestingwithhilt.ui.theme.darkGreen
+import com.example.databasetestingwithhilt.ui.theme.fire
+import com.example.databasetestingwithhilt.ui.theme.gray
+import com.example.databasetestingwithhilt.ui.theme.lightBlue
+import com.example.databasetestingwithhilt.ui.theme.lightGreen
+import com.example.databasetestingwithhilt.ui.theme.mint
+import com.example.databasetestingwithhilt.ui.theme.orange
+import com.example.databasetestingwithhilt.ui.theme.pink
+import com.example.databasetestingwithhilt.ui.theme.purple
+import com.example.databasetestingwithhilt.ui.theme.red
+import com.example.databasetestingwithhilt.ui.theme.sea
+import com.example.databasetestingwithhilt.ui.theme.silver
+import com.example.databasetestingwithhilt.ui.theme.sunset
+import com.example.databasetestingwithhilt.ui.theme.yellow
 import dagger.hilt.android.lifecycle.HiltViewModel
 
 @Composable
 fun NutritionDetailsScreen(viewModel : UserViewModel = hiltViewModel()){
 
+    val protein by viewModel.liveProteinCount.collectAsState()
     val transfat by viewModel.liveTransfatCount.collectAsState()
     val vitaminA by viewModel.liveVitaminACount.collectAsState()
     val vitaminB6 by viewModel.liveVitaminB6Count.collectAsState()
@@ -56,8 +81,10 @@ fun NutritionDetailsScreen(viewModel : UserViewModel = hiltViewModel()){
     val cholesterol by viewModel.liveCholesteralCount.collectAsState()
     val monosaturatedFat by viewModel.liveMonosaturatedFatCount.collectAsState()
     val polusaturatedFat by viewModel.livePolysaturatedFatCount.collectAsState()
+    val requiredProtein by viewModel.requiredproteincount.collectAsState()
+    val requiredFat by viewModel.requiredfatscount.collectAsState()
 
-
+val scrollState = rememberScrollState()
 
     LaunchedEffect(Unit) {
         viewModel.getTransFatCount()
@@ -86,23 +113,101 @@ fun NutritionDetailsScreen(viewModel : UserViewModel = hiltViewModel()){
         viewModel.getCholesterol()
         viewModel.getMonosaturatedFatCount()
         viewModel.getPolysaturatedFatCount()
+        viewModel.getLiveProteinCount()
+        viewModel.getRequiredProteins()
+        viewModel.getRequiredFats()
     }
-    // create progressbars
-    NutritionProgress("Protein",5.0,10.0)
 
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(8.dp)
+            .background(Color.Transparent)
+    ) {
+        // Header Card
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(4.dp)
+        ) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(10.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = "Name",
+                    color = Color.White,
+                    fontSize = 16.sp,
+                    textAlign = TextAlign.Start,
+                    modifier = Modifier.weight(1f)
+                )
+                Text(
+                    text = "Current",
+                    color = Color.White,
+                    fontSize = 16.sp,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.weight(1f)
+                )
+                Text(
+                    text = "Goal",
+                    color = Color.White,
+                    fontSize = 16.sp,
+                    textAlign = TextAlign.End,
+                    modifier = Modifier.weight(1f)
+                )
+            }
+        }
+
+        // Progress Bars
+        Column (modifier= Modifier.
+        verticalScroll(scrollState)
+        ){
+            NutritionProgress("Protein", protein.toDouble(), requiredProtein.toDouble(), Color.Blue)
+            NutritionProgress("Fat", transfat.toDouble(), requiredFat.toDouble(), Color.Green)
+            NutritionProgress("Vitamin A", vitaminA.toDouble(), 9000.0, red)
+            NutritionProgress("Vitamin B6", vitaminB6.toDouble(), 1.7, yellow)
+            NutritionProgress("Vitamin B12", vitaminB12.toDouble(), 2.8, mint)
+            NutritionProgress("Vitamin C", vitaminC.toDouble(), 90.0, orange)
+            NutritionProgress("Vitamin D", vitaminD.toDouble(), 600.0, coral)
+            NutritionProgress("Vitamin E", vitaminE.toDouble(), 15.0,lightGreen)
+            NutritionProgress("Vitamin K", vitaminK.toDouble(), 120.0, sunset)
+            NutritionProgress("Copper", copper.toDouble(), 1000.0, Copper)
+            NutritionProgress("Zinc", zinc.toDouble(), 12.0, silver)
+            NutritionProgress("Sodium", sodium.toDouble(), 4000.0, Color.Blue)
+            NutritionProgress("Potassium", potassium.toDouble(), 4700.0, blood)
+            NutritionProgress("Iron", iron.toDouble(), 15.0,red)
+            NutritionProgress("Calcium", calcium.toDouble(), 1200.0, sea)
+            NutritionProgress("Fiber", fibar.toDouble(), 34.0, White)
+            NutritionProgress("Suger", suger.toDouble(), 35.0, lightBlue)
+            NutritionProgress("Water", water.toDouble(), 3400.0, Water)
+            NutritionProgress("Glucose", glucose.toDouble(), 200.0, pink)
+            NutritionProgress("Folic Acid", folicAcid.toDouble(), 500.0, fire)
+            NutritionProgress("Niacin", niacin.toDouble(), 16.0, beige)
+            NutritionProgress("Retinol", retinol.toDouble(), 900.0, purple)
+            NutritionProgress("Magnesium", magnesium.toDouble(), 410.0, orange)
+            NutritionProgress("Folate", folate.toDouble(), 500.0, Color.Blue)
+            NutritionProgress("Cholesterol", cholesterol.toDouble(), 250.0, red)
+            NutritionProgress("Monosaturated Fat", monosaturatedFat.toDouble(), 85.0, lightGreen)
+            NutritionProgress("Polysaturated Fat", polusaturatedFat.toDouble(), 85.0, darkGreen)
+        }
+    }
 }
-
 @Composable
 fun NutritionProgress(
     NutrientName: String,
     Progress: Double,
-    Max: Double
+    Max: Double,
+    color: Color
 ) {
-
     val normalizedProgress = (Progress / Max).toFloat().coerceIn(0f, 1f)
 
-    Card (modifier = Modifier.fillMaxWidth()
-        .padding(4.dp)
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(4.dp)
+            .background(Color.Transparent) // Ensure no background color
     ) {
         Column(
             modifier = Modifier
@@ -122,7 +227,14 @@ fun NutritionProgress(
                     modifier = Modifier.weight(1f)
                 )
                 Text(
-                    text = "${Progress.toInt()} / ${Max.toInt()}",
+                    text = "${Progress.toInt()}",
+                    color = Color.White,
+                    fontSize = 14.sp,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.weight(1f)
+                )
+                Text(
+                    text = "${Max.toInt()}",
                     color = Color.White,
                     fontSize = 14.sp,
                     textAlign = TextAlign.End,
@@ -132,9 +244,9 @@ fun NutritionProgress(
 
             HorizontalProgressBar(
                 progress = normalizedProgress,
-                backgroundColor = Color.Gray.copy(alpha = 0.3f),
-                progressColor = Color.Green,
-                height = 12.dp
+                backgroundColor = Color.Gray.copy(alpha = 0.1f),
+                progressColor = color,
+                height = 6.dp
             )
         }
     }
@@ -144,22 +256,21 @@ fun NutritionProgress(
 fun HorizontalProgressBar(
     progress: Float,
     modifier: Modifier = Modifier,
-    backgroundColor: Color = Color.LightGray,
+    backgroundColor: Color = Color.Gray.copy(alpha = 0.3f),
     progressColor: Color = Color.Blue,
-    height: Dp = 8.dp
-){
+    height: Dp = 6.dp
+) {
     Box(
         modifier = modifier
             .fillMaxWidth()
             .height(height)
-            .background(backgroundColor, shape = RoundedCornerShape(height / 2)),
-        contentAlignment = Alignment.CenterStart
+            .background(backgroundColor)
     ) {
         Box(
             modifier = Modifier
                 .fillMaxWidth(progress)
                 .fillMaxHeight()
-                .background(progressColor, shape = RoundedCornerShape(height / 2))
+                .background(progressColor)
         )
     }
 }
