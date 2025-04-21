@@ -44,6 +44,7 @@ import com.example.databasetestingwithhilt.NutritionScreen.NutritionDetailsScree
 import com.example.databasetestingwithhilt.NutritionScreen.NutritionScreen
 import com.example.databasetestingwithhilt.SearchScreen.SearchScreen
 import com.example.databasetestingwithhilt.SleepScreen.SleepScreen
+import com.example.databasetestingwithhilt.SleepScreen.SleepScreenSaver
 import com.example.databasetestingwithhilt.ui.theme.DatabaseTestingWithHiltTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -237,6 +238,7 @@ fun NavigateToScreen(navController: NavHostController, innerPadding: PaddingValu
         composable(route = "NutritionDetails"){
             NutritionDetailsScreen()
         }
+
 
     }
 

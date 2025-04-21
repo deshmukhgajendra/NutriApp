@@ -15,27 +15,27 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.DatabaseTestingWithHilt"
         tools:targetApi="31">
-
+        <activity
+            android:name=".SleepScreen.ScreenSaver"
+            android:exported="false"
+            android:label="@string/title_activity_screen_saver"
+            android:theme="@style/Theme.DatabaseTestingWithHilt" />
         <activity
             android:name=".Authentications.Authentication"
             android:exported="true"
             android:label="@string/title_activity_authentication"
             android:theme="@style/Theme.DatabaseTestingWithHilt"
-            tools:ignore="DuplicateActivity">
-
-        </activity>
+            tools:ignore="DuplicateActivity"></activity>
         <activity
             android:name=".PersonalInformation.PersonalInformation"
             android:exported="true"
             android:label="@string/title_activity_personal_information"
-            android:theme="@style/Theme.DatabaseTestingWithHilt">
-
-        </activity>
+            android:theme="@style/Theme.DatabaseTestingWithHilt"></activity>
         <activity
             android:name=".MainActivity"
             android:exported="true"
             android:label="@string/app_name"
-            android:theme="@style/Theme.DatabaseTestingWithHilt" >
+            android:theme="@style/Theme.DatabaseTestingWithHilt">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

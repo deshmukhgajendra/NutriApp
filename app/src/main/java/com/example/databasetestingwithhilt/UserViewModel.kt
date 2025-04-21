@@ -1,9 +1,11 @@
 package com.example.databasetestingwithhilt
 
 import android.gesture.GestureLibrary
+import android.os.Build
 import android.util.Log
 import android.widget.Toast
 import androidx.activity.compose.ReportDrawn
+import androidx.annotation.RequiresApi
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -14,6 +16,9 @@ import com.example.databasetestingwithhilt.Authentications.AuthRepository
 import com.example.databasetestingwithhilt.Database.FoodEntity
 import com.example.databasetestingwithhilt.Database.NutrientRepository
 import com.example.databasetestingwithhilt.Database.PersonalEntity
+import com.example.databasetestingwithhilt.Database.SleepDao
+import com.example.databasetestingwithhilt.Database.SleepEntity
+import com.example.databasetestingwithhilt.Database.SleepRepository
 import com.example.databasetestingwithhilt.NutritionScreen.NutrientRequest
 import com.example.databasetestingwithhilt.NutritionScreen.NutritionixApiObject
 import com.example.databasetestingwithhilt.NutritionScreen.NutritionixResponse
@@ -24,25 +29,34 @@ import com.google.firebase.auth.FirebaseUser
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import retrofit2.HttpException
+import java.text.SimpleDateFormat
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
+import java.util.Date
+import java.util.Locale
 import javax.inject.Inject
 
 
 @HiltViewModel
 class UserViewModel @Inject constructor(
     val repository: NutrientRepository,
-    val authRepository: AuthRepository
+    val authRepository: AuthRepository,
+    val sleepRepository: SleepRepository
 ): ViewModel() {
 
     // for search suggestions
     val searchResults = MutableStateFlow<List<FoodItem>>(emptyList())
     val errorMessage = mutableStateOf<String?>(null)
     val foodSuggestions: StateFlow<List<FoodItem>> = searchResults
+
+
 
     // for nutritents
     private val _foods = MutableStateFlow<List<NutritionixResponse.Food>>(emptyList())
@@ -254,12 +268,25 @@ class UserViewModel @Inject constructor(
         646 to "Polysaturated Fatty acids"
     )
 
+    // sleep variables
+
+//    private var SleepTime: String? = null
+//    private val dateFormate = SimpleDateFormat("yyyy-mm-dd", Locale.getDefault())
+//    private val timeFormate = SimpleDateFormat("hh:mm a", Locale.getDefault())
+
+    private val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+    private val timeFormat = SimpleDateFormat("HH:mm", Locale.getDefault())
+
+    // Store sleep time when "Sleep Now" is clicked
+    var sleepTime: String? = null
+        private set
+
     // for Authentication
     private val _authState = MutableStateFlow<FirebaseUser?>(null)
     val authState: StateFlow<FirebaseUser?> = _authState
 
     private val _autherror = MutableStateFlow<String?>(null)
-    val autherror: StateFlow<String?> =_autherror
+    val autherror: StateFlow<String?> = _autherror
 
 
     fun insertPersonalData(personalEntity: PersonalEntity){
@@ -702,6 +729,35 @@ class UserViewModel @Inject constructor(
         viewModelScope.launch {
             val PolysaturatedCount = repository.getPolysatiratedFat()
             _livePolysauratedFatCount.value=PolysaturatedCount
+        }
+    }
+
+    fun setSleepTime(){
+        sleepTime = timeFormat.format(Date()) // Store current time as sleep time
+        Log.d("Gajendra", "Sleep time recorded: $sleepTime")
+    }
+
+    fun SaveSleepTime() {
+        if (sleepTime == null) {
+            Log.d("Gajendra", "Error: Sleep time was not recorded!")
+            return
+        }
+
+        val wakeUpTime = timeFormat.format(Date())
+        val currentDate = dateFormat.format(Date())
+
+        viewModelScope.launch {
+            try {
+                val record = SleepEntity(
+                    Date = currentDate,
+                    SleepTime = sleepTime!!,
+                    WakeUp = wakeUpTime
+                )
+                sleepRepository.insertSleepRecord(record)
+                Log.d("Gajendra", "Record saved: $record")
+            } catch (e: Exception) {
+                Log.d("Gajendra", "Failed to save: ${e.message}")
+            }
         }
     }
 }

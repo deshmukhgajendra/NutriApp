@@ -5,6 +5,7 @@ import androidx.room.Room
 import com.example.databasetestingwithhilt.Database.AppDatabase
 import com.example.databasetestingwithhilt.Database.FoodDao
 import com.example.databasetestingwithhilt.Database.NutrientRepository
+import com.example.databasetestingwithhilt.Database.SleepDao
 import com.google.firebase.auth.FirebaseAuth
 import dagger.Module
 import dagger.Provides
@@ -32,6 +33,12 @@ object AppModule {
     @Singleton
     fun providesDao(database : AppDatabase): FoodDao {
         return database.foodDao()
+    }
+
+    @Provides
+    @Singleton
+    fun providesSleepDao(database: AppDatabase):SleepDao{
+        return database.sleepDao()
     }
     @Provides
     @Singleton
