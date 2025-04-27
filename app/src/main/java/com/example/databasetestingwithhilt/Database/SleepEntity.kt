@@ -9,5 +9,5 @@ data class SleepEntity(
     @PrimaryKey(autoGenerate = true) val id : Int =0,
     val Date : String,
     val SleepTime : String,
-    val WakeUp : String
+    val WakeUp : String? = null
 )

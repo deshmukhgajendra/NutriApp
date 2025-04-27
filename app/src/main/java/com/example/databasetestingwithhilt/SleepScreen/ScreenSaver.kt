@@ -1,7 +1,12 @@
 package com.example.databasetestingwithhilt.SleepScreen
 
+import android.app.Activity
 import android.os.Build
+import android.os.Bundle
 import android.util.Log
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.setContent
+import androidx.activity.enableEdgeToEdge
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
@@ -20,27 +25,48 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavController
 import com.example.databasetestingwithhilt.R
+import com.example.databasetestingwithhilt.SleepScreen.ui.theme.DatabaseTestingWithHiltTheme
 import com.example.databasetestingwithhilt.UserViewModel
 import com.example.databasetestingwithhilt.ui.theme.lightBlue
 import com.example.databasetestingwithhilt.ui.theme.yellow
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
+class ScreenSaver : ComponentActivity() {
+    @RequiresApi(Build.VERSION_CODES.O)
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        enableEdgeToEdge()
+        setContent {
+            DatabaseTestingWithHiltTheme {
+                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
+                   SleepScreenSaver()
+                }
+            }
+        }
+    }
+}
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun SleepScreenSaver(navController: NavController,viewModel: UserViewModel ) {
+fun SleepScreenSaver(viewModel: UserViewModel = hiltViewModel() ) {
+
+    val context = LocalContext.current
     Box(
         modifier = Modifier.fillMaxSize()
     ) {
@@ -176,10 +202,10 @@ fun SleepScreenSaver(navController: NavController,viewModel: UserViewModel ) {
             Button(
                 onClick = {
 //
-                    Log.d("Gajendra", "Button Clicked")
+               val waketime = getCurrentTime()
+                    viewModel.SaveWakeTime(waketime)
 
-                    viewModel.SaveSleepTime()
-                    Log.d("Gajendra", "SaveSleepTime function call completed")
+                    (context as? Activity)?.finish()
 
                 },
                 modifier = Modifier

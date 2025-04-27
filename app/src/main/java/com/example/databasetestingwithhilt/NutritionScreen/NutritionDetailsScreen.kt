@@ -1,8 +1,6 @@
 package com.example.databasetestingwithhilt.NutritionScreen
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.gestures.rememberScrollableState
-import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -11,9 +9,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Card
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -27,7 +23,6 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.databasetestingwithhilt.UserViewModel
 import com.example.databasetestingwithhilt.ui.theme.Copper
 import com.example.databasetestingwithhilt.ui.theme.Water
@@ -37,7 +32,6 @@ import com.example.databasetestingwithhilt.ui.theme.blood
 import com.example.databasetestingwithhilt.ui.theme.coral
 import com.example.databasetestingwithhilt.ui.theme.darkGreen
 import com.example.databasetestingwithhilt.ui.theme.fire
-import com.example.databasetestingwithhilt.ui.theme.gray
 import com.example.databasetestingwithhilt.ui.theme.lightBlue
 import com.example.databasetestingwithhilt.ui.theme.lightGreen
 import com.example.databasetestingwithhilt.ui.theme.mint
@@ -49,7 +43,6 @@ import com.example.databasetestingwithhilt.ui.theme.sea
 import com.example.databasetestingwithhilt.ui.theme.silver
 import com.example.databasetestingwithhilt.ui.theme.sunset
 import com.example.databasetestingwithhilt.ui.theme.yellow
-import dagger.hilt.android.lifecycle.HiltViewModel
 
 @Composable
 fun NutritionDetailsScreen(viewModel : UserViewModel = hiltViewModel()){

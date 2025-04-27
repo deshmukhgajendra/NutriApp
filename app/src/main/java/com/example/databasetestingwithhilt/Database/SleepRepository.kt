@@ -8,4 +8,10 @@ class SleepRepository @Inject constructor(
 
     suspend fun insertSleepRecord(sleepEntity: SleepEntity)
     = sleepDao.insertSleepRecord(sleepEntity)
+
+    suspend fun getLastSleepRecord() :SleepEntity?
+    =sleepDao.getLastRecord()
+
+    suspend fun updateWaketime(date:String , wakeTime: String)
+    = sleepDao.updateWakeTime(date,wakeTime)
 }

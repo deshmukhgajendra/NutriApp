@@ -1,5 +1,6 @@
 package com.example.databasetestingwithhilt.Authentications
 
+import com.example.databasetestingwithhilt.ui.theme.fire
 import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseAuth
@@ -20,8 +21,12 @@ class AuthRepository @Inject constructor(
         firebaseAuth.signOut()
     }
 
-    fun isUserLoggedIn() : Boolean{
-        return firebaseAuth.currentUser != null
+    fun getCurrentUserName(): String?{
+        return firebaseAuth.currentUser?.displayName
+    }
+
+    fun getCurrenUsertEmail(): String?{
+        return firebaseAuth.currentUser?.email
     }
 
     fun getUserId(): String?{

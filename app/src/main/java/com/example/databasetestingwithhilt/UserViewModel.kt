@@ -1,22 +1,16 @@
 package com.example.databasetestingwithhilt
 
-import android.gesture.GestureLibrary
-import android.os.Build
+
 import android.util.Log
-import android.widget.Toast
-import androidx.activity.compose.ReportDrawn
-import androidx.annotation.RequiresApi
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.databasetestingwithhilt.Authentications.AuthRepository
 import com.example.databasetestingwithhilt.Database.FoodEntity
 import com.example.databasetestingwithhilt.Database.NutrientRepository
 import com.example.databasetestingwithhilt.Database.PersonalEntity
-import com.example.databasetestingwithhilt.Database.SleepDao
 import com.example.databasetestingwithhilt.Database.SleepEntity
 import com.example.databasetestingwithhilt.Database.SleepRepository
 import com.example.databasetestingwithhilt.NutritionScreen.NutrientRequest
@@ -24,23 +18,15 @@ import com.example.databasetestingwithhilt.NutritionScreen.NutritionixApiObject
 import com.example.databasetestingwithhilt.NutritionScreen.NutritionixResponse
 import com.example.databasetestingwithhilt.SearchScreen.FoodItem
 import com.example.databasetestingwithhilt.SearchScreen.SearchApiObject
-import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import dagger.hilt.android.lifecycle.HiltViewModel
-import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import retrofit2.HttpException
-import java.text.SimpleDateFormat
-import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
-import java.util.Date
-import java.util.Locale
 import javax.inject.Inject
 
 
@@ -268,19 +254,6 @@ class UserViewModel @Inject constructor(
         646 to "Polysaturated Fatty acids"
     )
 
-    // sleep variables
-
-//    private var SleepTime: String? = null
-//    private val dateFormate = SimpleDateFormat("yyyy-mm-dd", Locale.getDefault())
-//    private val timeFormate = SimpleDateFormat("hh:mm a", Locale.getDefault())
-
-    private val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
-    private val timeFormat = SimpleDateFormat("HH:mm", Locale.getDefault())
-
-    // Store sleep time when "Sleep Now" is clicked
-    var sleepTime: String? = null
-        private set
-
     // for Authentication
     private val _authState = MutableStateFlow<FirebaseUser?>(null)
     val authState: StateFlow<FirebaseUser?> = _authState
@@ -288,6 +261,52 @@ class UserViewModel @Inject constructor(
     private val _autherror = MutableStateFlow<String?>(null)
     val autherror: StateFlow<String?> = _autherror
 
+    private val _userEmail = MutableLiveData<String?>()
+    val userEmail: LiveData<String?> = _userEmail
+
+    private val _userName = MutableLiveData<String?>()
+    val userName: LiveData<String?> = _userName
+
+    // Authentication methods
+
+    fun login(email : String, password: String){
+        viewModelScope.launch {
+            authRepository.login(email,password).addOnCompleteListener{ task ->
+                if (task.isSuccessful){
+                    _authState.value = authRepository.firebaseAuth.currentUser
+
+                }else{
+                    _autherror.value = task.exception?.message
+                }
+            }
+        }
+    }
+
+    fun register(email: String, password: String){
+        viewModelScope.launch {
+            authRepository.register(email,password).addOnCompleteListener { task ->
+                if (task.isSuccessful){
+                    _authState.value= authRepository.firebaseAuth.currentUser
+                }else{
+                    _autherror.value = task.exception?.message
+                }
+            }
+        }
+    }
+
+    fun logout(){
+        authRepository.logout()
+        _authState.value=null
+    }
+
+    fun getUserDetails(){
+        viewModelScope.launch {
+            _userName.value=authRepository.getCurrentUserName()
+            _userEmail.value=authRepository.getCurrenUsertEmail()
+            Log.d("auth", "getUserDetails: ${_userName.value}")
+            Log.d("auth", "getUserDetails: ${_userEmail.value}")
+        }
+    }
 
     fun insertPersonalData(personalEntity: PersonalEntity){
         viewModelScope.launch {
@@ -490,38 +509,7 @@ class UserViewModel @Inject constructor(
 
 
 
-    fun login(email : String, password: String){
-        viewModelScope.launch {
-            authRepository.login(email,password).addOnCompleteListener{ task ->
-                if (task.isSuccessful){
-                    _authState.value = authRepository.firebaseAuth.currentUser
 
-                }else{
-                    _autherror.value = task.exception?.message
-                }
-
-            }
-        }
-    }
-
-    fun register(email: String, password: String){
-        viewModelScope.launch {
-            authRepository.register(email,password).addOnCompleteListener { task ->
-                if (task.isSuccessful){
-                    _authState.value= authRepository.firebaseAuth.currentUser
-                }else{
-                    _autherror.value = task.exception?.message
-
-                }
-
-            }
-        }
-    }
-
-    fun logout(){
-        authRepository.logout()
-        _authState.value=null
-    }
 
     fun getRequiredCalories(){
         viewModelScope.launch {
@@ -577,187 +565,180 @@ class UserViewModel @Inject constructor(
     }
     fun getTransFatCount(){
         viewModelScope.launch {
-            val TransFat = repository.getTransFat()
+            val TransFat = repository.getTransFat() ?: 0f
             _liveTransFatCount.value=TransFat
         }
     }
     fun getVitaminACount(){
         viewModelScope.launch {
-            val VitaminA = repository.getVitaminA()
+            val VitaminA = repository.getVitaminA() ?:0f
             _liveVitaminACount.value=VitaminA
         }
     }
     fun getVitaminB6(){
         viewModelScope.launch {
-            val VitaminB6 = repository.getVitaminB6()
+            val VitaminB6 = repository.getVitaminB6() ?:0f
             _liveVitaminB6Count.value=VitaminB6
         }
     }
     fun getVitaminB12(){
         viewModelScope.launch {
-            val VitaminB12 = repository.getVitaminB12()
+            val VitaminB12 = repository.getVitaminB12() ?:0f
             _liveVitaminB12Count.value=VitaminB12
         }
     }
     fun getVitaminCCount(){
         viewModelScope.launch {
-            val VitaminC = repository.getVitaminC()
+            val VitaminC = repository.getVitaminC() ?:0f
             _liveVitaminCCount.value=VitaminC
         }
     }
     fun getVitaminD(){
         viewModelScope.launch {
-            val VitaminD= repository.getVitaminD()
+            val VitaminD= repository.getVitaminD() ?:0f
             _liveVitaminDCount.value=VitaminD
         }
     }
     fun getVitaminE(){
         viewModelScope.launch {
-            val VitaminE = repository.getVitaminE()
+            val VitaminE = repository.getVitaminE() ?:0f
             _liveVitaminECount.value=VitaminE
         }
     }
     fun getVitaminK(){
         viewModelScope.launch {
-            val VitaminK = repository.getVitaminK()
+            val VitaminK = repository.getVitaminK() ?:0f
             _liveVitaminKCount.value=VitaminK
         }
     }
     fun getCopper(){
         viewModelScope.launch {
-            val Copper = repository.getCopper()
+            val Copper = repository.getCopper()?:0f
             _liveCopperCount.value=Copper
         }
     }
     fun getZinc(){
         viewModelScope.launch {
-            val Zinc = repository.getZinc()
+            val Zinc = repository.getZinc() ?:0f
             _liveZincCount.value=Zinc
         }
     }
     fun getSodium(){
         viewModelScope.launch {
-            val Sodium = repository.getSodium()
+            val Sodium = repository.getSodium() ?:0f
             _liveSodiumCount.value=Sodium
         }
     }
     fun getPotassium(){
         viewModelScope.launch {
-            val Potassium = repository.getPotassium()
+            val Potassium = repository.getPotassium() ?:0f
             _livePotassiumCount.value=Potassium
         }
     }
     fun getIron(){
         viewModelScope.launch {
-            val Iron = repository.getIron()
+            val Iron = repository.getIron() ?:0f
             _liveIronCount.value=Iron
         }
     }
     fun getCalcium(){
         viewModelScope.launch {
-            val Calcium = repository.getCalcium()
+            val Calcium = repository.getCalcium() ?:0f
             _liveCalciumCount.value= Calcium
         }
     }
     fun getFibar(){
         viewModelScope.launch {
-            val Fibar = repository.getFibar()
+            val Fibar = repository.getFibar() ?:0f
             _liveFibarCount.value=Fibar
         }
     }
     fun getSuger(){
         viewModelScope.launch {
-            val Suger = repository.getSuger()
+            val Suger = repository.getSuger() ?:0f
             _liveSugerCount.value=Suger
         }
     }
     fun getWater(){
         viewModelScope.launch {
-            val water = repository.getWater()
+            val water = repository.getWater() ?:0f
             _liveWaterCount.value= water
         }
     }
     fun getGlucose(){
         viewModelScope.launch {
-            val Glucose= repository.getGlucose()
+            val Glucose= repository.getGlucose() ?:0f
             _liveGlucoseCount.value=Glucose
         }
     }
     fun getFolicAcid(){
         viewModelScope.launch {
-            val FolicAcid = repository.getFolicAcid()
+            val FolicAcid = repository.getFolicAcid() ?:0f
             _liveFolicAcidCount.value=FolicAcid
         }
     }
     fun getNiacin(){
         viewModelScope.launch {
-            val Niacin = repository.getNiacine()
+            val Niacin = repository.getNiacine() ?:0f
             _liveNiacinCount.value=Niacin
         }
     }
     fun getRetinol(){
         viewModelScope.launch {
-            val Retinol = repository.getRetinol()
+            val Retinol = repository.getRetinol() ?:0f
             _liveRetinolCount.value=Retinol
         }
     }
     fun getMagnesium(){
         viewModelScope.launch {
-            val Magnesium = repository.getMagnesium()
+            val Magnesium = repository.getMagnesium() ?:0f
             _liveMagnesiumCount.value=Magnesium
         }
     }
     fun getFolate(){
         viewModelScope.launch {
-            val Folate= repository.getFolate()
+            val Folate= repository.getFolate() ?:0f
             _liveFolateCount.value=Folate
         }
     }
     fun getCholesterol(){
         viewModelScope.launch {
-            val Cholesterol = repository.getCholestrol()
+            val Cholesterol = repository.getCholestrol() ?:0f
             _liveCholesterolCount.value=Cholesterol
         }
     }
     fun getMonosaturatedFatCount(){
         viewModelScope.launch {
-            val MonosaturatedFat = repository.getMonosaturatedFat()
+            val MonosaturatedFat = repository.getMonosaturatedFat() ?:0f
             _liveMonosaturateFatCount.value=MonosaturatedFat
         }
     }
     fun getPolysaturatedFatCount(){
         viewModelScope.launch {
-            val PolysaturatedCount = repository.getPolysatiratedFat()
+            val PolysaturatedCount = repository.getPolysatiratedFat() ?:0f
             _livePolysauratedFatCount.value=PolysaturatedCount
         }
     }
 
-    fun setSleepTime(){
-        sleepTime = timeFormat.format(Date()) // Store current time as sleep time
-        Log.d("Gajendra", "Sleep time recorded: $sleepTime")
-    }
 
-    fun SaveSleepTime() {
-        if (sleepTime == null) {
-            Log.d("Gajendra", "Error: Sleep time was not recorded!")
-            return
-        }
-
-        val wakeUpTime = timeFormat.format(Date())
-        val currentDate = dateFormat.format(Date())
+    fun SaveSleepTime(date: String, sleepTime:String) {
 
         viewModelScope.launch {
-            try {
-                val record = SleepEntity(
-                    Date = currentDate,
-                    SleepTime = sleepTime!!,
-                    WakeUp = wakeUpTime
-                )
-                sleepRepository.insertSleepRecord(record)
-                Log.d("Gajendra", "Record saved: $record")
-            } catch (e: Exception) {
-                Log.d("Gajendra", "Failed to save: ${e.message}")
+            sleepRepository.insertSleepRecord(SleepEntity(
+                Date = date,
+                SleepTime = sleepTime
+            ))
+        }
+
+    }
+
+    fun SaveWakeTime(wakeTime : String){
+        viewModelScope.launch {
+            val lastRecord = sleepRepository.getLastSleepRecord()
+            if(lastRecord != null){
+                sleepRepository.updateWaketime(lastRecord.Date,wakeTime)
             }
+
         }
     }
 }

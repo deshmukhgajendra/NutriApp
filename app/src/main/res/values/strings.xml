@@ -4,4 +4,6 @@
     <string name="title_activity_personal_information">PersonalInformation</string>
     <string name="title_activity_authentication">Authentication</string>
     <string name="title_activity_screen_saver">ScreenSaver</string>
+    <string name="title_activity_navigation_drawer">NavigationDrawer</string>
+    <string name="title_activity_splash_screen">SplashScreen</string>
 </resources>

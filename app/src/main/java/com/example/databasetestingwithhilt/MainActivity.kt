@@ -1,5 +1,6 @@
 package com.example.databasetestingwithhilt
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -28,6 +29,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
@@ -39,6 +41,8 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.databasetestingwithhilt.DashboardScreen.DashBoardScreen
 import com.example.databasetestingwithhilt.MenuScreen.MenuScreen
+import com.example.databasetestingwithhilt.MenuScreen.NavigationDrawer
+import com.example.databasetestingwithhilt.MenuScreen.NavigationDrawerScreen
 import com.example.databasetestingwithhilt.NutritionScreen.FoodLogDetails
 import com.example.databasetestingwithhilt.NutritionScreen.NutritionDetailsScreen
 import com.example.databasetestingwithhilt.NutritionScreen.NutritionScreen
@@ -71,7 +75,7 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun app() {
 
-
+val context = LocalContext.current
     val navController = rememberNavController()
     Scaffold(
         topBar = {
@@ -87,7 +91,10 @@ fun app() {
                     )
                 },
                 actions = {
-                    IconButton(onClick = {}) {
+                    IconButton(onClick = {
+                        val i = Intent(context, NavigationDrawer::class.java)
+                        context.startActivity(i)
+                    }) {
                         Icon(
                             painterResource(R.drawable.accountcircle),
                             contentDescription = null
@@ -238,10 +245,7 @@ fun NavigateToScreen(navController: NavHostController, innerPadding: PaddingValu
         composable(route = "NutritionDetails"){
             NutritionDetailsScreen()
         }
-
-
     }
-
 }
 
 

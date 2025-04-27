@@ -2,6 +2,7 @@ package com.example.databasetestingwithhilt
 
 import android.content.Context
 import androidx.room.Room
+import com.example.databasetestingwithhilt.Authentications.AuthRepository
 import com.example.databasetestingwithhilt.Database.AppDatabase
 import com.example.databasetestingwithhilt.Database.FoodDao
 import com.example.databasetestingwithhilt.Database.NutrientRepository
@@ -49,4 +50,6 @@ object AppModule {
     @Provides
     @Singleton
     fun providesFirebaseAuth(): FirebaseAuth = FirebaseAuth.getInstance()
+
+
 }
