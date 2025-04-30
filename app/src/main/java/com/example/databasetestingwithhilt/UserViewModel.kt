@@ -18,6 +18,7 @@ import com.example.databasetestingwithhilt.NutritionScreen.NutritionixApiObject
 import com.example.databasetestingwithhilt.NutritionScreen.NutritionixResponse
 import com.example.databasetestingwithhilt.SearchScreen.FoodItem
 import com.example.databasetestingwithhilt.SearchScreen.SearchApiObject
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -145,10 +146,17 @@ class UserViewModel @Inject constructor(
 
     private var searchJob: Job? = null
 
-    val requiredcaloriecount = MutableStateFlow(0)
-    val requiredproteincount = MutableStateFlow(0)
-    val requiredfatscount = MutableStateFlow(0)
-    val requiredcarbscount= MutableStateFlow(0)
+    private val _requiredCalorie = MutableStateFlow(0f)
+    val requiredCalories = _requiredCalorie.asStateFlow()
+
+    private val _requiredProtein = MutableStateFlow(0f)
+    val requiredProtein = _requiredProtein.asStateFlow()
+
+    private val _requiredFats = MutableStateFlow(0f)
+    val requiredFats = _requiredFats.asStateFlow()
+
+    private val _requiredCarbs = MutableStateFlow(0f)
+    val requiredCarbs= _requiredCarbs.asStateFlow()
 
     val nutrientMapping = mapOf(
         203 to "Protein",
@@ -267,6 +275,27 @@ class UserViewModel @Inject constructor(
     private val _userName = MutableLiveData<String?>()
     val userName: LiveData<String?> = _userName
 
+    private val _saveResult = MutableLiveData<Boolean>()
+    val saveResult :LiveData<Boolean> get() = _saveResult
+
+    // to save personal data
+    fun saveUserData(personalEntity: PersonalEntity){
+
+        authRepository.saveUserData(personalEntity){sucess ->
+            _saveResult.value =sucess
+            Log.d("userdata", "saveUserData:${saveResult.value} ")
+        }
+    }
+
+    fun fetchRequiredNutrients(){
+        viewModelScope.launch {
+            _requiredCalorie.value=repository.getRequiredCalories()
+            _requiredProtein.value=repository.getRequiredProtein()
+            _requiredCarbs.value=repository.getRequiredCarbs()
+            _requiredFats.value=repository.getRequiredFats()
+        }
+    }
+
     // Authentication methods
 
     fun login(email : String, password: String){
@@ -295,24 +324,23 @@ class UserViewModel @Inject constructor(
     }
 
     fun logout(){
+       // Log.d("Gajendra", "Logout called")
+
         authRepository.logout()
         _authState.value=null
+       // Log.d("Gajendra", "Current user: ${FirebaseAuth.getInstance().currentUser}")
+
     }
 
     fun getUserDetails(){
         viewModelScope.launch {
             _userName.value=authRepository.getCurrentUserName()
             _userEmail.value=authRepository.getCurrenUsertEmail()
-            Log.d("auth", "getUserDetails: ${_userName.value}")
-            Log.d("auth", "getUserDetails: ${_userEmail.value}")
+         //   Log.d("auth", "getUserDetails: ${_userName.value}")
+         //   Log.d("auth", "getUserDetails: ${_userEmail.value}")
         }
     }
 
-    fun insertPersonalData(personalEntity: PersonalEntity){
-        viewModelScope.launch {
-            repository.insertPersonalData(personalEntity)
-        }
-    }
 
     // to get search result
     fun fetchSearchResult(query: String) {
@@ -507,42 +535,6 @@ class UserViewModel @Inject constructor(
         }
     }
 
-
-
-
-
-    fun getRequiredCalories(){
-        viewModelScope.launch {
-            val _requiredcalories =repository.getRequiredCalories()?.toInt() ?:0
-           requiredcaloriecount.value=_requiredcalories
-          // Log.d("Requirement", "getRequiredCalories: $_requiredcalories")
-        }
-    }
-
-    fun getRequiredProteins(){
-        viewModelScope.launch {
-            val _requiredprotein = repository.getRequiredProteins()?.toInt()?:0
-            requiredproteincount.value=_requiredprotein
-         //   Log.d("Requirement", "getRequiredProteins: $_requiredprotein")
-        }
-    }
-
-    fun getRequiredFats(){
-        viewModelScope.launch {
-            val _requiredFats = repository.getRequiredFats()?.toInt()?:0
-            requiredfatscount.value=_requiredFats
-        //    Log.d("Requirement", "getRequiredFats: $_requiredFats")
-        }
-    }
-
-    fun getRequiredCarbs(){
-        viewModelScope.launch {
-            val _requiredCarbs = repository.getRequiredCarbs()?.toInt()?:0
-            requiredcarbscount.value=_requiredCarbs
-          //  Log.d("Requirement", "getRequiredCarbs: $_requiredCarbs")
-
-        }
-    }
     fun getAllFoodName(){
         viewModelScope.launch {
             val foodNamesFromDb = repository.getAllFoodName()

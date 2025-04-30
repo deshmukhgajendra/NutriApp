@@ -1,6 +1,9 @@
 package com.example.databasetestingwithhilt.MenuScreen
 
+import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -37,6 +40,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.style.TextAlign
@@ -44,6 +48,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.example.databasetestingwithhilt.Authentications.Authentication
 import com.example.databasetestingwithhilt.MenuScreen.ui.theme.DatabaseTestingWithHiltTheme
 import com.example.databasetestingwithhilt.R
 import com.example.databasetestingwithhilt.UserViewModel
@@ -69,15 +74,14 @@ class NavigationDrawer : ComponentActivity() {
 }
 
 @Composable
-fun NavigationDrawerScreen(viewModel : UserViewModel = hiltViewModel()) {
-
+fun NavigationDrawerScreen(viewModel: UserViewModel = hiltViewModel()) {
     val userName by viewModel.userName.observeAsState()
     val userEmail by viewModel.userEmail.observeAsState()
+    val context = LocalContext.current
 
     LaunchedEffect(Unit) {
         viewModel.getUserDetails()
     }
-
 
     val scrollState = rememberScrollState()
     Box(
@@ -132,77 +136,100 @@ fun NavigationDrawerScreen(viewModel : UserViewModel = hiltViewModel()) {
                         .border(2.dp, Color.White, CircleShape)
                 )
             }
-            Column(modifier = Modifier.
-                padding(top = 100.dp).
-            verticalScroll(scrollState)
-            ){
-                Divider( thickness = 5.dp,
-                    modifier = Modifier.padding(top = 4.dp, bottom = 4.dp))
+            Column(
+                modifier = Modifier
+                    .padding(top = 100.dp)
+                    .verticalScroll(scrollState)
+            ) {
+                Divider(
+                    thickness = 5.dp,
+                    modifier = Modifier.padding(top = 4.dp, bottom = 4.dp)
+                )
                 Text(
                     text = "Account",
                     fontSize = 17.sp,
                     color = lightGray,
-                    modifier = Modifier.padding(bottom = 11.dp , start = 10.dp, top = 11.dp)
+                    modifier = Modifier.padding(bottom = 11.dp, start = 10.dp, top = 11.dp)
                 )
-                listItem("Edit Profile",{})
-                listItem("My Goals",{})
-                listItem("My apps & Devices ",{})
-                listItem("Delete Account",{})
-                listItem("Change Password",{})
-                listItem("Log Out ",{viewModel.logout()})
-                Divider( thickness = 5.dp,
-                    modifier = Modifier.padding( bottom = 4.dp))
+                listItem("Edit Profile", {})
+                listItem("My Goals", {})
+                listItem("My apps & Devices", {})
+                listItem("Delete Account", {})
+                listItem("Change Password", {})
+                listItem("Log Out") {
+                    Log.d("NavigationDrawerScreen", "Log Out lambda executed")
+                    viewModel.logout()
+                    val i = Intent(context,Authentication::class.java)
+                    context.startActivity(i)
+                    (context as? Activity)?.finish()
+                }
+                Divider(
+                    thickness = 5.dp,
+                    modifier = Modifier.padding(bottom = 4.dp)
+                )
                 Text(
                     text = "Settings",
                     fontSize = 17.sp,
                     color = lightGray,
-                    modifier = Modifier.padding(bottom = 11.dp , start = 10.dp, top = 11.dp)
+                    modifier = Modifier.padding(bottom = 11.dp, start = 10.dp, top = 11.dp)
                 )
-
-                listItem("Appreances",{})
-                listItem("Diary Settings",{})
-                listItem("Reminders",{})
-                listItem("Weekly Nutrition Settings",{})
-                listItem("Steps",{})
-                listItem("Push Notification",{})
-                Divider( thickness = 5.dp,
-                    modifier = Modifier.padding( bottom = 4.dp))
+                listItem("Appearances", {})
+                listItem("Diary Settings", {})
+                listItem("Reminders", {})
+                listItem("Weekly Nutrition Settings", {})
+                listItem("Steps", {})
+                listItem("Push Notification", {})
+                Divider(
+                    thickness = 5.dp,
+                    modifier = Modifier.padding(bottom = 4.dp)
+                )
                 Text(
                     text = "Settings",
                     fontSize = 17.sp,
                     color = lightGray,
-                    modifier = Modifier.padding(bottom = 11.dp , start = 10.dp, top = 11.dp)
+                    modifier = Modifier.padding(bottom = 11.dp, start = 10.dp, top = 11.dp)
                 )
-                listItem("About Us",{})
-                listItem("Contact Support",{})
-                listItem("FAQs/Feedback",{})
-                listItem("Join Bets Program",{})
-                listItem("TroubleShooting",{})
-
+                listItem("About Us", {})
+                listItem("Contact Support", {})
+                listItem("FAQs/Feedback", {})
+                listItem("Join Beta Program", {})
+                listItem("Troubleshooting", {})
             }
         }
     }
 }
+
 @Composable
-fun listItem(item: String, onClick:() ->Unit) {
+fun listItem(item: String, onClick: () -> Unit) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            //.padding(horizontal = 6.dp, vertical = 8.dp)
+            .padding(vertical = 8.dp)
     ) {
-
-        Button(onClick = {onClick},
+        Button(
+            onClick = {
+                Log.d("listItem", "Button clicked for item: $item")
+                onClick()
+            },
             modifier = Modifier
-        , colors = ButtonDefaults.buttonColors(
-            containerColor = Color.Transparent,
-            contentColor = Color.White
-        )) {
-            Text(
-                text = item,
-                fontSize = 16.sp,
-                color = MaterialTheme.colorScheme.onBackground,
-                modifier = Modifier.padding(bottom = 11.dp , start = 10.dp, top = 11.dp)
-            )
+                .fillMaxWidth(),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = Color.Transparent,
+                contentColor = MaterialTheme.colorScheme.onBackground
+            ),
+            contentPadding = ButtonDefaults.ContentPadding
+        ) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.Start
+            ) {
+                Text(
+                    text = item,
+                    fontSize = 16.sp,
+                    color = MaterialTheme.colorScheme.onBackground,
+                    modifier = Modifier.padding(start = 8.dp)
+                )
+            }
         }
 
         Divider(

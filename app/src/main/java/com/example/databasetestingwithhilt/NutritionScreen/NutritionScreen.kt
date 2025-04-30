@@ -1,5 +1,6 @@
 package com.example.databasetestingwithhilt.NutritionScreen
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -69,10 +70,10 @@ fun NutritionScreen(navController: NavController,viewModel: UserViewModel = hilt
     val foods by viewModel.foods.collectAsState()
     val error by viewModel.error.collectAsState()
     val scrollState = rememberScrollState()
-    val requiredCalories by viewModel.requiredcaloriecount.collectAsState()
-    val requiredProtein by viewModel.requiredproteincount.collectAsState()
-    val requiredCarbs by viewModel.requiredcarbscount.collectAsState()
-    val requiredFats by viewModel.requiredfatscount.collectAsState()
+    val requiredCalories by viewModel.requiredCalories.collectAsState(initial = 0f)
+    val requiredProtein by viewModel.requiredProtein.collectAsState(initial = 0f)
+    val requiredCarbs by viewModel.requiredCarbs.collectAsState(initial = 0f)
+    val requiredFats by viewModel.requiredFats.collectAsState(initial = 0f)
     val liveClorieCount by viewModel.liveCalorieCount.collectAsState()
     val liveProteinCount by viewModel.liveProteinCount.collectAsState()
     val liveCarbsCount by viewModel.liveCarbsCount.collectAsState()
@@ -84,7 +85,7 @@ fun NutritionScreen(navController: NavController,viewModel: UserViewModel = hilt
         .verticalScroll(scrollState)
     ){
 
-        CircularProgressBarCards(navController,liveClorieCount.toFloat(),requiredCalories.toFloat(),requiredCalories)
+        CircularProgressBarCards(navController,liveClorieCount.toFloat(),requiredCalories,requiredCalories.toInt())
         MacrosCard(liveProteinCount,liveFatsCount,liveCarbsCount,requiredCarbs.toFloat(),requiredProtein.toFloat(),requiredFats.toFloat())
         GetFullInsights(navController)
         HabitCard()
@@ -93,18 +94,20 @@ fun NutritionScreen(navController: NavController,viewModel: UserViewModel = hilt
     }
 
     LaunchedEffect(Unit) {
-        viewModel.getRequiredCalories()
-        viewModel.getRequiredProteins()
-        viewModel.getRequiredCarbs()
-        viewModel.getRequiredFats()
+//        viewModel.getRequiredCalories()
+//        viewModel.getRequiredProteins()
+//        viewModel.getRequiredCarbs()
+//        viewModel.getRequiredFats()
+        viewModel.fetchRequiredNutrients()
         viewModel.getLiveCalorieCount()
         viewModel.getLiveFatsCount()
         viewModel.getLiveCarbsCount()
         viewModel.getLiveProteinCount()
 
-//        Log.d("xyz", "RequiredProtein: $requiredProtein")
-//        Log.d("xyz", "RequiredFats: $requiredFats")
-//        Log.d("xyz", "RequiredCarbs: $requiredCarbs")
+        Log.d("xyz", "RequiredCalories: $requiredCalories")
+        Log.d("xyz", "RequiredProtein: $requiredProtein")
+        Log.d("xyz", "RequiredFats: $requiredFats")
+        Log.d("xyz", "RequiredCarbs: $requiredCarbs")
     }
 }
 
@@ -501,7 +504,9 @@ fun StepAndExerciseCard() {
                         imageVector = Icons.Default.KeyboardArrowRight,
                         contentDescription = null,
                         tint = Color.Gray,
-                        modifier = Modifier.size(24.dp).padding(6.dp)
+                        modifier = Modifier
+                            .size(24.dp)
+                            .padding(6.dp)
                     )
                 }
             }

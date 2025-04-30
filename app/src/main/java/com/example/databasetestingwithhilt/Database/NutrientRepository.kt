@@ -1,9 +1,15 @@
 package com.example.databasetestingwithhilt.Database
 
+import android.util.Log
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.DatabaseReference
+import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
 class NutrientRepository @Inject constructor(
-    private val dao: FoodDao
+    private val dao: FoodDao,
+    private val auth: FirebaseAuth,
+    private val databaseReference: DatabaseReference
 ) {
 
     suspend fun insertFood(food: FoodEntity) = dao.insertFood(food)
@@ -13,13 +19,6 @@ class NutrientRepository @Inject constructor(
     suspend fun getTotalFats()=dao.getFats()
     suspend fun getTotalCarbs()=dao.getCarbs()
 
-    suspend fun insertPersonalData(personalEntity: PersonalEntity)
-    = dao.insertPersonalData(personalEntity)
-
-    suspend fun getRequiredCalories()=dao.getRequiredCalories()
-    suspend fun getRequiredProteins()=dao.getRequiredProteins()
-    suspend fun getRequiredFats()=dao.getRequiredFats()
-    suspend fun getRequiredCarbs()=dao.getRequiredCarbs()
     suspend fun getAllFoodName(): List<String> {
         return dao.getAllFoodName()
     }
@@ -56,4 +55,53 @@ class NutrientRepository @Inject constructor(
     suspend fun getCholestrol()=dao.getCholesterol()
     suspend fun getMonosaturatedFat()=dao.getMonosaturatedFat()
     suspend fun getPolysatiratedFat()=dao.getPolysaturatedFat()
+
+    // required nutrients
+
+    private suspend fun getRequiredValuesFromFirebase(key: String): Float {
+        val currentUser = auth.currentUser
+        if (currentUser != null) {
+            val userId = currentUser.uid
+            Log.d("xyz", "Current User ID: $userId")
+
+            val userRef = databaseReference.child("users").child(userId).child("Personal_Data")
+            Log.d("xyz", "Querying Database Path: users/$userId/Personal_Data")
+
+            try {
+                val snapshot = userRef.get().await()
+                if (snapshot.exists()) {
+                    Log.d("xyz", "Snapshot Data: ${snapshot.value}")
+                    val value = snapshot.child(key).getValue(Float::class.java) ?: 0f
+                    Log.d("xyz", "Fetched Value for Key $key: $value")
+                    return value
+                } else {
+                    Log.d("xyz", "Snapshot does not exist for path: users/$userId/Personal_Data")
+                }
+            } catch (e: Exception) {
+                Log.e("xyz", "Error fetching data", e)
+            }
+        } else {
+            Log.e("xyz", "User is not authenticated")
+        }
+        return 0f
+    }
+
+
+    suspend fun getRequiredCalories(): Float{
+        return getRequiredValuesFromFirebase("requiredCalorie")
+
+    }
+
+    suspend fun getRequiredProtein(): Float{
+        return getRequiredValuesFromFirebase("requiredProtein")
+    }
+
+    suspend fun getRequiredFats(): Float{
+        return getRequiredValuesFromFirebase("requiredFats")
+    }
+
+    suspend fun getRequiredCarbs(): Float{
+        return getRequiredValuesFromFirebase("requiredCarbs")
+    }
+
 }

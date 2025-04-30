@@ -1,13 +1,17 @@
 package com.example.databasetestingwithhilt.Authentications
 
+import android.util.Log
+import com.example.databasetestingwithhilt.Database.PersonalEntity
 import com.example.databasetestingwithhilt.ui.theme.fire
 import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.DatabaseReference
 import javax.inject.Inject
 
 class AuthRepository @Inject constructor(
-     val firebaseAuth: FirebaseAuth
+     val firebaseAuth: FirebaseAuth,
+     val databaseReference: DatabaseReference
 ){
     fun register (email : String, password : String): Task<AuthResult>{
         return firebaseAuth.createUserWithEmailAndPassword(email,password)
@@ -18,7 +22,11 @@ class AuthRepository @Inject constructor(
     }
 
     fun logout(){
+       // Log.d("Gajendra", "Logging out repository")
+
         firebaseAuth.signOut()
+       // Log.d("Gajendra", "User logged out")
+
     }
 
     fun getCurrentUserName(): String?{
@@ -31,5 +39,27 @@ class AuthRepository @Inject constructor(
 
     fun getUserId(): String?{
         return firebaseAuth.currentUser?.uid
+    }
+
+    fun saveUserData(personalEntity: PersonalEntity, onComplete:(Boolean) ->Unit){
+
+        val currentUser = firebaseAuth.currentUser
+        if (currentUser != null){
+            val userId = currentUser.uid
+            Log.d("gajendra", "saveUserData: $userId")
+            databaseReference.child("users").child(userId).child("Personal_Data")
+                .setValue(personalEntity)
+                .addOnCompleteListener{ task ->
+                    if (task.isSuccessful) {
+                        Log.d("gajendra", "Data saved successfully")
+                        onComplete(true)
+                    } else {
+                        Log.e("gajendra", "Error saving data", task.exception)
+                        onComplete(false)
+                    }
+                }
+        }else{
+            onComplete(false)
+        }
     }
 }

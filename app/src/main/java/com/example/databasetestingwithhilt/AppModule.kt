@@ -8,6 +8,8 @@ import com.example.databasetestingwithhilt.Database.FoodDao
 import com.example.databasetestingwithhilt.Database.NutrientRepository
 import com.example.databasetestingwithhilt.Database.SleepDao
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.FirebaseDatabase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -43,13 +45,19 @@ object AppModule {
     }
     @Provides
     @Singleton
-    fun providesRepository(dao : FoodDao): NutrientRepository {
-        return NutrientRepository(dao)
+    fun providesRepository(dao : FoodDao,
+                           firebaseAuth: FirebaseAuth,
+                           databaseReference: DatabaseReference): NutrientRepository {
+        return NutrientRepository(dao,firebaseAuth,databaseReference)
     }
 
     @Provides
     @Singleton
     fun providesFirebaseAuth(): FirebaseAuth = FirebaseAuth.getInstance()
+
+    @Provides
+    @Singleton
+    fun providesDatabaseReference(): DatabaseReference = FirebaseDatabase.getInstance().reference
 
 
 }

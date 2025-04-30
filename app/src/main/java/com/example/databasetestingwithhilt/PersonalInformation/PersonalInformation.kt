@@ -191,7 +191,7 @@ fun UserNutritionForm(viewModel: UserViewModel = hiltViewModel()) {
                             RequiredCarbs = carbs,
                             RequiredFats = fats
                         )
-                        viewModel.insertPersonalData(userData)
+                       viewModel.saveUserData(userData)
 
                         val i = Intent(context, MainActivity::class.java)
                         context.startActivity(i)

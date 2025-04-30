@@ -11,8 +11,6 @@ interface FoodDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertFood(food: FoodEntity)
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertPersonalData(personalEntity: PersonalEntity)
 
     @Query("SELECT * FROM food_log")
     suspend fun getAllFoods(): List<FoodEntity>
@@ -43,18 +41,6 @@ interface FoodDao {
             "     Sugar + \n" +
             "     Fiber) FROM food_log")
     suspend fun getCarbs(): Float?
-
-    @Query("SELECT RequiredCalorie FROM PersonalData_table")
-    suspend fun getRequiredCalories(): Float?
-
-    @Query(" SELECT RequiredProtein FROM PersonalData_table ")
-    suspend fun getRequiredProteins(): Float?
-
-    @Query("SELECT RequiredFats FROM PersonalData_table")
-    suspend fun getRequiredFats(): Float?
-
-    @Query("SELECT RequiredCarbs FROM PersonalData_table")
-    suspend fun getRequiredCarbs(): Float?
 
     @Query("SELECT food_name FROM food_log")
     suspend fun getAllFoodName(): List<String>

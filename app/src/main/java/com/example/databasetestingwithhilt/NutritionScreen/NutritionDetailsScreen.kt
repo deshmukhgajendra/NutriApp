@@ -74,8 +74,7 @@ fun NutritionDetailsScreen(viewModel : UserViewModel = hiltViewModel()){
     val cholesterol by viewModel.liveCholesteralCount.collectAsState()
     val monosaturatedFat by viewModel.liveMonosaturatedFatCount.collectAsState()
     val polusaturatedFat by viewModel.livePolysaturatedFatCount.collectAsState()
-    val requiredProtein by viewModel.requiredproteincount.collectAsState()
-    val requiredFat by viewModel.requiredfatscount.collectAsState()
+
 
 val scrollState = rememberScrollState()
 
@@ -107,8 +106,7 @@ val scrollState = rememberScrollState()
         viewModel.getMonosaturatedFatCount()
         viewModel.getPolysaturatedFatCount()
         viewModel.getLiveProteinCount()
-        viewModel.getRequiredProteins()
-        viewModel.getRequiredFats()
+
     }
 
     Column(
@@ -157,8 +155,8 @@ val scrollState = rememberScrollState()
         Column (modifier= Modifier.
         verticalScroll(scrollState)
         ){
-            NutritionProgress("Protein", protein.toDouble(), requiredProtein.toDouble(), Color.Blue)
-            NutritionProgress("Fat", transfat.toDouble(), requiredFat.toDouble(), Color.Green)
+         //   NutritionProgress("Protein", protein.toDouble(), requiredProtein.toDouble(), Color.Blue)
+         //   NutritionProgress("Fat", transfat.toDouble(), requiredFat.toDouble(), Color.Green)
             NutritionProgress("Vitamin A", vitaminA.toDouble(), 9000.0, red)
             NutritionProgress("Vitamin B6", vitaminB6.toDouble(), 1.7, yellow)
             NutritionProgress("Vitamin B12", vitaminB12.toDouble(), 2.8, mint)
