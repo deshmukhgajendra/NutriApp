@@ -1,5 +1,6 @@
 package com.example.databasetestingwithhilt.NutritionScreen
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -23,6 +24,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.example.databasetestingwithhilt.Authentications.NutrientRecord
 import com.example.databasetestingwithhilt.UserViewModel
 import com.example.databasetestingwithhilt.ui.theme.Copper
 import com.example.databasetestingwithhilt.ui.theme.Water
@@ -74,9 +76,22 @@ fun NutritionDetailsScreen(viewModel : UserViewModel = hiltViewModel()){
     val cholesterol by viewModel.liveCholesteralCount.collectAsState()
     val monosaturatedFat by viewModel.liveMonosaturatedFatCount.collectAsState()
     val polusaturatedFat by viewModel.livePolysaturatedFatCount.collectAsState()
+    val energy by viewModel.liveEnergyCount.collectAsState()
+    val starch by viewModel.liveStarchCount.collectAsState()
+    val Sucrose by viewModel.liveSucroseCount.collectAsState()
+    val Fructose by viewModel.liveFructoseCount.collectAsState()
+    val Lactose by viewModel.liveLactoseCount.collectAsState()
+    val Alcohol by viewModel.liveAlcoholCount.collectAsState()
+    val Caffeine by viewModel.liveCaffeineCount.collectAsState()
+    val Manganese by viewModel.liveManganeseCount.collectAsState()
+    val BetaCarotene by viewModel.liveBetaCarroteneCount.collectAsState()
+    val Lycopene by viewModel.liveLycopeneCount.collectAsState()
+    val SaturatedFat by viewModel.liveSaturatedFatCount.collectAsState()
 
 
-val scrollState = rememberScrollState()
+
+
+    val scrollState = rememberScrollState()
 
     LaunchedEffect(Unit) {
         viewModel.getTransFatCount()
@@ -106,6 +121,24 @@ val scrollState = rememberScrollState()
         viewModel.getMonosaturatedFatCount()
         viewModel.getPolysaturatedFatCount()
         viewModel.getLiveProteinCount()
+        viewModel.getEnergyCount()
+        viewModel.getStarchCount()
+        viewModel.getSucroseCount()
+        viewModel.getFructoseCount()
+        viewModel.getLactoseCount()
+        viewModel.getAlcoholCount()
+        viewModel.getCaffeineCount()
+        viewModel.getManganeseCount()
+        viewModel.getBetaCaroteneCount()
+        viewModel.getLycopeneCount()
+        viewModel.getSaturatedFatCount()
+
+//        val record = NutrientRecord(
+//            protein.toFloat(),transfat.toFloat(),vitaminA,vitaminB6,vitaminB12,vitaminC,vitaminD,vitaminE,vitaminK,copper,zinc,sodium,potassium,iron,calcium,fibar,suger,water,glucose,folicAcid,niacin,retinol,magnesium
+//            ,folate,cholesterol,monosaturatedFat,polusaturatedFat,energy,starch,Sucrose,Fructose,Lactose,Alcohol,Caffeine,Manganese,BetaCarotene,Lycopene,SaturatedFat,monosaturatedFat,polusaturatedFat
+//        )
+//       Log.d("gajendra", "NutritionDetailsScreen: $energy ")
+//        viewModel.SaveRecordsToFirebase(record,"1-5-2025")
 
     }
 
@@ -182,6 +215,8 @@ val scrollState = rememberScrollState()
             NutritionProgress("Cholesterol", cholesterol.toDouble(), 250.0, red)
             NutritionProgress("Monosaturated Fat", monosaturatedFat.toDouble(), 85.0, lightGreen)
             NutritionProgress("Polysaturated Fat", polusaturatedFat.toDouble(), 85.0, darkGreen)
+
+            Log.d("gajendra", "NutritionDetailsScreen11: ${energy.toDouble()} ")
         }
     }
 }

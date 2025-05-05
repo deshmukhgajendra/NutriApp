@@ -8,6 +8,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.databasetestingwithhilt.Authentications.AuthRepository
+import com.example.databasetestingwithhilt.Authentications.NutrientRecord
 import com.example.databasetestingwithhilt.Database.FoodEntity
 import com.example.databasetestingwithhilt.Database.NutrientRepository
 import com.example.databasetestingwithhilt.Database.PersonalEntity
@@ -18,7 +19,6 @@ import com.example.databasetestingwithhilt.NutritionScreen.NutritionixApiObject
 import com.example.databasetestingwithhilt.NutritionScreen.NutritionixResponse
 import com.example.databasetestingwithhilt.SearchScreen.FoodItem
 import com.example.databasetestingwithhilt.SearchScreen.SearchApiObject
-import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -140,6 +140,39 @@ class UserViewModel @Inject constructor(
     // for polysaturate count
     private val _livePolysauratedFatCount = MutableStateFlow(0f)
     val livePolysaturatedFatCount:StateFlow<Float> = _livePolysauratedFatCount.asStateFlow()
+
+    private val _liveEnergyCount = MutableStateFlow(0f)
+    val liveEnergyCount:StateFlow<Float> = _liveEnergyCount.asStateFlow()
+
+    private val _liveStarchCount = MutableStateFlow(0f)
+    val liveStarchCount: StateFlow<Float> = _liveStarchCount.asStateFlow()
+
+    private val _liveSucroseCount = MutableStateFlow(0f)
+    val liveSucroseCount:StateFlow<Float> = _liveSucroseCount.asStateFlow()
+
+    private val _liveFructoseCount = MutableStateFlow(0f)
+    val liveFructoseCount:StateFlow<Float> = _liveFructoseCount.asStateFlow()
+
+    private val _liveLactoseCount = MutableStateFlow(0f)
+    val liveLactoseCount:StateFlow<Float> = _liveLactoseCount.asStateFlow()
+
+    private val _liveAlcoholCount = MutableStateFlow(0f)
+    val liveAlcoholCount:StateFlow<Float> = _liveAlcoholCount.asStateFlow()
+
+    private val _liveCaffeineCount = MutableStateFlow(0f)
+    val liveCaffeineCount:StateFlow<Float> =_liveCaffeineCount.asStateFlow()
+
+    private val _liveManganeseCount = MutableStateFlow(0f)
+    val liveManganeseCount:StateFlow<Float> =_liveManganeseCount.asStateFlow()
+
+    private val _liveLycopeneCount = MutableStateFlow(0f)
+    val liveLycopeneCount:StateFlow<Float> =_liveLycopeneCount.asStateFlow()
+
+    private val _liveBetaCaroteneCount = MutableStateFlow(0f)
+    val liveBetaCarroteneCount:StateFlow<Float> =_liveBetaCaroteneCount.asStateFlow()
+
+    private val _liveSaturatedFatCount = MutableStateFlow(0f)
+    val liveSaturatedFatCount:StateFlow<Float> =_liveSaturatedFatCount.asStateFlow()
 
     private val _foodNames=MutableStateFlow<List<String>>(emptyList())
     val foodNames:StateFlow<List<String>> = _foodNames
@@ -278,6 +311,8 @@ class UserViewModel @Inject constructor(
     private val _saveResult = MutableLiveData<Boolean>()
     val saveResult :LiveData<Boolean> get() = _saveResult
 
+    private val _saveRecord = MutableLiveData<Boolean>()
+    val saveRecord : LiveData<Boolean> get() = _saveRecord
     // to save personal data
     fun saveUserData(personalEntity: PersonalEntity){
 
@@ -293,6 +328,59 @@ class UserViewModel @Inject constructor(
             _requiredProtein.value=repository.getRequiredProtein()
             _requiredCarbs.value=repository.getRequiredCarbs()
             _requiredFats.value=repository.getRequiredFats()
+        }
+    }
+
+// save record to firebase
+
+    fun fetchCurrentDayData() : NutrientRecord{
+        return NutrientRecord(
+             Protein = liveProteinCount.value.toFloat(),
+            Trans_Fatty_acids=liveTransfatCount.value.toFloat(),
+            Vitamin_A= liveVitaminACount.value.toFloat(),
+            Vitamin_B6 = liveVitaminB6Count.value.toFloat(),
+            Vitamin_B12 = liveVitaminB12Count.value.toFloat(),
+            Vitamin_C = liveVitaminCCount.value.toFloat(),
+            Vitamin_D = liveVitaminDCount.value.toFloat(),
+            Vitamin_E = liveVitaminECount.value.toFloat(),
+            Vitamin_K = liveVitaminKCount.value.toFloat(),
+            Copper = liveCopperCount.value.toFloat(),
+            Zinc = liveZincCount.value.toFloat(),
+            Sodium = liveSodiumCount.value.toFloat(),
+            Potassium = livePotassiumCount.value.toFloat(),
+            Iron = liveIronCount.value.toFloat(),
+            Calcium = liveCalcuimCount.value.toFloat(),
+            Fiber = liveFibarCount.value.toFloat(),
+            Sugar = liveSugerCount.value.toFloat(),
+            Wate = liveWaterCount.value.toFloat(),
+            Glucose = liveGlucoseCount.value.toFloat(),
+            Folic_acid = liveFolicAcidCount.value.toFloat(),
+            Niacin = liveNiacinCount.value.toFloat(),
+            Retinol = liveRetinolCount.value.toFloat(),
+            Magnesium = liveMagnesiumCount.value.toFloat(),
+            Folate = liveFolateCount.value.toFloat(),
+            Cholesterol = liveCholesteralCount.value.toFloat(),
+            Monosaturated_Fatty_acids = liveMonosaturatedFatCount.value.toFloat(),
+            Polysaturated_Fatty_acids = livePolysaturatedFatCount.value.toFloat(),
+            Energy = liveEnergyCount.value.toFloat(),
+            Starch = liveStarchCount.value.toFloat(),
+            Sucrose= liveSucroseCount.value.toFloat(),
+            Fructose = liveFructoseCount.value.toFloat(),
+            Lactose = liveLactoseCount.value.toFloat(),
+            Alcohol= liveAlcoholCount.value.toFloat(),
+            Caffeine = liveCaffeineCount.value.toFloat(),
+            Manganese= liveManganeseCount.value.toFloat(),
+            Beta_Carotene = liveBetaCarroteneCount.value.toFloat(),
+            Lycopene= liveLycopeneCount.value.toFloat(),
+            Saturated_Fatty_acids = liveSaturatedFatCount.value.toFloat(),
+            Carbohydrate = liveCarbsCount.value.toFloat()
+            )
+    }
+
+    fun SaveRecordsToFirebase(nutrientRecord:NutrientRecord,currentDate:String){
+
+        authRepository.saveRecordToFirebase(nutrientRecord,currentDate){sucess ->
+            _saveRecord.value=sucess
         }
     }
 
@@ -712,6 +800,67 @@ class UserViewModel @Inject constructor(
         }
     }
 
+    fun getEnergyCount(){
+        viewModelScope.launch {
+            val EnergyCount = repository.getEnergy() ?:0f
+            _liveEnergyCount.value=EnergyCount
+            Log.d("gajendra", "getEnergyCount: ${_liveEnergyCount.value}")
+        }
+    }
+    fun getSucroseCount(){
+        viewModelScope.launch {
+            val SucroseCount = repository.getSucrose() ?:0f
+            _liveSucroseCount.value=SucroseCount
+        }
+    }
+    fun getStarchCount(){
+        viewModelScope.launch {
+            val StarchCount = repository.getStarch() ?:0f
+            _liveStarchCount.value=StarchCount
+        }
+    }
+    fun getBetaCaroteneCount(){
+        viewModelScope.launch {
+            val BetaCaroteneCount = repository.getBetaCarotene() ?:0f
+            _liveBetaCaroteneCount.value=BetaCaroteneCount
+        }
+    }fun getLycopeneCount(){
+        viewModelScope.launch {
+            val LycopeneCount = repository.getLycopene() ?:0f
+            _liveLycopeneCount.value=LycopeneCount
+        }
+    }fun getSaturatedFatCount(){
+        viewModelScope.launch {
+            val SaturatedFatCount = repository.getSaturatedFat() ?:0f
+            _liveSaturatedFatCount.value=SaturatedFatCount
+        }
+    }fun getFructoseCount(){
+        viewModelScope.launch {
+            val FructoseCount = repository.getFructose() ?:0f
+            _liveFructoseCount.value=FructoseCount
+        }
+    }fun getLactoseCount(){
+        viewModelScope.launch {
+            val LactoseCount = repository.getLactose() ?:0f
+            _liveLactoseCount.value=LactoseCount
+        }
+    }fun getAlcoholCount(){
+        viewModelScope.launch {
+            val AlcoholCount = repository.getAlcohol() ?:0f
+            _liveAlcoholCount.value=AlcoholCount
+        }
+    }fun getCaffeineCount(){
+        viewModelScope.launch {
+            val CaffeineCount = repository.getCaffeine() ?:0f
+            _liveCaffeineCount.value=CaffeineCount
+        }
+    }fun getManganeseCount(){
+        viewModelScope.launch {
+            val ManganeseCount = repository.getManganese() ?:0f
+            _liveManganeseCount.value=ManganeseCount
+        }
+    }
+
 
     fun SaveSleepTime(date: String, sleepTime:String) {
 
@@ -733,4 +882,6 @@ class UserViewModel @Inject constructor(
 
         }
     }
+
+
 }

@@ -1,8 +1,8 @@
 package com.example.databasetestingwithhilt
 
+import android.app.Application
 import android.content.Context
 import androidx.room.Room
-import com.example.databasetestingwithhilt.Authentications.AuthRepository
 import com.example.databasetestingwithhilt.Database.AppDatabase
 import com.example.databasetestingwithhilt.Database.FoodDao
 import com.example.databasetestingwithhilt.Database.NutrientRepository
@@ -16,6 +16,8 @@ import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
+import androidx.work.WorkManager
+
 
 @Module
 @InstallIn(SingletonComponent::class)
@@ -59,5 +61,11 @@ object AppModule {
     @Singleton
     fun providesDatabaseReference(): DatabaseReference = FirebaseDatabase.getInstance().reference
 
+
+    @Provides
+    @Singleton
+    fun provideWorkManagerInstance(app: Application): WorkManager{
+        return WorkManager.getInstance(app)
+    }
 
 }

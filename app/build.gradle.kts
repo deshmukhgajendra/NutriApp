@@ -14,7 +14,7 @@ android {
 
     defaultConfig {
         applicationId = "com.example.databasetestingwithhilt"
-        minSdk = 24
+        minSdk = 26
         targetSdk = 35
         versionCode = 1
         versionName = "1.0"
@@ -70,6 +70,10 @@ dependencies {
     implementation(libs.firebase.crashlytics.buildtools)
     implementation(libs.androidx.runtime.livedata)
     implementation(libs.firebase.database)
+    implementation(libs.androidx.work.runtime.ktx)
+    implementation(libs.androidx.hilt.work)
+    implementation(libs.androidx.core.i18n)
+    // implementation(libs.core)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -98,5 +102,8 @@ dependencies {
 
     // lottie animation
     implementation ("com.airbnb.android:lottie-compose:6.0.0")
+
+   // implementation ("co.yml:charts-compose:1.0.0")
+    implementation ("co.yml:ycharts:2.1.0")
 
 }

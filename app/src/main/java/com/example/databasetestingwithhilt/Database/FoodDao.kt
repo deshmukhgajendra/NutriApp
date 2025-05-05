@@ -127,4 +127,38 @@ interface FoodDao {
 
     @Query("SELECT SUM(Polysaturated_Fatty_acids) FROM food_log")
     suspend fun getPolysaturatedFat(): Float?
+
+    @Query("SELECT SUM(Energy) FROM food_log")
+    suspend fun getEnergy(): Float?
+
+    @Query("SELECT SUM(Phosphorus) FROM food_log")
+    suspend fun getStarch(): Float?
+
+    @Query("SELECT SUM(Sucrose) FROM food_log")
+    suspend fun getSucrose(): Float?
+
+    @Query("SELECT SUM(Fructose) FROM food_log")
+    suspend fun getFructose():Float?
+
+    @Query("SELECT SUM(Lactose) FROM food_log")
+    suspend fun getLactose():Float?
+
+    @Query("SELECT SUM(Alcohol) FROM food_log")
+    suspend fun getAlcohol():Float?
+
+    @Query("SELECT SUM(Caffeine) FROM food_log")
+    suspend fun getCaffeine():Float?
+
+    @Query("SELECT SUM(Manganese) FROM food_log")
+    suspend fun getManganese():Float?
+
+    @Query("SELECT SUM(Beta_Carotene) FROM food_log")
+    suspend fun getBeta_Carotene():Float?
+
+    @Query("SELECT SUM(Lycopene) FROM food_log")
+    suspend fun getLycopene():Float?
+
+    @Query("SELECT SUM(Saturated_Fatty_acids) FROM food_log")
+    suspend fun getSaturated_Fatty_acids():Float?
+
 }

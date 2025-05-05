@@ -55,6 +55,17 @@ class NutrientRepository @Inject constructor(
     suspend fun getCholestrol()=dao.getCholesterol()
     suspend fun getMonosaturatedFat()=dao.getMonosaturatedFat()
     suspend fun getPolysatiratedFat()=dao.getPolysaturatedFat()
+    suspend fun getEnergy()=dao.getEnergy()
+    suspend fun getStarch()=dao.getStarch()
+    suspend fun getSucrose()=dao.getSucrose()
+    suspend fun getFructose()=dao.getFructose()
+    suspend fun getLactose()=dao.getLactose()
+    suspend fun getAlcohol()=dao.getAlcohol()
+    suspend fun getCaffeine()= dao.getCaffeine()
+    suspend fun getManganese()=dao.getManganese()
+    suspend fun getBetaCarotene()=dao.getBeta_Carotene()
+    suspend fun getLycopene()=dao.getLycopene()
+   suspend fun getSaturatedFat()=dao.getSaturated_Fatty_acids()
 
     // required nutrients
 
