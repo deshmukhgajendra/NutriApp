@@ -313,6 +313,11 @@ class UserViewModel @Inject constructor(
 
     private val _saveRecord = MutableLiveData<Boolean>()
     val saveRecord : LiveData<Boolean> get() = _saveRecord
+
+    private val _firebaseUploadStatus = MutableStateFlow<Boolean>(false)
+    val firebaseUploadStatus : StateFlow<Boolean> get() = _firebaseUploadStatus
+
+
     // to save personal data
     fun saveUserData(personalEntity: PersonalEntity){
 
@@ -379,8 +384,59 @@ class UserViewModel @Inject constructor(
 
     fun SaveRecordsToFirebase(nutrientRecord:NutrientRecord,currentDate:String){
 
+        viewModelScope.launch {
+            getTransFatCount()
+            getVitaminACount()
+            getVitaminB6()
+            getVitaminB12()
+            getVitaminCCount()
+            getVitaminD()
+            getVitaminE()
+            getVitaminK()
+            getCopper()
+            getZinc()
+            getSodium()
+            getPotassium()
+            getIron()
+            getCalcium()
+            getFibar()
+            getSuger()
+            getWater()
+            getGlucose()
+            getFolicAcid()
+            getNiacin()
+            getRetinol()
+            getMagnesium()
+            getFolate()
+            getCholesterol()
+            getMonosaturatedFatCount()
+            getPolysaturatedFatCount()
+            getLiveProteinCount()
+            getEnergyCount()
+            getStarchCount()
+            getSucroseCount()
+            getFructoseCount()
+            getLactoseCount()
+            getAlcoholCount()
+            getCaffeineCount()
+            getManganeseCount()
+            getBetaCaroteneCount()
+            getLycopeneCount()
+            getSaturatedFatCount()
+        }
         authRepository.saveRecordToFirebase(nutrientRecord,currentDate){sucess ->
             _saveRecord.value=sucess
+        }
+    }
+
+    fun SaveSleepRecordToFirebase(sleepEntity: SleepEntity){
+        viewModelScope.launch {
+            try {
+                sleepRepository.saveSleepRecordToFirebase(sleepEntity)
+                _firebaseUploadStatus.value=true
+            }catch (e : Exception){
+                _firebaseUploadStatus.value=false
+            }
         }
     }
 
@@ -881,6 +937,10 @@ class UserViewModel @Inject constructor(
             }
 
         }
+    }
+
+    fun saveSleepRecordToFirebase(){
+
     }
 
 

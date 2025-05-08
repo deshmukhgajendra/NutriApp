@@ -3,9 +3,8 @@ package com.example.databasetestingwithhilt
 import android.app.Application
 import androidx.hilt.work.HiltWorkerFactory
 import androidx.work.*
-import com.example.databasetestingwithhilt.WorkManager.SaveDataWorker // Update the package path if needed
+import com.example.databasetestingwithhilt.WorkManager.SaveDataWorker
 import dagger.hilt.android.HiltAndroidApp
-import java.util.Calendar
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
@@ -24,25 +23,12 @@ class MyApplication : Application(), Configuration.Provider {
 
     override fun onCreate() {
         super.onCreate()
-        scheduleDailyWork()
+        scheduleTestWork()
     }
 
-    private fun scheduleDailyWork() {
-        val currentTime = Calendar.getInstance()
-        val nextRunTime = Calendar.getInstance().apply {
-            set(Calendar.HOUR_OF_DAY, 23)
-            set(Calendar.MINUTE, 59)
-            set(Calendar.SECOND, 0)
-            set(Calendar.MILLISECOND, 0)
-            if (before(currentTime)) {
-                add(Calendar.DAY_OF_MONTH, 1)
-            }
-        }
-
-        val initialDelay = nextRunTime.timeInMillis - currentTime.timeInMillis
-
-        val workRequest = PeriodicWorkRequestBuilder<SaveDataWorker>(1, TimeUnit.DAYS)
-            .setInitialDelay(initialDelay, TimeUnit.MILLISECONDS)
+    private fun scheduleTestWork() {
+        val workRequest = PeriodicWorkRequestBuilder<SaveDataWorker>(15, TimeUnit.MINUTES) // For testing, minimum periodic time is 15 minutes.
+            .setInitialDelay(1, TimeUnit.MINUTES) // Set a short initial delay for testing
             .setConstraints(
                 Constraints.Builder()
                     .setRequiredNetworkType(NetworkType.CONNECTED)

@@ -16,4 +16,7 @@ interface SleepDao {
 
     @Query("UPDATE Sleep_Table SET WakeUp= :wakeTime WHERE date= :date")
     suspend fun updateWakeTime(date : String, wakeTime: String)
+
+    @Query("SELECT * FROM SLEEP_TABLE")
+    suspend fun getSleepRecord() : List<SleepEntity>
 }

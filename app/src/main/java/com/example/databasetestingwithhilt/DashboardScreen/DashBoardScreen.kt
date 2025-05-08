@@ -74,6 +74,7 @@ import co.yml.charts.common.extensions.formatToSinglePrecision
 import co.yml.charts.common.model.Point
 
 
+
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun DashBoardScreen() {
@@ -101,7 +102,7 @@ fun DashBoardScreen() {
                         shape = RoundedCornerShape(8.dp)
                     ),
                 elevation = CardDefaults.cardElevation(8.dp),
-                colors = CardDefaults.cardColors(gray)
+                colors = CardDefaults.cardColors(Color.Transparent)
             ) {
                 Column {
                     NutritionPieChart()
@@ -112,7 +113,7 @@ fun DashBoardScreen() {
 //                            Pair("Fats", 150)
 //                        )
 //                    )
-                    Divider(color = lightGray)
+                    Divider(color = lightGray, modifier = Modifier.padding(top = 25.dp))
 
                     Row(
                         modifier = Modifier
@@ -175,16 +176,19 @@ fun DashBoardScreen() {
             Card(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(15.dp)
+                    //.padding(12.dp)
+
                     .shadow(
                         elevation = 8.dp,
                         shape = RoundedCornerShape(8.dp)
                     ),
                 elevation = CardDefaults.cardElevation(8.dp),
-                colors = CardDefaults.cardColors(gray)
+              //  colors = CardDefaults.cardColors(gray)
             ) {
-
-                SleepBarChart()
+                //Box (modifier = Modifier.padding(10.dp)){
+                    SleepBarChart()
+              //  }
+               // SleepBarChart()
 
             }
         }
@@ -392,20 +396,22 @@ fun SleepBarChart() {
     val xAxisData = AxisData.Builder()
         .axisStepSize(30.dp)
         .steps(sleepData.size - 1)
+        .startDrawPadding(48.dp)
         .bottomPadding(40.dp)
         .axisLabelAngle(20f)
         .labelData { index -> sleepData[index].label }
         .build()
 
     // Y-Axis Configuration
-    val maxSleepValue = sleepData.maxOf { it.point.y }
-    val yStepSize = 5
+    val maxSleepValue = 24
+    val yStepSize = 4
     val yAxisData = AxisData.Builder()
         .steps(yStepSize)
         .labelAndAxisLinePadding(20.dp)
         .axisOffset(20.dp)
-        //.labelData { value -> value.formatToSinglePrecision() }
-        .topPadding(40.dp)
+        .labelData { value -> (value * (maxSleepValue / yStepSize)).toString() }
+//        .topPadding(40.dp)
+//        .startPadding(50.dp)
      //   .maxValue(maxSleepValue * 1.1f) // 10% padding above max value
         .build()
 
@@ -433,5 +439,30 @@ fun SleepBarChart() {
     )
 }
 
+//private fun getGanttChartRenderer(colors: List<Color>) =
+//    GanttChartRenderer(
+//        GanttChartData(
+//            taskColors = colors,
+//            tasks =
+//            listOf(
+//                GanttTask("Planning", 0f, 2f),
+//                GanttTask("Design", 2f, 2f),
+//                GanttTask("Development", 4f, 3f),
+//                GanttTask("Testing", 7f, 2f),
+//                GanttTask("Deployment", 9f, 1f),
+//            ),
+//        ),
+//    )
+//
+//@Composable
+//fun GanttChartExample(
+//    colors: List<Color>,
+//    modifier: Modifier = Modifier,
+//) {
+//    GanttChart(
+//        renderer = getGanttChartRenderer(colors = colors),
+//        modifier = modifier.size(400.dp),
+//    )
+//}
 
 
