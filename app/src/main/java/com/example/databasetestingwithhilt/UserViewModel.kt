@@ -8,7 +8,6 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.databasetestingwithhilt.Authentications.AuthRepository
-import com.example.databasetestingwithhilt.Authentications.NutrientRecord
 import com.example.databasetestingwithhilt.Database.FoodEntity
 import com.example.databasetestingwithhilt.Database.NutrientRepository
 import com.example.databasetestingwithhilt.Database.PersonalEntity
@@ -333,110 +332,6 @@ class UserViewModel @Inject constructor(
             _requiredProtein.value=repository.getRequiredProtein()
             _requiredCarbs.value=repository.getRequiredCarbs()
             _requiredFats.value=repository.getRequiredFats()
-        }
-    }
-
-// save record to firebase
-
-    fun fetchCurrentDayData() : NutrientRecord{
-        return NutrientRecord(
-             Protein = liveProteinCount.value.toFloat(),
-            Trans_Fatty_acids=liveTransfatCount.value.toFloat(),
-            Vitamin_A= liveVitaminACount.value.toFloat(),
-            Vitamin_B6 = liveVitaminB6Count.value.toFloat(),
-            Vitamin_B12 = liveVitaminB12Count.value.toFloat(),
-            Vitamin_C = liveVitaminCCount.value.toFloat(),
-            Vitamin_D = liveVitaminDCount.value.toFloat(),
-            Vitamin_E = liveVitaminECount.value.toFloat(),
-            Vitamin_K = liveVitaminKCount.value.toFloat(),
-            Copper = liveCopperCount.value.toFloat(),
-            Zinc = liveZincCount.value.toFloat(),
-            Sodium = liveSodiumCount.value.toFloat(),
-            Potassium = livePotassiumCount.value.toFloat(),
-            Iron = liveIronCount.value.toFloat(),
-            Calcium = liveCalcuimCount.value.toFloat(),
-            Fiber = liveFibarCount.value.toFloat(),
-            Sugar = liveSugerCount.value.toFloat(),
-            Wate = liveWaterCount.value.toFloat(),
-            Glucose = liveGlucoseCount.value.toFloat(),
-            Folic_acid = liveFolicAcidCount.value.toFloat(),
-            Niacin = liveNiacinCount.value.toFloat(),
-            Retinol = liveRetinolCount.value.toFloat(),
-            Magnesium = liveMagnesiumCount.value.toFloat(),
-            Folate = liveFolateCount.value.toFloat(),
-            Cholesterol = liveCholesteralCount.value.toFloat(),
-            Monosaturated_Fatty_acids = liveMonosaturatedFatCount.value.toFloat(),
-            Polysaturated_Fatty_acids = livePolysaturatedFatCount.value.toFloat(),
-            Energy = liveEnergyCount.value.toFloat(),
-            Starch = liveStarchCount.value.toFloat(),
-            Sucrose= liveSucroseCount.value.toFloat(),
-            Fructose = liveFructoseCount.value.toFloat(),
-            Lactose = liveLactoseCount.value.toFloat(),
-            Alcohol= liveAlcoholCount.value.toFloat(),
-            Caffeine = liveCaffeineCount.value.toFloat(),
-            Manganese= liveManganeseCount.value.toFloat(),
-            Beta_Carotene = liveBetaCarroteneCount.value.toFloat(),
-            Lycopene= liveLycopeneCount.value.toFloat(),
-            Saturated_Fatty_acids = liveSaturatedFatCount.value.toFloat(),
-            Carbohydrate = liveCarbsCount.value.toFloat()
-            )
-    }
-
-    fun SaveRecordsToFirebase(nutrientRecord:NutrientRecord,currentDate:String){
-
-        viewModelScope.launch {
-            getTransFatCount()
-            getVitaminACount()
-            getVitaminB6()
-            getVitaminB12()
-            getVitaminCCount()
-            getVitaminD()
-            getVitaminE()
-            getVitaminK()
-            getCopper()
-            getZinc()
-            getSodium()
-            getPotassium()
-            getIron()
-            getCalcium()
-            getFibar()
-            getSuger()
-            getWater()
-            getGlucose()
-            getFolicAcid()
-            getNiacin()
-            getRetinol()
-            getMagnesium()
-            getFolate()
-            getCholesterol()
-            getMonosaturatedFatCount()
-            getPolysaturatedFatCount()
-            getLiveProteinCount()
-            getEnergyCount()
-            getStarchCount()
-            getSucroseCount()
-            getFructoseCount()
-            getLactoseCount()
-            getAlcoholCount()
-            getCaffeineCount()
-            getManganeseCount()
-            getBetaCaroteneCount()
-            getLycopeneCount()
-            getSaturatedFatCount()
-        }
-        authRepository.saveRecordToFirebase(nutrientRecord,currentDate){sucess ->
-            _saveRecord.value=sucess
-        }
-    }
-
-    fun SaveSleepRecordToFirebase(sleepEntity: SleepEntity){
-        viewModelScope.launch {
-            try {
-                sleepRepository.saveSleepRecordToFirebase(sleepEntity)
-                _firebaseUploadStatus.value=true
-            }catch (e : Exception){
-                _firebaseUploadStatus.value=false
-            }
         }
     }
 
@@ -938,10 +833,4 @@ class UserViewModel @Inject constructor(
 
         }
     }
-
-    fun saveSleepRecordToFirebase(){
-
-    }
-
-
 }

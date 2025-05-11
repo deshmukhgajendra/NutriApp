@@ -21,7 +21,9 @@ class SleepRepository @Inject constructor(
     suspend fun updateWaketime(date:String , wakeTime: String)
     = sleepDao.updateWakeTime(date,wakeTime)
 
-    suspend fun getSleepData()=sleepDao.getSleepRecord()
+    suspend fun getSleepData(): List<SleepEntity>{
+        return sleepDao.getSleepRecord()
+    }
 
 
     suspend fun saveSleepRecordToFirebase(sleepEntity: SleepEntity) {
@@ -55,6 +57,13 @@ class SleepRepository @Inject constructor(
                     }
             }
         }
+    }
+
+   suspend fun syncAllRecordToFirebase(){
+       val sleepRecords = getSleepData() ?: emptyList() // Handle null case
+       for (record in sleepRecords){
+           saveSleepRecordToFirebase(record)
+       }
     }
 
 }

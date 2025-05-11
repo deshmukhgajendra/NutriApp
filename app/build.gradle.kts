@@ -70,8 +70,8 @@ dependencies {
     implementation(libs.firebase.crashlytics.buildtools)
     implementation(libs.androidx.runtime.livedata)
     implementation(libs.firebase.database)
-    implementation(libs.androidx.work.runtime.ktx)
-    implementation(libs.androidx.hilt.work)
+   // implementation(libs.androidx.work.runtime.ktx)
+   // implementation(libs.androidx.hilt.work)
     implementation(libs.androidx.core.i18n)
     // implementation(libs.core)
     testImplementation(libs.junit)
@@ -111,6 +111,11 @@ dependencies {
 //    // When using Kotlin.
    // kapt("androidx.hilt:hilt-compiler:1.2.0")
 
+    implementation ("androidx.hilt:hilt-work:1.2.0")
+    kapt ("androidx.hilt:hilt-compiler:1.2.0")
+
+    // WorkManager (Background tasks)
+    implementation ("androidx.work:work-runtime-ktx:2.9.0")
 
 
 
