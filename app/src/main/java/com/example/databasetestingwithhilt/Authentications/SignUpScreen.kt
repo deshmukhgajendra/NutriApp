@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.widget.Toast
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -23,6 +24,7 @@ import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -30,6 +32,7 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -41,6 +44,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.AnnotatedString
@@ -55,6 +59,10 @@ import com.example.databasetestingwithhilt.MainActivity
 import com.example.databasetestingwithhilt.PersonalInformation.PersonalInformation
 import com.example.databasetestingwithhilt.R
 import com.example.databasetestingwithhilt.UserViewModel
+import com.example.databasetestingwithhilt.ui.theme.Black
+import com.example.databasetestingwithhilt.ui.theme.White
+import com.example.databasetestingwithhilt.ui.theme.lightBlue
+import com.example.databasetestingwithhilt.ui.theme.purple
 import com.google.firebase.crashlytics.buildtools.reloc.org.apache.commons.logging.Log
 
 
@@ -79,9 +87,15 @@ fun SignUpScreen(navController: NavController,
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .background(Brush.verticalGradient(listOf(Color(0xFFBDD7F2), Color.White)))
+                //.background(Brush.verticalGradient(listOf(Color(0xFFBDD7F2), Color.White)))
         ) {
             // Back Button (Top-left)
+
+            Image(
+                painter = painterResource(R.drawable.loginbackground),
+                contentScale = ContentScale.Crop,
+                contentDescription = null
+            )
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -112,7 +126,7 @@ fun SignUpScreen(navController: NavController,
                             topEnd = 40.dp
                         )
                     ) // Rounded top corners
-                    .background(Color.White)
+                    .background(Color.Black)
                     .padding(16.dp)
             ) {
                 Column(
@@ -124,7 +138,7 @@ fun SignUpScreen(navController: NavController,
                         text = "Get Started",
                         fontSize = 24.sp,
                         fontWeight = FontWeight.Bold,
-                        color = Color(0xFF007AFF)
+                        color = White
                     )
 
                     Spacer(modifier = Modifier.height(20.dp))
@@ -144,7 +158,22 @@ fun SignUpScreen(navController: NavController,
                             label = { Text("Enter Full Name") },
                             singleLine = true,
                             modifier = Modifier.fillMaxWidth(),
-                            shape = RoundedCornerShape(18.dp)
+                            shape = RoundedCornerShape(18.dp),
+                            colors = TextFieldDefaults.colors(
+                                focusedTextColor = Color.White,
+                                unfocusedTextColor = Color.White,
+
+                                focusedContainerColor = Color.Transparent,
+                                unfocusedContainerColor = Color.Transparent,
+
+                                focusedLabelColor = Color.White,
+                                unfocusedLabelColor = Color.Gray,
+
+                                focusedIndicatorColor = Color.White,
+                                unfocusedIndicatorColor = Color.Gray,
+
+                                cursorColor = Color.White
+                            )
                         )
 
                         Spacer(modifier = Modifier.height(10.dp))
@@ -155,7 +184,22 @@ fun SignUpScreen(navController: NavController,
                             label = { Text("Enter Email") },
                             singleLine = true,
                             modifier = Modifier.fillMaxWidth(),
-                            shape = RoundedCornerShape(18.dp)
+                            shape = RoundedCornerShape(18.dp),
+                            colors = TextFieldDefaults.colors(
+                                focusedTextColor = Color.White,
+                                unfocusedTextColor = Color.White,
+
+                                focusedContainerColor = Color.Transparent,
+                                unfocusedContainerColor = Color.Transparent,
+
+                                focusedLabelColor = Color.White,
+                                unfocusedLabelColor = Color.Gray,
+
+                                focusedIndicatorColor = Color.White,
+                                unfocusedIndicatorColor = Color.Gray,
+
+                                cursorColor = Color.White
+                            )
                         )
 
                         Spacer(modifier = Modifier.height(10.dp))
@@ -167,7 +211,22 @@ fun SignUpScreen(navController: NavController,
                             singleLine = true,
                             visualTransformation = PasswordVisualTransformation(),
                             modifier = Modifier.fillMaxWidth(),
-                            shape = RoundedCornerShape(18.dp)
+                            shape = RoundedCornerShape(18.dp),
+                            colors = TextFieldDefaults.colors(
+                                focusedTextColor = Color.White,
+                                unfocusedTextColor = Color.White,
+
+                                focusedContainerColor = Color.Transparent,
+                                unfocusedContainerColor = Color.Transparent,
+
+                                focusedLabelColor = Color.White,
+                                unfocusedLabelColor = Color.Gray,
+
+                                focusedIndicatorColor = Color.White,
+                                unfocusedIndicatorColor = Color.Gray,
+
+                                cursorColor = Color.White
+                            )
                         )
 
                         Spacer(modifier = Modifier.height(10.dp))
@@ -183,7 +242,7 @@ fun SignUpScreen(navController: NavController,
                             ClickableText(
                                 text = AnnotatedString("I agree to the processing of Personal data"),
                                 onClick = { /* Handle link click */ },
-                                style = TextStyle(color = Color.Blue, fontSize = 14.sp)
+                                style = TextStyle(color = White, fontSize = 14.sp)
                             )
                         }
 
@@ -192,16 +251,20 @@ fun SignUpScreen(navController: NavController,
                         // Sign-Up Button
                         Button(
                             onClick = {
-                                viewModel.register(email.value,password.value)
+                                viewModel.register(email.value,password.value,context)
                                 Toast.makeText(context, "Account Created Successfully", Toast.LENGTH_SHORT).show()
 
                             },
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .height(50.dp),
-                            //   colors = ButtonDefaults.buttonColors(backgroundColor = Color(0xFF007AFF))
+                                .height(50.dp)
+                                ,
+                               colors = ButtonDefaults.buttonColors(
+                                   containerColor =White,
+                                   contentColor = Black
+                               )
                         ) {
-                            Text(text = "Sign up", color = Color.White, fontSize = 18.sp)
+                            Text(text = "Sign up", color = Black, fontSize = 18.sp)
                         }
 
                         Spacer(modifier = Modifier.height(20.dp))
@@ -248,7 +311,7 @@ fun SignUpScreen(navController: NavController,
                                 text = AnnotatedString("Sign in"),
                                 onClick = { navController.navigate("SignIn") },
                                 style = TextStyle(
-                                    color = Color.Blue,
+                                    color = White,
                                     fontSize = 14.sp,
                                     fontWeight = FontWeight.Bold
                                 )

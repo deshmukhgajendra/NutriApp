@@ -1,8 +1,12 @@
 package com.example.databasetestingwithhilt.Database
 
 import android.util.Log
+import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.database
+import com.google.firebase.database.getValue
 import kotlinx.coroutines.tasks.await
 import java.time.LocalDate
 import javax.inject.Inject
@@ -233,47 +237,67 @@ class NutrientRepository @Inject constructor(
                 }
         }
     }
+
+    suspend fun getProteinValue(date: String): Float {
+        val user = auth.currentUser
+            ?: throw Exception("User not authenticated")
+
+        return try {
+            val snapshot = FirebaseDatabase.getInstance()
+                .getReference("users/${user.uid}/NutritionRecord/$date/protein")
+                .get()
+                .await()
+
+            snapshot.getValue(Float::class.java) ?: 0f
+        } catch (e: Exception) {
+            throw Exception("Failed to fetch protein: ${e.message}")
+        }
+    }
+
+    suspend fun getFatsValue(date : String) : Float {
+        val user = auth.currentUser
+            ?: throw Exception("User not authenticated")
+
+        return try {
+            val snapshot = FirebaseDatabase.getInstance()
+                .getReference("users/${user.uid}/NutritionRecord/$date/fats")
+                .get()
+                .await()
+
+            snapshot.getValue(Float::class.java) ?:0f
+        }catch (e : Exception){
+            throw Exception("Failed to fetch protein: ${e.message}")
+        }
+    }
+
+    suspend fun getCarbsValue(date : String) : Float {
+        val user= auth.currentUser
+            ?: throw Exception("User not authenticated")
+
+        return try {
+            val snapshot = FirebaseDatabase.getInstance()
+                .getReference("users/${user.uid}/NutritionRecord/$date/carbohydrate")
+                .get()
+                .await()
+            snapshot.getValue(Float::class.java) ?:0f
+        }catch (e : Exception){
+            throw Exception("Failed to fetch protein: ${e.message}")
+        }
+    }
+
+    suspend fun getCalorieValue(date : String) : Float {
+        val user = auth.currentUser
+            ?: throw Exception("User not authenticated")
+
+        return try {
+            val snapshot = FirebaseDatabase.getInstance()
+                .getReference("users/${user.uid}/NutritionRecord/$date/energy")
+                .get()
+                .await()
+            snapshot.getValue(Float::class.java) ?:0f
+        }catch (e : Exception){
+            throw Exception("Failed to fetch protein: ${e.message}")
+        }
+    }
 }
 
-data class NutrientRecord(
-
-    val Protein:Float,
-    val Carbohydrate:Float,
-    val Energy:Float,
-    val Starch:Float,
-    val Sucrose:Float,
-    val Glucose:Float,
-    val Fructose:Float,
-    val Lactose:Float,
-    val Alcohol:Float,
-    val Wate:Float,
-    val Caffeine:Float,
-    val Sugar:Float,
-    val Fiber:Float,
-    val Calcium:Float,
-    val Iron:Float,
-    val Magnesium:Float,
-    val Potassium:Float,
-    val Sodium:Float,
-    val Zinc:Float,
-    val Copper:Float,
-    val Manganese:Float,
-    val Vitamin_A:Float,
-    val Retinol:Float,
-    val Beta_Carotene:Float,
-    val Vitamin_E:Float,
-    val Vitamin_D:Float,
-    val Lycopene:Float,
-    val Vitamin_C:Float,
-    val Niacin:Float,
-    val Vitamin_B6:Float,
-    val Folate:Float,
-    val Vitamin_B12:Float,
-    val Vitamin_K:Float,
-    val Folic_acid:Float,
-    val Cholesterol:Float,
-    val Trans_Fatty_acids:Float,
-    val Saturated_Fatty_acids:Float,
-    val Monosaturated_Fatty_acids:Float,
-    val Polysaturated_Fatty_acids:Float
-)

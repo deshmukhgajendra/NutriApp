@@ -1,16 +1,26 @@
 package com.example.databasetestingwithhilt
 
+import android.annotation.SuppressLint
 import android.content.Intent
+import android.graphics.BlurMaskFilter
+import android.graphics.Paint
+import android.graphics.RenderEffect
+import android.graphics.Shader
+import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
+import androidx.annotation.RequiresApi
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -24,16 +34,25 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.drawWithCache
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.asComposeRenderEffect
+import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
+import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.graphics.nativeCanvas
+import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -42,20 +61,21 @@ import androidx.navigation.compose.rememberNavController
 import com.example.databasetestingwithhilt.DashboardScreen.DashBoardScreen
 import com.example.databasetestingwithhilt.MenuScreen.MenuScreen
 import com.example.databasetestingwithhilt.MenuScreen.NavigationDrawer
-import com.example.databasetestingwithhilt.MenuScreen.NavigationDrawerScreen
 import com.example.databasetestingwithhilt.NutritionScreen.FoodLogDetails
 import com.example.databasetestingwithhilt.NutritionScreen.NutritionDetailsScreen
 import com.example.databasetestingwithhilt.NutritionScreen.NutritionScreen
 import com.example.databasetestingwithhilt.SearchScreen.SearchScreen
 import com.example.databasetestingwithhilt.SleepScreen.SleepScreen
-import com.example.databasetestingwithhilt.SleepScreen.SleepScreenSaver
 import com.example.databasetestingwithhilt.ui.theme.DatabaseTestingWithHiltTheme
+import com.example.databasetestingwithhilt.ui.theme.purple
 import dagger.hilt.android.AndroidEntryPoint
+
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
    val userViewModel : UserViewModel by viewModels()
+    @RequiresApi(Build.VERSION_CODES.S)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -71,37 +91,71 @@ class MainActivity : ComponentActivity() {
 
 }
 
+@RequiresApi(Build.VERSION_CODES.S)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun app() {
 
 val context = LocalContext.current
     val navController = rememberNavController()
+  //  val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(rememberTopAppBarState())
+   // val hazeState = rememberHazeState()
     Scaffold(
+  //      modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
             CenterAlignedTopAppBar(
+               // modifier = Modifier.hazeEffect(state = hazeState) ,
                 colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.primary
+                    containerColor = Color.Transparent
                 ),
                 title = {
                     Text(
-                        text = "MyAssistance",
+                        text = "Restify",
                         maxLines = 1,
-                        overflow = TextOverflow.Ellipsis
+                        overflow = TextOverflow.Ellipsis,
+                        color = purple,
+                        fontSize = 35.sp
                     )
+                },
+                navigationIcon = {
+                    IconButton(onClick = {
+                        val i = Intent(context, NavigationDrawer::class.java)
+                        context.startActivity(i)
+                    },
+                        modifier = Modifier
+                            .size(50.dp)
+                            .padding(8.dp)
+                        // .glassMorphicEffect()
+                    ) {
+                        Icon(
+                            painterResource(R.drawable.accountcircle),
+                            contentDescription = null,
+                            modifier = Modifier.size(40.dp)  // Explicit icon size
+
+                        )
+                    }
                 },
                 actions = {
                     IconButton(onClick = {
                         val i = Intent(context, NavigationDrawer::class.java)
                         context.startActivity(i)
-                    }) {
+                    },
+                        modifier = Modifier
+                            .size(60.dp)
+                            .padding(8.dp)
+                           // .glassMorphicEffect()
+                    ) {
                         Icon(
-                            painterResource(R.drawable.accountcircle),
-                            contentDescription = null
+                            painterResource(R.drawable.baseline_notifications_24),
+                            contentDescription = null,
+                            tint = Color.Yellow,
+                            modifier = Modifier.size(40.dp)  // Explicit icon size
+
                         )
                     }
                 }
             )
+
         },
         bottomBar = {
 
@@ -109,8 +163,18 @@ val context = LocalContext.current
 
         }
     ) { innerPadding ->
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+        ) {
+            Image(
+                painter = painterResource(R.drawable.mainbackground),
+                contentDescription = null,
+                contentScale = ContentScale.Crop
+            )
+            NavigateToScreen(navController,innerPadding)
+        }
 
-        NavigateToScreen(navController,innerPadding)
     }
 }
 
@@ -164,7 +228,7 @@ fun bottomBar(navController: NavController) {
                 .weight(1f)
                 .padding(16.dp)
                 .clip(RoundedCornerShape(16.dp))
-                .background(Color.Transparent)
+                .background(purple)
                 .padding(8.dp),
             contentAlignment = Alignment.Center
         ) {
@@ -187,7 +251,8 @@ fun bottomBar(navController: NavController) {
                 .padding(8.dp),
             contentAlignment = Alignment.Center
         ) {
-            IconButton(onClick = { navController.navigate("Dashboard") }) {
+            IconButton(onClick = { navController.navigate("Dashboard")}
+            ) {
                 Icon(
                     painterResource(R.drawable.dashboard),
                     contentDescription = "Dashboard",
@@ -216,6 +281,53 @@ fun bottomBar(navController: NavController) {
         }
     }
 }
+
+//@SuppressLint("SuspiciousModifierThen")
+//fun Modifier.glassMorphicEffect() = this.then(
+//    graphicsLayer {
+//        alpha = 0.99f // Important for blur to work
+//        shape = RoundedCornerShape(0.dp) // Or your preferred shape
+//        clip = true
+//    }
+//        .background(
+//            Brush.linearGradient(
+//                colors = listOf(
+//                    Color(0x99FFFFFF), // Semi-transparent white
+//                    Color(0x66FFFFFF)  // More transparent white
+//                )
+//            ),
+//            shape = RoundedCornerShape(0.dp)
+//        )
+//        .border(
+//            width = 1.dp,
+//            brush = Brush.linearGradient(
+//                colors = listOf(
+//                    Color(0x99FFFFFF),
+//                    Color(0x10FFFFFF)
+//                )
+//            ),
+//            shape = RoundedCornerShape(0.dp)
+//        )
+//        .drawWithCache {
+//            val blurRadius = 10.dp.toPx()
+//            onDrawWithContent {
+//                drawContent()
+//                drawIntoCanvas { canvas ->
+//                    canvas.nativeCanvas.apply {
+//                        drawRoundRect(
+//                            0f, 0f, size.width, size.height,
+//                            0f, 0f, // Adjust for rounded corners
+//                            Paint().apply {
+//                                shader = null
+//                                color = android.graphics.Color.TRANSPARENT
+//                                setMaskFilter(BlurMaskFilter(blurRadius, BlurMaskFilter.Blur.NORMAL))
+//                            }
+//                        )
+//                    }
+//                }
+//            }
+//        }
+//)
 
 @Composable
 fun NavigateToScreen(navController: NavHostController, innerPadding: PaddingValues) {

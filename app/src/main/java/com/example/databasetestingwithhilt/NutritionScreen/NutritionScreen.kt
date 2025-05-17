@@ -59,9 +59,11 @@ import androidx.navigation.NavController
 import com.example.databasetestingwithhilt.R
 import com.example.databasetestingwithhilt.UserViewModel
 import com.example.databasetestingwithhilt.ui.theme.DarkBlue
+import com.example.databasetestingwithhilt.ui.theme.White
 import com.example.databasetestingwithhilt.ui.theme.darkGreen
 import com.example.databasetestingwithhilt.ui.theme.gray
 import com.example.databasetestingwithhilt.ui.theme.lightBlue
+import com.example.databasetestingwithhilt.ui.theme.purple
 import com.example.databasetestingwithhilt.ui.theme.sea
 
 @Composable
@@ -80,18 +82,23 @@ fun NutritionScreen(navController: NavController,viewModel: UserViewModel = hilt
     val liveFatsCount by viewModel.liveFatsCount.collectAsState()
 
 
-    Column (modifier = Modifier
-        .fillMaxSize()
-        .verticalScroll(scrollState)
-    ){
 
-        CircularProgressBarCards(navController,liveClorieCount.toFloat(),requiredCalories,requiredCalories.toInt())
-        MacrosCard(liveProteinCount,liveFatsCount,liveCarbsCount,requiredCarbs.toFloat(),requiredProtein.toFloat(),requiredFats.toFloat())
-        GetFullInsights(navController)
-        HabitCard()
-        StepAndExerciseCard()
-        DiscoverSection()
-    }
+        Column (modifier = Modifier
+            .fillMaxSize()
+            .verticalScroll(scrollState)
+
+        ){
+
+
+            CircularProgressBarCards(navController,liveClorieCount.toFloat(),requiredCalories,requiredCalories.toInt())
+            MacrosCard(liveProteinCount,liveFatsCount,liveCarbsCount,requiredCarbs.toFloat(),requiredProtein.toFloat(),requiredFats.toFloat())
+            GetFullInsights(navController)
+            HabitCard()
+            StepAndExerciseCard()
+            DiscoverSection()
+        }
+
+
 
     LaunchedEffect(Unit) {
 //        viewModel.getRequiredCalories()
@@ -443,8 +450,8 @@ fun HabitCard(){
                     onClick = {},
                     shape = RoundedCornerShape(20.dp),
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = lightBlue,
-                        contentColor = DarkBlue
+                        containerColor = purple,
+                        contentColor = White
                     )
                 ) {
                     Text(text = "Start a habit")

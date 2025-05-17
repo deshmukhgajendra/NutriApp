@@ -93,30 +93,49 @@ fun NavigationDrawerScreen(viewModel: UserViewModel = hiltViewModel()) {
                 .fillMaxWidth()
                 .height(200.dp)
                 .clip(RoundedCornerShape(bottomStart = 50.dp, bottomEnd = 50.dp))
-                .background(
-                    Brush.verticalGradient(
-                        colors = listOf(
-                            Color(0xFF00C6FF),
-                            Color(0xFF0072FF)
-                        )
-                    )
-                )
-        )
+//                .background(
+//                    Brush.verticalGradient(
+//                        colors = listOf(
+//                            Color(0xFF00C6FF),
+//                            Color(0xFF0072FF)
+//                        )
+//                    )
+//                )
+        ){
+            Image(
+                painter = painterResource(R.drawable.menubackground),
+                contentDescription = null,
+                contentScale = ContentScale.Crop
+            )
+        }
+
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(15.dp, top = 50.dp)
         ) {
+
             Row(
                 modifier = Modifier
                     .fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween
+                //horizontalArrangement = Arrangement.SpaceBetween
             ) {
+
+                Image(
+                    painter = painterResource(R.drawable.icons_person),
+                    contentDescription = null,
+                    modifier = Modifier
+                        .padding(start = 30.dp)
+                        .size(80.dp)
+                        .clip(CircleShape)
+                        .border(2.dp, Color.White, CircleShape)
+                )
                 Column {
                     Text(
                         text = "Hello",
-                        fontSize = 20.sp,
-                        textAlign = TextAlign.Start
+                        fontSize = 25.sp,
+                        textAlign = TextAlign.Start,
+                        fontStyle = FontStyle.Normal
                     )
                     Text(
                         text = "$userName",
@@ -125,16 +144,6 @@ fun NavigationDrawerScreen(viewModel: UserViewModel = hiltViewModel()) {
                         textAlign = TextAlign.Start
                     )
                 }
-
-                Image(
-                    painter = painterResource(R.drawable.icons_person),
-                    contentDescription = null,
-                    modifier = Modifier
-                        .padding(end = 30.dp)
-                        .size(90.dp)
-                        .clip(CircleShape)
-                        .border(2.dp, Color.White, CircleShape)
-                )
             }
             Column(
                 modifier = Modifier

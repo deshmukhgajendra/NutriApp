@@ -24,6 +24,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -35,11 +36,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.databasetestingwithhilt.NutritionScreen.NutrientRequest
 import com.example.databasetestingwithhilt.R
 import com.example.databasetestingwithhilt.UserViewModel
+import com.example.databasetestingwithhilt.ui.theme.White
 
 
 @SuppressLint("UnrememberedMutableState")
@@ -53,7 +56,7 @@ fun SearchScreen(navController: NavController, viewModel: UserViewModel = hiltVi
 
     Column(
         modifier = Modifier
-            .padding(16.dp)
+            .padding(top = 16.dp, start = 10.dp,end = 10.dp)
             .fillMaxSize(),
         horizontalAlignment = Alignment.Start
     ) {
@@ -72,16 +75,25 @@ fun SearchScreen(navController: NavController, viewModel: UserViewModel = hiltVi
                 Icon(
                     painter = painterResource(id = R.drawable.search),
                     contentDescription = "Search Icon",
-                    tint = MaterialTheme.colorScheme.primary
+                    tint = White
                 )
             },
-//            colors = TextFieldDefaults.outlinedTextFieldColors(
-//                containerColor = MaterialTheme.colorScheme.surface,
-//                focusedBorderColor = MaterialTheme.colorScheme.primary,
-//                unfocusedBorderColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f),
-//                cursorColor = MaterialTheme.colorScheme.primary
-//            ),
             shape = MaterialTheme.shapes.medium,
+            colors = TextFieldDefaults.colors(
+                focusedTextColor = Color.White,
+                unfocusedTextColor = Color.White,
+
+                focusedContainerColor = Color.Transparent,
+                unfocusedContainerColor = Color.Transparent,
+
+                focusedLabelColor = Color.White,
+                unfocusedLabelColor = Color.Gray,
+
+                focusedIndicatorColor = Color.White,
+                unfocusedIndicatorColor = Color.Gray,
+
+                cursorColor = Color.White
+            ),
             singleLine = true
         )
 
@@ -92,7 +104,7 @@ fun SearchScreen(navController: NavController, viewModel: UserViewModel = hiltVi
             modifier = Modifier.fillMaxSize()
         ) {
             items(result) { food ->
-                Column(modifier = Modifier.padding(vertical = 8.dp)) {
+                Column(modifier = Modifier.padding(vertical = 2.dp)) {
 
                     Card(
                         onClick = {},
@@ -109,15 +121,18 @@ fun SearchScreen(navController: NavController, viewModel: UserViewModel = hiltVi
                         ) {
                             Column(
                                 modifier = Modifier.weight(1f)
+                                    .padding(4.dp)
                             ) {
                                 Text(
                                     text = "Food: ${food.food_name}",
-                                    style = MaterialTheme.typography.bodyMedium
+                                    style = MaterialTheme.typography.bodyMedium,
+                                    fontSize = 16.sp
                                 )
                                 Text(
                                     text = "Serving Quantity: ${food.serving_qty}",
                                     style = MaterialTheme.typography.bodySmall,
-                                    color = Color.Gray
+                                    color = Color.Gray,
+                                    fontSize = 12.sp
                                 )
                             }
 
@@ -133,10 +148,10 @@ fun SearchScreen(navController: NavController, viewModel: UserViewModel = hiltVi
                                         )
                                     }
                                     Toast.makeText(context.applicationContext,"Food Logged !",Toast.LENGTH_LONG).show()
-                                  //  Log.d("TAG", "SearchScreen: $error ")
                                 },
-                                shape = RoundedCornerShape(100),
+                                shape = RoundedCornerShape(50.dp),
                                 modifier = Modifier
+                                    .weight(0.2f)
                                     .height(40.dp)
                                     .align(Alignment.CenterVertically)
                             ) {

@@ -3,6 +3,7 @@ package com.example.databasetestingwithhilt.Authentications
 import android.app.Activity
 import android.content.Intent
 import android.util.Log
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -29,6 +30,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -40,6 +42,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.AnnotatedString
@@ -54,6 +57,7 @@ import androidx.navigation.NavController
 import com.example.databasetestingwithhilt.MainActivity
 import com.example.databasetestingwithhilt.R
 import com.example.databasetestingwithhilt.UserViewModel
+import com.example.databasetestingwithhilt.ui.theme.White
 import dagger.hilt.android.lifecycle.HiltViewModel
 
 
@@ -78,9 +82,15 @@ fun SignInScreen(navController: NavController,
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(Brush.verticalGradient(listOf(Color(0xFFBDD7F2), Color.White)))
+
     ) {
         // Back Button (Top-left)
+
+        Image(
+            painter = painterResource(R.drawable.loginbackground),
+            contentScale = ContentScale.Crop,
+            contentDescription = null
+        )
         Box(
             modifier = Modifier
                 .fillMaxWidth()
@@ -111,7 +121,7 @@ fun SignInScreen(navController: NavController,
                         topEnd = 40.dp
                     )
                 ) // Rounded top corners
-                .background(Color.White)
+                .background(Color.Black)
                 .padding(16.dp)
         ) {
             Column(
@@ -123,7 +133,7 @@ fun SignInScreen(navController: NavController,
                     text = "Welcome back",
                     fontSize = 24.sp,
                     fontWeight = FontWeight.Bold,
-                    color = Color(0xFF007AFF)
+                    color = White
                 )
 
                 Spacer(modifier = Modifier.height(20.dp))
@@ -144,7 +154,22 @@ fun SignInScreen(navController: NavController,
                         label = { Text("Enter Email") },
                         singleLine = true,
                         modifier = Modifier.fillMaxWidth(),
-                        shape = RoundedCornerShape(18.dp)
+                        shape = RoundedCornerShape(18.dp),
+                        colors = TextFieldDefaults.colors(
+                            focusedTextColor = Color.White,
+                            unfocusedTextColor = Color.White,
+
+                            focusedContainerColor = Color.Transparent,
+                            unfocusedContainerColor = Color.Transparent,
+
+                            focusedLabelColor = Color.White,
+                            unfocusedLabelColor = Color.Gray,
+
+                            focusedIndicatorColor = Color.White,
+                            unfocusedIndicatorColor = Color.Gray,
+
+                            cursorColor = Color.White
+                        )
                     )
 
                     Spacer(modifier = Modifier.height(10.dp))
@@ -156,7 +181,22 @@ fun SignInScreen(navController: NavController,
                         singleLine = true,
                         visualTransformation = PasswordVisualTransformation(),
                         modifier = Modifier.fillMaxWidth(),
-                        shape = RoundedCornerShape(18.dp)
+                        shape = RoundedCornerShape(18.dp),
+                        colors = TextFieldDefaults.colors(
+                            focusedTextColor = Color.White,
+                            unfocusedTextColor = Color.White,
+
+                            focusedContainerColor = Color.Transparent,
+                            unfocusedContainerColor = Color.Transparent,
+
+                            focusedLabelColor = Color.White,
+                            unfocusedLabelColor = Color.Gray,
+
+                            focusedIndicatorColor = Color.White,
+                            unfocusedIndicatorColor = Color.Gray,
+
+                            cursorColor = Color.White
+                        )
                     )
 
                     Spacer(modifier = Modifier.height(10.dp))
@@ -171,7 +211,7 @@ fun SignInScreen(navController: NavController,
                         ClickableText(
                             text= AnnotatedString("Remember me"),
                             onClick = {},
-                            style =  TextStyle(color = Color.Blue, fontSize = 14.sp)
+                            style =  TextStyle(color = White, fontSize = 14.sp)
                         )
                         Spacer(modifier = Modifier.width(40.dp))
 
@@ -180,7 +220,7 @@ fun SignInScreen(navController: NavController,
                         ){
                             Text(text = "Forget Password ?",
                                 textAlign = TextAlign.End,
-                                style = TextStyle(color = Color.Blue, fontSize = 16.sp))
+                                style = TextStyle(color = White, fontSize = 16.sp))
                         }
                     }
 
@@ -189,7 +229,7 @@ fun SignInScreen(navController: NavController,
                     // Sign-Up Button
                     Button(
                         onClick = {
-                            viewModel.login(email.value,password.value)
+                            viewModel.login(email.value,password.value,context)
                         },
                         modifier = Modifier
                             .fillMaxWidth()
@@ -202,7 +242,7 @@ fun SignInScreen(navController: NavController,
                     Spacer(modifier = Modifier.height(20.dp))
 
                     // Sign-Up with Social Media
-                    Text("Sign-in with", fontSize = 16.sp, color = Color.Gray)
+                    Text("Sign-in with", fontSize = 16.sp, color = White, textAlign = TextAlign.Center)
 
                     Spacer(modifier = Modifier.height(10.dp))
 
@@ -245,7 +285,7 @@ fun SignInScreen(navController: NavController,
                                 navController.navigate("SignUp")
                             },
                             style = TextStyle(
-                                color = Color.Blue,
+                                color = White,
                                 fontSize = 14.sp,
                                 fontWeight = FontWeight.Bold
                             )

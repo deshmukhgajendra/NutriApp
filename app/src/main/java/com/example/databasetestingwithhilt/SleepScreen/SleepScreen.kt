@@ -177,7 +177,7 @@ fun SleepScreen(viewModel: UserViewModel = hiltViewModel()) {
 }
 
 fun getCurrentTime():String{
-    val timeFormate = java.text.SimpleDateFormat("hh:mm a", java.util.Locale.getDefault())
+    val timeFormate = java.text.SimpleDateFormat("hh:mm", java.util.Locale.getDefault())
     return timeFormate.format(java.util.Date())
 }
 

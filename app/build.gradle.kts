@@ -117,6 +117,9 @@ dependencies {
     // WorkManager (Background tasks)
     implementation ("androidx.work:work-runtime-ktx:2.9.0")
 
+   // implementation("dev.chrisbanes.haze:haze:1.6.0")
+   // implementation("dev.chrisbanes.haze:haze-materials:1.6.0")
+
 
 
 }

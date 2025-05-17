@@ -1,5 +1,6 @@
 package com.example.databasetestingwithhilt.SleepScreen
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.os.Build
 import android.os.Bundle
@@ -62,6 +63,7 @@ class ScreenSaver : ComponentActivity() {
     }
 }
 
+@SuppressLint("SuspiciousIndentation")
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun SleepScreenSaver(viewModel: UserViewModel = hiltViewModel() ) {

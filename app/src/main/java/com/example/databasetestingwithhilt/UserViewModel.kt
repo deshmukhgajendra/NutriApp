@@ -1,16 +1,23 @@
 package com.example.databasetestingwithhilt
 
 
+import android.app.Activity
+import android.content.Context
+import android.content.Intent
 import android.util.Log
+import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.databasetestingwithhilt.Authentications.AuthRepository
 import com.example.databasetestingwithhilt.Database.FoodEntity
 import com.example.databasetestingwithhilt.Database.NutrientRepository
 import com.example.databasetestingwithhilt.Database.PersonalEntity
+import com.example.databasetestingwithhilt.Database.SleepData
 import com.example.databasetestingwithhilt.Database.SleepEntity
 import com.example.databasetestingwithhilt.Database.SleepRepository
 import com.example.databasetestingwithhilt.NutritionScreen.NutrientRequest
@@ -18,7 +25,12 @@ import com.example.databasetestingwithhilt.NutritionScreen.NutritionixApiObject
 import com.example.databasetestingwithhilt.NutritionScreen.NutritionixResponse
 import com.example.databasetestingwithhilt.SearchScreen.FoodItem
 import com.example.databasetestingwithhilt.SearchScreen.SearchApiObject
+import com.google.firebase.Firebase
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.database
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -26,6 +38,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
 import retrofit2.HttpException
 import javax.inject.Inject
 
@@ -34,7 +47,9 @@ import javax.inject.Inject
 class UserViewModel @Inject constructor(
     val repository: NutrientRepository,
     val authRepository: AuthRepository,
-    val sleepRepository: SleepRepository
+    val sleepRepository: SleepRepository,
+    val database :DatabaseReference,
+    val firebaseAuth : FirebaseAuth
 ): ViewModel() {
 
     // for search suggestions
@@ -310,12 +325,38 @@ class UserViewModel @Inject constructor(
     private val _saveResult = MutableLiveData<Boolean>()
     val saveResult :LiveData<Boolean> get() = _saveResult
 
-    private val _saveRecord = MutableLiveData<Boolean>()
-    val saveRecord : LiveData<Boolean> get() = _saveRecord
+    private val _proteinValue = mutableStateOf(0f)
+    val proteinValue: State<Float> = _proteinValue
 
-    private val _firebaseUploadStatus = MutableStateFlow<Boolean>(false)
-    val firebaseUploadStatus : StateFlow<Boolean> get() = _firebaseUploadStatus
+    private val _errorfirebase = mutableStateOf<String?>(null)
+    val errorfirebase: State<String?> = _errorfirebase
 
+    private val _fatsValue = mutableStateOf(0f)
+    val fatsValue: State<Float> = _fatsValue
+
+    private val _errorfats = mutableStateOf<String?>(null)
+    val  errorFats : State<String?> = _errorfats
+
+    private val _carbsValue = mutableStateOf(0f)
+    val carbsValue: State<Float> = _carbsValue
+
+    private val _errorcarbs = mutableStateOf<String?>(null)
+    val  errorCarbs : State<String?> = _errorcarbs
+
+    private val _caloriesValue = mutableStateOf(0f)
+    val caloriesValue: State<Float?> = _caloriesValue
+
+    private val _errorcalorie= mutableStateOf<String?>(null)
+    val  errorCalorie : State<String?> = _errorcalorie
+
+    private val _sleepData = mutableStateOf<Pair<Float, Float>?>(null)
+    val sleepData: State<Pair<Float, Float>?> = _sleepData
+
+    private val _isLoading = mutableStateOf(false)
+    val isLoading: State<Boolean> = _isLoading
+
+    private val _errorsleep = mutableStateOf<String?>(null)
+    val errorsleep: State<String?> = _errorsleep
 
     // to save personal data
     fun saveUserData(personalEntity: PersonalEntity){
@@ -326,6 +367,11 @@ class UserViewModel @Inject constructor(
         }
     }
 
+    fun fetchRequiredCalories(){
+        viewModelScope.launch {
+            _requiredCalorie.value=repository.getRequiredCalories()
+        }
+    }
     fun fetchRequiredNutrients(){
         viewModelScope.launch {
             _requiredCalorie.value=repository.getRequiredCalories()
@@ -337,12 +383,14 @@ class UserViewModel @Inject constructor(
 
     // Authentication methods
 
-    fun login(email : String, password: String){
+    fun login(email : String, password: String, context: Context){
         viewModelScope.launch {
             authRepository.login(email,password).addOnCompleteListener{ task ->
                 if (task.isSuccessful){
                     _authState.value = authRepository.firebaseAuth.currentUser
-
+                    val i = Intent(context.applicationContext,MainActivity::class.java)
+                    context.startActivity(i)
+                    (context as Activity).finish()
                 }else{
                     _autherror.value = task.exception?.message
                 }
@@ -350,11 +398,14 @@ class UserViewModel @Inject constructor(
         }
     }
 
-    fun register(email: String, password: String){
+    fun register(email: String, password: String, context: Context){
         viewModelScope.launch {
             authRepository.register(email,password).addOnCompleteListener { task ->
                 if (task.isSuccessful){
                     _authState.value= authRepository.firebaseAuth.currentUser
+                    val i = Intent(context.applicationContext,MainActivity::class.java)
+                    context.startActivity(i)
+                    (context as Activity).finish()
                 }else{
                     _autherror.value = task.exception?.message
                 }
@@ -755,7 +806,7 @@ class UserViewModel @Inject constructor(
         viewModelScope.launch {
             val EnergyCount = repository.getEnergy() ?:0f
             _liveEnergyCount.value=EnergyCount
-            Log.d("gajendra", "getEnergyCount: ${_liveEnergyCount.value}")
+            //Log.d("gajendra", "getEnergyCount: ${_liveEnergyCount.value}")
         }
     }
     fun getSucroseCount(){
@@ -831,6 +882,67 @@ class UserViewModel @Inject constructor(
                 sleepRepository.updateWaketime(lastRecord.Date,wakeTime)
             }
 
+        }
+    }
+
+    fun fetchProtein(date: String) {
+        viewModelScope.launch {
+            _error.value = null
+            try {
+                _proteinValue.value = repository.getProteinValue(date)
+            } catch (e: Exception) {
+                _error.value = e.message
+            }
+        }
+    }
+
+    fun fetchFats(date : String){
+        viewModelScope.launch {
+            _errorfats.value = null
+
+            try {
+                _fatsValue.value = repository.getFatsValue(date)
+            }catch (e : Exception){
+                _errorfats.value = e.message
+            }
+        }
+    }
+    fun fetchCarbs(date : String){
+        viewModelScope.launch {
+            _errorcarbs.value = null
+
+            try {
+                _carbsValue.value = repository.getCarbsValue(date)
+            }catch (e : Exception){
+                _errorcarbs.value = e.message
+            }
+        }
+    }
+    fun fetchCalorie(date : String){
+        viewModelScope.launch {
+            _errorcalorie.value = null
+
+            try {
+                _caloriesValue.value = repository.getCalorieValue(date)
+            }catch (e : Exception){
+                _errorcalorie.value = e.message
+            }
+        }
+    }
+
+    fun fetchSleepData(date: String) {
+        viewModelScope.launch {
+            _isLoading.value = true
+            _error.value = null
+            try {
+                _sleepData.value = sleepRepository.getSleepData(date)
+                Log.d("SleepViewModel", "Fetched data: ${_sleepData.value}")
+            } catch (e: Exception) {
+                _error.value = "Failed to load data: ${e.message}"
+                Log.e("SleepViewModel", "Error", e)
+            } finally {
+                _isLoading.value = false
+            }
         }
     }
 }
