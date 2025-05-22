@@ -27,6 +27,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -34,6 +35,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.databasetestingwithhilt.R
 import com.example.databasetestingwithhilt.UserViewModel
 import com.example.databasetestingwithhilt.ui.theme.DarkBlue
+import com.example.databasetestingwithhilt.ui.theme.OutFitFontFamily
 import com.example.databasetestingwithhilt.ui.theme.gray
 import com.example.databasetestingwithhilt.ui.theme.lightBlue
 import com.example.databasetestingwithhilt.ui.theme.yellow
@@ -65,7 +67,11 @@ fun SleepScreen(viewModel: UserViewModel = hiltViewModel()) {
                     .size(250.dp)
                     .padding(20.dp)
             )
-            Text(text = "Track my sleep")
+            Text(
+                text = "Track my sleep",
+                fontFamily = OutFitFontFamily,
+                fontWeight = FontWeight.Bold
+            )
         }
 
         Spacer(modifier = Modifier.height(50.dp))
@@ -96,6 +102,8 @@ fun SleepScreen(viewModel: UserViewModel = hiltViewModel()) {
                 Text(
                     text = "Bedtime",
                     fontSize = 20.sp,
+                    fontFamily = OutFitFontFamily,
+                    fontWeight = FontWeight.Bold,
                     textAlign = TextAlign.Start,
                     color = Color.White,
                     modifier = Modifier.weight(1f)
@@ -103,7 +111,9 @@ fun SleepScreen(viewModel: UserViewModel = hiltViewModel()) {
                 Text(
                     text = "12:15 PM",
                     textAlign = TextAlign.End,
-                    color = Color.White
+                    color = Color.White,
+                    fontFamily = OutFitFontFamily,
+                    fontWeight = FontWeight.Bold
                 )
             }
         }
@@ -136,6 +146,8 @@ fun SleepScreen(viewModel: UserViewModel = hiltViewModel()) {
                 Text(
                     text = "Alarm",
                     fontSize = 20.sp,
+                    fontFamily = OutFitFontFamily,
+                    fontWeight = FontWeight.Bold,
                     textAlign = TextAlign.Start,
                     color = Color.White,
                     modifier = Modifier.weight(1f)
@@ -143,7 +155,9 @@ fun SleepScreen(viewModel: UserViewModel = hiltViewModel()) {
                 Text(
                     text = "Off",
                     textAlign = TextAlign.End,
-                    color = Color.White
+                    color = Color.White,
+                    fontFamily = OutFitFontFamily,
+                    fontWeight = FontWeight.Bold
                 )
             }
         }
@@ -165,13 +179,18 @@ fun SleepScreen(viewModel: UserViewModel = hiltViewModel()) {
                 context.startActivity(intent)
             },
             modifier = Modifier
+                .height(60.dp)
                 .padding(horizontal = 30.dp)
                 .fillMaxWidth(),
             colors = ButtonDefaults.buttonColors(
                 containerColor = Color.White
             )
         ) {
-            Text(text = "Sleep Now", fontSize = 20.sp)
+            Text(
+                text = "Sleep Now",
+                fontSize = 20.sp,
+                fontFamily = OutFitFontFamily,
+                fontWeight = FontWeight.Bold)
         }
     }
 }

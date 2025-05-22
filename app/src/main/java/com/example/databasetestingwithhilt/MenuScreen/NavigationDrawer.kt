@@ -7,18 +7,22 @@ import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.annotation.DrawableRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -27,6 +31,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Divider
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -34,6 +39,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
@@ -42,7 +48,9 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -52,8 +60,15 @@ import com.example.databasetestingwithhilt.Authentications.Authentication
 import com.example.databasetestingwithhilt.MenuScreen.ui.theme.DatabaseTestingWithHiltTheme
 import com.example.databasetestingwithhilt.R
 import com.example.databasetestingwithhilt.UserViewModel
+import com.example.databasetestingwithhilt.ui.theme.OutFitFontFamily
+import com.example.databasetestingwithhilt.ui.theme.White
+import com.example.databasetestingwithhilt.ui.theme.blood
+import com.example.databasetestingwithhilt.ui.theme.darkGreen
 import com.example.databasetestingwithhilt.ui.theme.gray
 import com.example.databasetestingwithhilt.ui.theme.lightGray
+import com.example.databasetestingwithhilt.ui.theme.orange
+import com.example.databasetestingwithhilt.ui.theme.purple
+import com.example.databasetestingwithhilt.ui.theme.sea
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -93,14 +108,6 @@ fun NavigationDrawerScreen(viewModel: UserViewModel = hiltViewModel()) {
                 .fillMaxWidth()
                 .height(200.dp)
                 .clip(RoundedCornerShape(bottomStart = 50.dp, bottomEnd = 50.dp))
-//                .background(
-//                    Brush.verticalGradient(
-//                        colors = listOf(
-//                            Color(0xFF00C6FF),
-//                            Color(0xFF0072FF)
-//                        )
-//                    )
-//                )
         ){
             Image(
                 painter = painterResource(R.drawable.menubackground),
@@ -130,17 +137,21 @@ fun NavigationDrawerScreen(viewModel: UserViewModel = hiltViewModel()) {
                         .clip(CircleShape)
                         .border(2.dp, Color.White, CircleShape)
                 )
+                Spacer(modifier = Modifier.width(22.dp))
+
                 Column {
                     Text(
                         text = "Hello",
                         fontSize = 25.sp,
                         textAlign = TextAlign.Start,
-                        fontStyle = FontStyle.Normal
+                        fontFamily = OutFitFontFamily,
+                        fontWeight = FontWeight.Bold
                     )
                     Text(
                         text = "$userName",
                         fontSize = 30.sp,
-                        fontStyle = FontStyle.Italic,
+                        fontFamily = OutFitFontFamily,
+                        fontWeight = FontWeight.Bold,
                         textAlign = TextAlign.Start
                     )
                 }
@@ -158,17 +169,20 @@ fun NavigationDrawerScreen(viewModel: UserViewModel = hiltViewModel()) {
                     text = "Account",
                     fontSize = 17.sp,
                     color = lightGray,
+                    fontFamily = OutFitFontFamily,
+                    fontWeight = FontWeight.Normal,
                     modifier = Modifier.padding(bottom = 11.dp, start = 10.dp, top = 11.dp)
                 )
-                listItem("Edit Profile", {})
-                listItem("My Goals", {})
-                listItem("My apps & Devices", {})
-                listItem("Delete Account", {})
-                listItem("Change Password", {})
-                listItem("Log Out") {
+                listItem("Edit Profile",R.drawable.baseline_assignment_24, purple, {})
+                listItem("My Goals", R.drawable.flag, purple, {})
+                listItem("My apps & Devices",R.drawable.baseline_smartphone_24, purple, {})
+                listItem("Delete Account",R.drawable.baseline_no_accounts_24, purple, {})
+                listItem("Change Password",R.drawable.baseline_password_24,purple, {})
+                listItem("Log Out",R.drawable.baseline_logout_24, purple
+                ) {
                     Log.d("NavigationDrawerScreen", "Log Out lambda executed")
                     viewModel.logout()
-                    val i = Intent(context,Authentication::class.java)
+                    val i = Intent(context, Authentication::class.java)
                     context.startActivity(i)
                     (context as? Activity)?.finish()
                 }
@@ -182,12 +196,11 @@ fun NavigationDrawerScreen(viewModel: UserViewModel = hiltViewModel()) {
                     color = lightGray,
                     modifier = Modifier.padding(bottom = 11.dp, start = 10.dp, top = 11.dp)
                 )
-                listItem("Appearances", {})
-                listItem("Diary Settings", {})
-                listItem("Reminders", {})
-                listItem("Weekly Nutrition Settings", {})
-                listItem("Steps", {})
-                listItem("Push Notification", {})
+                listItem("Appearances",R.drawable.baseline_preview_24, sea, {})
+                listItem("Diary Settings",R.drawable.baseline_assignment_add_24, sea, {})
+                listItem("Reminders",R.drawable.alarm, sea, {})
+                listItem("Steps",R.drawable.shoe_prints_svgrepo_com, sea, {})
+                listItem("Push Notification",R.drawable.alarm, sea, {})
                 Divider(
                     thickness = 5.dp,
                     modifier = Modifier.padding(bottom = 4.dp)
@@ -198,53 +211,62 @@ fun NavigationDrawerScreen(viewModel: UserViewModel = hiltViewModel()) {
                     color = lightGray,
                     modifier = Modifier.padding(bottom = 11.dp, start = 10.dp, top = 11.dp)
                 )
-                listItem("About Us", {})
-                listItem("Contact Support", {})
-                listItem("FAQs/Feedback", {})
-                listItem("Join Beta Program", {})
-                listItem("Troubleshooting", {})
+                listItem("About Us",R.drawable.baseline_tag_faces_24, orange, {})
+                listItem("Contact Support",R.drawable.baseline_call_24, orange, {})
+                listItem("FAQs/Feedback",R.drawable.baseline_feedback_24, orange, {})
+                listItem("Join Beta Program",R.drawable.round_question_mark_24, orange, {})
+                listItem("Troubleshooting",R.drawable.baseline_security_24, orange, {})
             }
         }
     }
 }
 
 @Composable
-fun listItem(item: String, onClick: () -> Unit) {
+fun listItem(buttonTitle: String,
+             @DrawableRes iconResId: Int,
+             color: Color,
+             onClick: () -> Unit) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 8.dp)
     ) {
-        Button(
-            onClick = {
-                Log.d("listItem", "Button clicked for item: $item")
-                onClick()
-            },
+        Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable { onClick() }
+        ,verticalAlignment = Alignment.CenterVertically
+    ) {
+        Box(
             modifier = Modifier
-                .fillMaxWidth(),
-            colors = ButtonDefaults.buttonColors(
-                containerColor = Color.Transparent,
-                contentColor = MaterialTheme.colorScheme.onBackground
-            ),
-            contentPadding = ButtonDefaults.ContentPadding
+                .size(35.dp)
+                .clip(RoundedCornerShape(20))
+                .background(color),
+            contentAlignment = Alignment.Center
         ) {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.Start
-            ) {
-                Text(
-                    text = item,
-                    fontSize = 16.sp,
-                    color = MaterialTheme.colorScheme.onBackground,
-                    modifier = Modifier.padding(start = 8.dp)
-                )
-            }
+            Icon(
+                painter = painterResource(id = iconResId),
+                contentDescription = "Icon for $buttonTitle",
+                tint = White,
+                modifier = Modifier.size(25.dp)
+            )
         }
-
+        Spacer(modifier = Modifier.width(18.dp))
+        Text(
+            text = buttonTitle,
+            style = TextStyle(
+                fontFamily = OutFitFontFamily,
+                fontWeight = FontWeight.Medium,
+                fontSize = 16.sp
+            ),
+            modifier = Modifier.weight(1f)
+        )
+    }
         Divider(
             thickness = 1.dp,
             color = MaterialTheme.colorScheme.surfaceVariant,
             modifier = Modifier.fillMaxWidth()
+                .padding(top= 12.dp)
         )
     }
 }

@@ -106,6 +106,7 @@ dependencies {
    // implementation ("co.yml:charts-compose:1.0.0")
     implementation ("co.yml:ycharts:2.1.0")
 
+    implementation ("com.google.android.material:material:1.12.0")
 
 //    implementation("androidx.hilt:hilt-work:1.2.0")
 //    // When using Kotlin.

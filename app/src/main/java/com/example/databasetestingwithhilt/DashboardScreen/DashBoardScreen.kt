@@ -56,11 +56,13 @@ import com.example.databasetestingwithhilt.ui.theme.lightGray
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import co.yml.charts.common.model.Point
 import com.example.databasetestingwithhilt.Database.SleepData
 import com.example.databasetestingwithhilt.UserViewModel
+import com.example.databasetestingwithhilt.ui.theme.OutFitFontFamily
 import com.example.databasetestingwithhilt.ui.theme.White
 import java.text.SimpleDateFormat
 import java.util.Calendar
@@ -131,12 +133,16 @@ fun DashBoardScreen(viewModel : UserViewModel= hiltViewModel()) {
                             text = "Total Calories",
                             textAlign = TextAlign.Start,
                             modifier = Modifier.weight(1f),
-                            color = White
+                            color = White,
+                            fontFamily = OutFitFontFamily,
+                            fontWeight = FontWeight.Bold
                         )
                         Text(
                             text = "${calories?.toInt()}",
                             textAlign = TextAlign.End,
-                            color = White
+                            color = White,
+                            fontFamily = OutFitFontFamily,
+                            fontWeight = FontWeight.Bold
                         )
                     }
                     Divider(color = lightGray)
@@ -151,12 +157,16 @@ fun DashBoardScreen(viewModel : UserViewModel= hiltViewModel()) {
                             text = "Net Calories",
                             textAlign = TextAlign.Start,
                             modifier = Modifier.weight(1f),
-                            color = White
+                            color = White,
+                            fontFamily = OutFitFontFamily,
+                            fontWeight = FontWeight.Bold
                         )
                         Text(
                             text = "${calories?.toInt()}",
                             textAlign = TextAlign.End,
-                            color = White
+                            color = White,
+                            fontFamily = OutFitFontFamily,
+                            fontWeight = FontWeight.Bold
                         )
                     }
                     Divider(color = lightGray)
@@ -171,12 +181,16 @@ fun DashBoardScreen(viewModel : UserViewModel= hiltViewModel()) {
                             text = "Goal",
                             textAlign = TextAlign.Start,
                             modifier = Modifier.weight(1f),
-                            color = White
+                            color = White,
+                            fontFamily = OutFitFontFamily,
+                            fontWeight = FontWeight.Bold
                         )
                         Text(
                             text = "${requiredCalories.toInt()}",
                             textAlign = TextAlign.End,
-                            color = White
+                            color = White,
+                            fontFamily = OutFitFontFamily,
+                            fontWeight = FontWeight.Bold
                         )
                     }
                 }
@@ -202,9 +216,10 @@ fun DashBoardScreen(viewModel : UserViewModel= hiltViewModel()) {
                    Text( text = "Sleep Patterns",
                        textAlign = TextAlign.Center,
                        modifier = Modifier.padding(bottom = 16.dp,top = 16.dp),
-                       style = MaterialTheme.typography.titleMedium,
                        fontSize = 20.sp,
-                       color = White
+                       color = White,
+                       fontFamily = OutFitFontFamily,
+                       fontWeight = FontWeight.Bold
                    )
                    SleepBarChart()
                }
@@ -247,13 +262,15 @@ fun DateSelectorWithCalendar(
                     ) {
                         Text(
                             text = dayName,
-                          //  style = MaterialTheme.typography.body2,
-                            color = if (date == selectedDate) Color.Yellow else Color.Gray
+                            color = if (date == selectedDate) Color.Yellow else Color.Gray,
+                            fontFamily = OutFitFontFamily,
+                            fontWeight = FontWeight.Bold
                         )
                         Text(
                             text = date.dayOfMonth.toString(),
-                          //  style = MaterialTheme.typography.body1,
-                            color = if (date == selectedDate) Color.Yellow else Color.White
+                            color = if (date == selectedDate) Color.Yellow else Color.White,
+                            fontFamily = OutFitFontFamily,
+                            fontWeight = FontWeight.Normal
                         )
                     }
                 }
@@ -366,9 +383,10 @@ fun NutritionPieChart(protein:Float, carbs: Float, fats: Float) {
         Text(
             text = "Nutrition Breakdown",
             modifier = Modifier.padding(bottom = 16.dp,top = 16.dp),
-            style = MaterialTheme.typography.titleMedium,
             fontSize = 20.sp,
-            color = White
+            color = White,
+            fontFamily = OutFitFontFamily,
+            fontWeight = FontWeight.Bold
         )
 
         PieChart(
@@ -393,8 +411,12 @@ fun NutritionPieChart(protein:Float, carbs: Float, fats: Float) {
                             .background(slice.color)
                     )
                     Spacer(modifier = Modifier.width(4.dp))
-                    Text(text = slice.label
-                    , color = White)
+                    Text(
+                        text = slice.label,
+                        color = White,
+                        fontFamily = OutFitFontFamily,
+                        fontWeight = FontWeight.Normal
+                    )
                 }
             }
         }

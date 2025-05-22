@@ -31,12 +31,14 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.databasetestingwithhilt.MainActivity
 import com.example.databasetestingwithhilt.R
+import com.example.databasetestingwithhilt.ui.theme.OutFitFontFamily
 
 
 @Composable
@@ -83,7 +85,10 @@ fun IntroScreen(navController: NavController){
                 text = "Welcome to !",
                 color = Color.White,
                 fontSize = 24.sp,
-                fontWeight = FontWeight.Bold
+                style = TextStyle(
+                    fontFamily = OutFitFontFamily,
+                    fontWeight = FontWeight.Bold
+                )
             )
         }
         Box(
@@ -115,7 +120,11 @@ fun IntroScreen(navController: NavController){
                     Text(
                         text = "Login",
                         color = Color.Black,
-                        fontSize = 16.sp // Slightly larger text
+                        fontSize = 16.sp ,
+                        style = TextStyle(
+                            fontFamily = OutFitFontFamily,
+                            fontWeight = FontWeight.Bold
+                        )
                     )
                 }
 
@@ -134,7 +143,11 @@ fun IntroScreen(navController: NavController){
                     Text(
                         text = "Sign Up",
                         color = Color.White,
-                        fontSize = 16.sp // Slightly larger text
+                        fontSize = 16.sp,
+                        style = TextStyle(
+                            fontFamily = OutFitFontFamily,
+                            fontWeight = FontWeight.Bold
+                        )
                     )
                 }
             }

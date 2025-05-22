@@ -35,6 +35,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -42,6 +43,7 @@ import androidx.navigation.NavController
 import com.example.databasetestingwithhilt.NutritionScreen.NutrientRequest
 import com.example.databasetestingwithhilt.R
 import com.example.databasetestingwithhilt.UserViewModel
+import com.example.databasetestingwithhilt.ui.theme.OutFitFontFamily
 import com.example.databasetestingwithhilt.ui.theme.White
 
 
@@ -67,7 +69,12 @@ fun SearchScreen(navController: NavController, viewModel: UserViewModel = hiltVi
                 query = it
                 viewModel.fetchSearchResult(it) // Trigger API call on query change
             },
-            placeholder = { Text(text = "Search for food items...") },
+            placeholder = {
+                Text(
+                    text = "Search for food items...",
+                    fontFamily = OutFitFontFamily,
+                    fontWeight = FontWeight.Normal
+                ) },
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(8.dp),
@@ -125,14 +132,16 @@ fun SearchScreen(navController: NavController, viewModel: UserViewModel = hiltVi
                             ) {
                                 Text(
                                     text = "Food: ${food.food_name}",
-                                    style = MaterialTheme.typography.bodyMedium,
-                                    fontSize = 16.sp
+                                    fontSize = 16.sp,
+                                    fontFamily = OutFitFontFamily,
+                                    fontWeight = FontWeight.Bold
                                 )
                                 Text(
                                     text = "Serving Quantity: ${food.serving_qty}",
-                                    style = MaterialTheme.typography.bodySmall,
                                     color = Color.Gray,
-                                    fontSize = 12.sp
+                                    fontSize = 12.sp,
+                                    fontFamily = OutFitFontFamily,
+                                    fontWeight = FontWeight.Normal
                                 )
                             }
 

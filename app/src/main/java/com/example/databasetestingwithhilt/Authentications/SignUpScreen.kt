@@ -60,6 +60,7 @@ import com.example.databasetestingwithhilt.PersonalInformation.PersonalInformati
 import com.example.databasetestingwithhilt.R
 import com.example.databasetestingwithhilt.UserViewModel
 import com.example.databasetestingwithhilt.ui.theme.Black
+import com.example.databasetestingwithhilt.ui.theme.OutFitFontFamily
 import com.example.databasetestingwithhilt.ui.theme.White
 import com.example.databasetestingwithhilt.ui.theme.lightBlue
 import com.example.databasetestingwithhilt.ui.theme.purple
@@ -102,7 +103,7 @@ fun SignUpScreen(navController: NavController,
                     .padding(16.dp),
                 contentAlignment = Alignment.TopStart
             ) {
-                IconButton(onClick = { /* Handle back navigation */ }) {
+                IconButton(onClick = { navController.navigate("IntroScreen") }) {
                     Icon(
                         imageVector = Icons.Default.ArrowBack,
                         contentDescription = "Back",
@@ -137,8 +138,10 @@ fun SignUpScreen(navController: NavController,
                     Text(
                         text = "Get Started",
                         fontSize = 24.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = White
+                        color = White,
+                        fontFamily = OutFitFontFamily,
+                        fontWeight = FontWeight.Bold
+
                     )
 
                     Spacer(modifier = Modifier.height(20.dp))
@@ -155,7 +158,11 @@ fun SignUpScreen(navController: NavController,
                         OutlinedTextField(
                             value = fullName.value,
                             onValueChange = { fullName.value = it },
-                            label = { Text("Enter Full Name") },
+                            label = {
+                                Text(
+                                    "Enter Full Name",
+                                    fontFamily = OutFitFontFamily,
+                                    fontWeight = FontWeight.Normal) },
                             singleLine = true,
                             modifier = Modifier.fillMaxWidth(),
                             shape = RoundedCornerShape(18.dp),
@@ -181,7 +188,11 @@ fun SignUpScreen(navController: NavController,
                         OutlinedTextField(
                             value = email.value,
                             onValueChange = { email.value = it },
-                            label = { Text("Enter Email") },
+                            label = {
+                                Text(
+                                    "Enter Email",
+                                    fontFamily = OutFitFontFamily,
+                                    fontWeight = FontWeight.Normal) },
                             singleLine = true,
                             modifier = Modifier.fillMaxWidth(),
                             shape = RoundedCornerShape(18.dp),
@@ -207,7 +218,11 @@ fun SignUpScreen(navController: NavController,
                         OutlinedTextField(
                             value = password.value,
                             onValueChange = { password.value = it },
-                            label = { Text("Enter Password") },
+                            label = {
+                                Text(
+                                    "Enter Password",
+                                    fontFamily = OutFitFontFamily,
+                                    fontWeight = FontWeight.Normal) },
                             singleLine = true,
                             visualTransformation = PasswordVisualTransformation(),
                             modifier = Modifier.fillMaxWidth(),
@@ -264,13 +279,23 @@ fun SignUpScreen(navController: NavController,
                                    contentColor = Black
                                )
                         ) {
-                            Text(text = "Sign up", color = Black, fontSize = 18.sp)
+                            Text(
+                                text = "Sign up",
+                                color = Black,
+                                fontSize = 18.sp,
+                                fontFamily = OutFitFontFamily,
+                                fontWeight = FontWeight.Normal)
                         }
 
                         Spacer(modifier = Modifier.height(20.dp))
 
                         // Sign-Up with Social Media
-                        Text("Sign-up with", fontSize = 16.sp, color = Color.Gray)
+                        Text(
+                            "Sign-up with",
+                            fontSize = 16.sp,
+                            color = Color.Gray,
+                            fontFamily = OutFitFontFamily,
+                            fontWeight = FontWeight.Normal)
 
                         Spacer(modifier = Modifier.height(10.dp))
 
@@ -313,6 +338,7 @@ fun SignUpScreen(navController: NavController,
                                 style = TextStyle(
                                     color = White,
                                     fontSize = 14.sp,
+                                    fontFamily = OutFitFontFamily,
                                     fontWeight = FontWeight.Bold
                                 )
                             )

@@ -57,6 +57,7 @@ import androidx.navigation.NavController
 import com.example.databasetestingwithhilt.MainActivity
 import com.example.databasetestingwithhilt.R
 import com.example.databasetestingwithhilt.UserViewModel
+import com.example.databasetestingwithhilt.ui.theme.OutFitFontFamily
 import com.example.databasetestingwithhilt.ui.theme.White
 import dagger.hilt.android.lifecycle.HiltViewModel
 
@@ -132,8 +133,11 @@ fun SignInScreen(navController: NavController,
                 Text(
                     text = "Welcome back",
                     fontSize = 24.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = White
+                    color = White,
+                    style = TextStyle(
+                        fontFamily = OutFitFontFamily,
+                        fontWeight = FontWeight.Bold
+                    )
                 )
 
                 Spacer(modifier = Modifier.height(20.dp))
@@ -151,7 +155,13 @@ fun SignInScreen(navController: NavController,
                     OutlinedTextField(
                         value = email.value,
                         onValueChange = { email.value = it },
-                        label = { Text("Enter Email") },
+                        label = {
+                            Text(
+                                "Enter Email",
+                                style = TextStyle(
+                                    fontFamily = OutFitFontFamily,
+                                    fontWeight = FontWeight.Normal
+                                )) },
                         singleLine = true,
                         modifier = Modifier.fillMaxWidth(),
                         shape = RoundedCornerShape(18.dp),
@@ -177,7 +187,13 @@ fun SignInScreen(navController: NavController,
                     OutlinedTextField(
                         value = password.value,
                         onValueChange = { password.value = it },
-                        label = { Text("Enter Password") },
+                        label = {
+                            Text(
+                                "Enter Password",
+                                style = TextStyle(
+                                    fontFamily = OutFitFontFamily,
+                                    fontWeight = FontWeight.Normal
+                                )) },
                         singleLine = true,
                         visualTransformation = PasswordVisualTransformation(),
                         modifier = Modifier.fillMaxWidth(),
@@ -220,7 +236,9 @@ fun SignInScreen(navController: NavController,
                         ){
                             Text(text = "Forget Password ?",
                                 textAlign = TextAlign.End,
-                                style = TextStyle(color = White, fontSize = 16.sp))
+                                style = TextStyle(color = White, fontSize = 16.sp),
+                                fontFamily = OutFitFontFamily,
+                                fontWeight = FontWeight.Normal)
                         }
                     }
 
@@ -236,13 +254,24 @@ fun SignInScreen(navController: NavController,
                             .height(50.dp),
                         colors = ButtonDefaults.buttonColors(Color(0xFF007AFF))
                     ) {
-                        Text(text = "Sign In", color = Color.White, fontSize = 18.sp)
+                        Text(
+                            text = "Sign In",
+                            color = Color.White,
+                            fontSize = 18.sp,
+                            fontFamily = OutFitFontFamily,
+                            fontWeight = FontWeight.Normal)
                     }
 
                     Spacer(modifier = Modifier.height(20.dp))
 
                     // Sign-Up with Social Media
-                    Text("Sign-in with", fontSize = 16.sp, color = White, textAlign = TextAlign.Center)
+                    Text(
+                        "Sign-in with",
+                        fontSize = 16.sp,
+                        color = White,
+                        fontFamily = OutFitFontFamily,
+                        fontWeight = FontWeight.Normal,
+                        textAlign = TextAlign.Center)
 
                     Spacer(modifier = Modifier.height(10.dp))
 
@@ -280,13 +309,15 @@ fun SignInScreen(navController: NavController,
                         Text("Don't have an account?", fontSize = 14.sp, color = Color.Gray)
                         Spacer(modifier = Modifier.width(5.dp))
                         ClickableText(
-                            text = AnnotatedString("Sign up"),
+                            text = AnnotatedString(
+                                "Sign up"),
                             onClick = {
                                 navController.navigate("SignUp")
                             },
                             style = TextStyle(
                                 color = White,
                                 fontSize = 14.sp,
+                                fontFamily = OutFitFontFamily,
                                 fontWeight = FontWeight.Bold
                             )
                         )

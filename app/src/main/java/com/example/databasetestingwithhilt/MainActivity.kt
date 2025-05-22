@@ -1,11 +1,6 @@
 package com.example.databasetestingwithhilt
 
-import android.annotation.SuppressLint
 import android.content.Intent
-import android.graphics.BlurMaskFilter
-import android.graphics.Paint
-import android.graphics.RenderEffect
-import android.graphics.Shader
 import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -15,7 +10,6 @@ import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
@@ -34,22 +28,15 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
-import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.drawWithCache
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.asComposeRenderEffect
-import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
-import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.graphics.nativeCanvas
-import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -67,6 +54,7 @@ import com.example.databasetestingwithhilt.NutritionScreen.NutritionScreen
 import com.example.databasetestingwithhilt.SearchScreen.SearchScreen
 import com.example.databasetestingwithhilt.SleepScreen.SleepScreen
 import com.example.databasetestingwithhilt.ui.theme.DatabaseTestingWithHiltTheme
+import com.example.databasetestingwithhilt.ui.theme.OutFitFontFamily
 import com.example.databasetestingwithhilt.ui.theme.purple
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -98,13 +86,11 @@ fun app() {
 
 val context = LocalContext.current
     val navController = rememberNavController()
-  //  val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(rememberTopAppBarState())
-   // val hazeState = rememberHazeState()
+
     Scaffold(
-  //      modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
             CenterAlignedTopAppBar(
-               // modifier = Modifier.hazeEffect(state = hazeState) ,
+
                 colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
                     containerColor = Color.Transparent
                 ),
@@ -114,7 +100,9 @@ val context = LocalContext.current
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
                         color = purple,
-                        fontSize = 35.sp
+                        fontSize = 35.sp,
+                        fontFamily = OutFitFontFamily,
+                        fontWeight = FontWeight.Bold
                     )
                 },
                 navigationIcon = {
@@ -125,7 +113,7 @@ val context = LocalContext.current
                         modifier = Modifier
                             .size(50.dp)
                             .padding(8.dp)
-                        // .glassMorphicEffect()
+
                     ) {
                         Icon(
                             painterResource(R.drawable.accountcircle),
@@ -143,7 +131,7 @@ val context = LocalContext.current
                         modifier = Modifier
                             .size(60.dp)
                             .padding(8.dp)
-                           // .glassMorphicEffect()
+
                     ) {
                         Icon(
                             painterResource(R.drawable.baseline_notifications_24),
@@ -281,53 +269,6 @@ fun bottomBar(navController: NavController) {
         }
     }
 }
-
-//@SuppressLint("SuspiciousModifierThen")
-//fun Modifier.glassMorphicEffect() = this.then(
-//    graphicsLayer {
-//        alpha = 0.99f // Important for blur to work
-//        shape = RoundedCornerShape(0.dp) // Or your preferred shape
-//        clip = true
-//    }
-//        .background(
-//            Brush.linearGradient(
-//                colors = listOf(
-//                    Color(0x99FFFFFF), // Semi-transparent white
-//                    Color(0x66FFFFFF)  // More transparent white
-//                )
-//            ),
-//            shape = RoundedCornerShape(0.dp)
-//        )
-//        .border(
-//            width = 1.dp,
-//            brush = Brush.linearGradient(
-//                colors = listOf(
-//                    Color(0x99FFFFFF),
-//                    Color(0x10FFFFFF)
-//                )
-//            ),
-//            shape = RoundedCornerShape(0.dp)
-//        )
-//        .drawWithCache {
-//            val blurRadius = 10.dp.toPx()
-//            onDrawWithContent {
-//                drawContent()
-//                drawIntoCanvas { canvas ->
-//                    canvas.nativeCanvas.apply {
-//                        drawRoundRect(
-//                            0f, 0f, size.width, size.height,
-//                            0f, 0f, // Adjust for rounded corners
-//                            Paint().apply {
-//                                shader = null
-//                                color = android.graphics.Color.TRANSPARENT
-//                                setMaskFilter(BlurMaskFilter(blurRadius, BlurMaskFilter.Blur.NORMAL))
-//                            }
-//                        )
-//                    }
-//                }
-//            }
-//        }
-//)
 
 @Composable
 fun NavigateToScreen(navController: NavHostController, innerPadding: PaddingValues) {
