@@ -2,7 +2,6 @@ package com.example.databasetestingwithhilt.Database
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import java.sql.Date
 
 @Entity(tableName = "Sleep_Table")
 data class SleepEntity(

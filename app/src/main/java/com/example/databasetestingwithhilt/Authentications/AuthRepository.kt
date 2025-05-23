@@ -1,8 +1,6 @@
 package com.example.databasetestingwithhilt.Authentications
 
-import android.util.Log
 import com.example.databasetestingwithhilt.Database.PersonalEntity
-import com.example.databasetestingwithhilt.ui.theme.fire
 import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseAuth

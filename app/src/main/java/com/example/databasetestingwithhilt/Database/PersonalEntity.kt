@@ -1,10 +1,8 @@
 package com.example.databasetestingwithhilt.Database
 
-import androidx.room.Entity
-import androidx.room.PrimaryKey
-
 
 data class PersonalEntity(
+    val name:String,
     val age : Int,
     val gender : String,
     val weight : Float,
@@ -12,6 +10,7 @@ data class PersonalEntity(
     val activityLevel : String,
     val exerciseFrequency : Int,
     val occupationType : String,
+    val goal : String,
     val RequiredCalorie : Float,
     val RequiredProtein : Float,
     val RequiredCarbs : Float,

@@ -1,12 +1,9 @@
 package com.example.databasetestingwithhilt.Database
 
 import android.util.Log
-import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.database
-import com.google.firebase.database.getValue
 import kotlinx.coroutines.tasks.await
 import java.time.LocalDate
 import javax.inject.Inject

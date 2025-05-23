@@ -1,11 +1,13 @@
 package com.example.databasetestingwithhilt.PersonalInformation
 
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -15,40 +17,70 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Slider
+import androidx.compose.material3.SliderColors
+import androidx.compose.material3.SliderDefaults
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextFieldDefaults
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.referentialEqualityPolicy
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.drawWithContent
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 import com.example.databasetestingwithhilt.Database.PersonalEntity
 import com.example.databasetestingwithhilt.MainActivity
+import com.example.databasetestingwithhilt.R
 import com.example.databasetestingwithhilt.UserViewModel
 import com.example.databasetestingwithhilt.ui.theme.DarkBlue
 import com.example.databasetestingwithhilt.ui.theme.DatabaseTestingWithHiltTheme
+import com.example.databasetestingwithhilt.ui.theme.OutFitFontFamily
+import com.example.databasetestingwithhilt.ui.theme.White
+import com.example.databasetestingwithhilt.ui.theme.gray
+import com.example.databasetestingwithhilt.ui.theme.purple
 import dagger.hilt.android.AndroidEntryPoint
 
 
@@ -57,14 +89,44 @@ class PersonalInformation : ComponentActivity() {
 
     //val userViewModel : UserViewModel by viewModels()
 
+    @OptIn(ExperimentalMaterial3Api::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
             DatabaseTestingWithHiltTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
+                Scaffold(
+                topBar = {
+                    CenterAlignedTopAppBar(
+                        colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
+                            containerColor = Color.Transparent
+                        ),
+                        title = {
+                            Text(
+                                text = "Personal Details",
+                                fontSize = 35.sp,
+                                color = Color.White,
+                                fontFamily = OutFitFontFamily,
+                                fontWeight = FontWeight.Bold
+                            )
+                        },
+                        navigationIcon = {
+                            IconButton(
+                                onClick = {}
+                            ) {
+                                Icon(
+                                    painter = painterResource(R.drawable.baseline_arrow_back_24),
+                                    contentDescription = null
+                                )
+                            }
+                        }
+                    )
+                }
+                ) { innerPadding ->
 
+                   // val navController = rememberNavController()
                    UserNutritionForm()
+                    //navigateToPersonalInformation(navController)
                 }
             }
         }
@@ -75,10 +137,11 @@ class PersonalInformation : ComponentActivity() {
 fun UserNutritionForm(viewModel: UserViewModel = hiltViewModel()) {
 
     val context = LocalContext.current
+    var name by remember { mutableStateOf("") }
     var age by remember { mutableStateOf("") }
     var gender by remember { mutableStateOf("") }
-    var weight by remember { mutableStateOf("") } // Changed to String
-    var height by remember { mutableStateOf("") } // Changed to String
+    var weight by remember { mutableStateOf("") }
+    var height by remember { mutableStateOf("") }
     var activityLevel by remember { mutableStateOf("") }
     var exerciseFrequency by remember { mutableStateOf(0f) }
     var occupationType by remember { mutableStateOf("") }
@@ -92,30 +155,66 @@ fun UserNutritionForm(viewModel: UserViewModel = hiltViewModel()) {
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(brush = Brush.verticalGradient(listOf(DarkBlue, Color.Black)))
-            .verticalScroll(rememberScrollState()),
+           // .padding(top = 80.dp)
+           // .verticalScroll(rememberScrollState()),
     ) {
-        Box(modifier = Modifier.padding(16.dp)) {
-            Column {
-                Spacer(modifier = Modifier.height(40.dp))
+        Image(
+                modifier = Modifier,
+                painter = painterResource(R.drawable.mainbackground),
+                contentDescription = null,
+                contentScale = ContentScale.Crop
+            )
+            Column(modifier = Modifier.padding(16.dp,top = 100.dp)) {
 
-                Text(
-                    text = "Personal Details",
-                    textAlign = TextAlign.Center,
-                    fontSize = 35.sp,
-                    fontStyle = FontStyle.Normal,
-                    color = Color.White
+
+                OutlinedTextField(
+                    value = name,
+                    onValueChange = { name = it },
+                    label = { Text("Enter full name") },
+                    shape = RoundedCornerShape(18.dp),
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
+                    colors = TextFieldDefaults.colors(
+                        focusedTextColor = Color.White,
+                        unfocusedTextColor = Color.White,
+
+                        focusedContainerColor = Color.Transparent,
+                        unfocusedContainerColor = Color.Transparent,
+
+                        focusedLabelColor = Color.White,
+                        unfocusedLabelColor = Color.Gray,
+
+                        focusedIndicatorColor = Color.White,
+                        unfocusedIndicatorColor = Color.Gray,
+
+                        cursorColor = Color.White
+                    ),
+                    modifier = Modifier.fillMaxWidth()
+
                 )
-
-                Spacer(modifier = Modifier.height(40.dp))
-
                 // Age Input
                 OutlinedTextField(
                     value = age,
                     onValueChange = { age = it },
                     label = { Text("Age") },
+                    shape = RoundedCornerShape(18.dp),
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                    colors = TextFieldDefaults.colors(
+                        focusedTextColor = Color.White,
+                        unfocusedTextColor = Color.White,
+
+                        focusedContainerColor = Color.Transparent,
+                        unfocusedContainerColor = Color.Transparent,
+
+                        focusedLabelColor = Color.White,
+                        unfocusedLabelColor = Color.Gray,
+
+                        focusedIndicatorColor = Color.White,
+                        unfocusedIndicatorColor = Color.Gray,
+
+                        cursorColor = Color.White
+                    ),
                     modifier = Modifier.fillMaxWidth()
+
                 )
 
                 // Gender Dropdown
@@ -126,8 +225,25 @@ fun UserNutritionForm(viewModel: UserViewModel = hiltViewModel()) {
                     value = weight,
                     onValueChange = { weight = it },
                     label = { Text("Weight (kg)") },
+                    shape = RoundedCornerShape(18.dp),
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                    colors = TextFieldDefaults.colors(
+                        focusedTextColor = Color.White,
+                        unfocusedTextColor = Color.White,
+
+                        focusedContainerColor = Color.Transparent,
+                        unfocusedContainerColor = Color.Transparent,
+
+                        focusedLabelColor = Color.White,
+                        unfocusedLabelColor = Color.Gray,
+
+                        focusedIndicatorColor = Color.White,
+                        unfocusedIndicatorColor = Color.Gray,
+
+                        cursorColor = Color.White
+                    ),
                     modifier = Modifier.fillMaxWidth()
+
                 )
 
                 // Height Input
@@ -135,8 +251,25 @@ fun UserNutritionForm(viewModel: UserViewModel = hiltViewModel()) {
                     value = height,
                     onValueChange = { height = it },
                     label = { Text("Height (cm)") },
+                    shape = RoundedCornerShape(18.dp),
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                    colors = TextFieldDefaults.colors(
+                        focusedTextColor = Color.White,
+                        unfocusedTextColor = Color.White,
+
+                        focusedContainerColor = Color.Transparent,
+                        unfocusedContainerColor = Color.Transparent,
+
+                        focusedLabelColor = Color.White,
+                        unfocusedLabelColor = Color.Gray,
+
+                        focusedIndicatorColor = Color.White,
+                        unfocusedIndicatorColor = Color.Gray,
+
+                        cursorColor = Color.White
+                    ),
                     modifier = Modifier.fillMaxWidth()
+
                 )
 
                 // Activity Level Dropdown
@@ -151,8 +284,33 @@ fun UserNutritionForm(viewModel: UserViewModel = hiltViewModel()) {
                     onValueChange = { exerciseFrequency = it },
                     valueRange = 0f..7f,
                     steps = 6,
-                    modifier = Modifier.fillMaxWidth()
+                    colors = SliderDefaults.colors(
+                        activeTrackColor = Color.Transparent, // Use transparent as we're handling the active track manually
+                        inactiveTrackColor = gray,
+                        thumbColor = Color(0xFF9C27B0) // Purple
+                    ),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .drawWithContent {
+                            // Draw gradient for the active portion of the track
+                            val trackHeight = 4.dp.toPx()
+                            val activeWidth = size.width * (exerciseFrequency / 7f) // Based on the progress value
+                            val gradientBrush = Brush.horizontalGradient(
+                                colors = listOf(Color.Black, Color(0xFF9C27B0)) // Black to purple gradient
+                            )
+
+                            drawRect(
+                                brush = gradientBrush,
+                                topLeft = Offset(0f, (size.height - trackHeight) / 2),
+                                size = Size(activeWidth, trackHeight)
+                            )
+
+                            // Call original drawing logic
+                            drawContent()
+                        }
                 )
+
+
 
                 // Occupation Type Dropdown
                 DropdownSelector("Occupation Type", occupationType, occupationTypes) { occupationType = it }
@@ -179,11 +337,13 @@ fun UserNutritionForm(viewModel: UserViewModel = hiltViewModel()) {
                         val carbs = NutritionValue["Carbs"] ?:0f
                         val fats = NutritionValue["Fats"] ?:0f
                         val userData = PersonalEntity(
+                            name = name,
                             age = age.toIntOrNull() ?: 0,
                             gender = gender,
                             weight = weight.toFloatOrNull() ?: 0f,
                             height = height.toFloatOrNull() ?: 0f,
                             activityLevel = activityLevel,
+                            goal = goal,
                             exerciseFrequency = exerciseFrequency.toInt(),
                             occupationType = occupationType,
                             RequiredCalorie = calorie,
@@ -195,6 +355,7 @@ fun UserNutritionForm(viewModel: UserViewModel = hiltViewModel()) {
 
                         val i = Intent(context, MainActivity::class.java)
                         context.startActivity(i)
+                        (context as Activity).finish()
                     },
                     modifier = Modifier.fillMaxWidth(),
                     colors = ButtonDefaults.buttonColors(
@@ -206,7 +367,6 @@ fun UserNutritionForm(viewModel: UserViewModel = hiltViewModel()) {
                 }
             }
         }
-    }
 }
 
 
@@ -226,6 +386,7 @@ fun DropdownSelector(
             value = selectedOption,
             onValueChange = {},
             label = { Text(label) },
+            shape = RoundedCornerShape(18.dp),
             readOnly = true,
             trailingIcon = {
                 IconButton(onClick = { expanded = !expanded }) {
@@ -233,6 +394,7 @@ fun DropdownSelector(
                 }
             },
             modifier = Modifier.fillMaxWidth()
+
         )
 
         DropdownMenu(
@@ -311,3 +473,209 @@ fun RequiredNutritionValue(
         "Carbs" to RequiredCarbsGrams
     )
 }
+
+//
+//@Composable
+//fun navigateToPersonalInformation(navController: NavHostController){
+//
+//    NavHost(navController = navController,
+//        startDestination = "Name"
+//    ) {
+//        composable(route = "Name"){
+//            nameScreen()
+//        }
+//        composable(route = "Gender"){
+//            genderScreen()
+//        }
+//        composable(route = "Weight"){
+//            weightScreen()
+//        }
+//        composable(route = "Height"){
+//            heightScreen()
+//        }
+//        composable(route = "ActivityLevel"){
+//            activitylevelScreen()
+//        }
+//        composable(route = "Exercise"){
+//            exerciseScreen()
+//        }
+//        composable(route = "Occupation"){
+//            occupationScreen()
+//        }
+//        composable(route = "Goal"){
+//            goalScreen()
+//        }
+//    }
+//}
+//
+//
+//@OptIn(ExperimentalMaterial3Api::class)
+//@Composable
+//fun nameScreen(): String {
+//
+//    var name by remember { mutableStateOf("") }
+//    Scaffold(
+//        topBar = {
+//            CenterAlignedTopAppBar(
+//
+//                title = {
+//                    Text(
+//                        text = "Step 1 of 9",
+//                        maxLines = 1,
+//                        overflow = TextOverflow.Ellipsis,
+//                        color = White,
+//                        fontSize = 20.sp,
+//                        fontFamily = OutFitFontFamily,
+//                        fontWeight = FontWeight.Normal
+//                    )
+//                },
+//                navigationIcon = {
+//                    IconButton(onClick = {}) {
+//                        Icon(
+//                            painter = painterResource(R.drawable.baseline_arrow_back_24),
+//                            contentDescription = null
+//                        )
+//                    }
+//                }
+//            )
+//        }
+//    ) { innerPadding ->
+//
+//        Column (
+//            modifier = Modifier
+//                .fillMaxSize()
+//                .padding(innerPadding)
+//        ){
+//            Text(
+//                modifier = Modifier
+//                    .padding(16.dp),
+//                text = "What's your name?",
+//                style = TextStyle(
+//                    fontFamily = OutFitFontFamily,
+//                    fontWeight = FontWeight.Bold
+//                ),
+//                fontSize = 40.sp
+//            )
+//            Text(
+//                modifier = Modifier
+//                    .padding(start = 16.dp, top = 8.dp),
+//                text = "So that we know how to call you.",
+//                style = TextStyle(
+//                    fontFamily = OutFitFontFamily,
+//                    fontWeight = FontWeight.Normal
+//                ),
+//                fontSize = 15.sp
+//            )
+//            OutlinedTextField(
+//
+//                value = name,
+//                onValueChange = { name = it },
+//                label = {
+//                    Text(
+//                        "Enter Full Name",
+//                        fontFamily = OutFitFontFamily,
+//                        fontWeight = FontWeight.Normal) },
+//                singleLine = true,
+//                modifier = Modifier.fillMaxWidth().
+//                padding(16.dp,top = 18.dp),
+//                shape = RoundedCornerShape(18.dp),
+//                colors = TextFieldDefaults.colors(
+//                    focusedTextColor = Color.White,
+//                    unfocusedTextColor = Color.White,
+//
+//                    focusedContainerColor = Color.Transparent,
+//                    unfocusedContainerColor = Color.Transparent,
+//
+//                    focusedLabelColor = Color.White,
+//                    unfocusedLabelColor = Color.Gray,
+//
+//                    focusedIndicatorColor = Color.White,
+//                    unfocusedIndicatorColor = Color.Gray,
+//
+//                    cursorColor = Color.White
+//                )
+//            )
+//
+//            FilledTonalButton(
+//                onClick = {} ,
+//                modifier = Modifier
+//                    .fillMaxWidth()
+//                    .padding(30.dp),
+//                colors = ButtonDefaults.buttonColors(
+//                       containerColor = purple,
+//                       contentColor = White
+//                    ),
+//                 shape = RoundedCornerShape(36.dp)
+//            ) {
+//                Text(
+//                    text = "Continue...",
+//                    fontFamily = OutFitFontFamily,
+//                   fontWeight = FontWeight.Bold
+//                )
+//            }
+//        }
+//    }
+//    return name
+//}
+//
+//@Composable
+//fun genderScreen(): String{
+//
+//    var gender by remember { mutableStateOf("") }
+//
+//    return gender
+//}
+//
+//@Composable
+//fun ageScreen(): Int{
+//   var age by remember { mutableStateOf(0) }
+//
+//    return age
+//}
+//@Composable
+//fun weightScreen(): Float {
+//
+//    var weight by remember { mutableStateOf(0f) }
+//
+//    return weight
+//}
+//
+//@Composable
+//fun heightScreen(): Float{
+//
+//    var height by remember { mutableStateOf(0f) }
+//              return height
+//
+//}
+//
+//@Composable
+//fun activitylevelScreen():String{
+//
+//    var activityLevel by remember { mutableStateOf("") }
+//
+//    return activityLevel
+//}
+//
+//@Composable
+//fun exerciseScreen(): Int{
+//
+//    var exerciseFrequency by remember { mutableStateOf(0) }
+//
+//    return exerciseFrequency
+//}
+//
+//@Composable
+//fun occupationScreen(): String{
+//
+//    var occupation by remember { mutableStateOf("") }
+//
+//    return occupation
+//}
+//
+//@Composable
+//fun goalScreen(): String{
+//
+//    var goal by remember { mutableStateOf("") }
+//
+//    return goal
+//}

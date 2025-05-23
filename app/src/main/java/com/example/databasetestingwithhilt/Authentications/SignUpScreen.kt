@@ -29,9 +29,7 @@ import androidx.compose.material3.Checkbox
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -42,7 +40,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -55,16 +52,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import com.example.databasetestingwithhilt.MainActivity
 import com.example.databasetestingwithhilt.PersonalInformation.PersonalInformation
 import com.example.databasetestingwithhilt.R
 import com.example.databasetestingwithhilt.UserViewModel
 import com.example.databasetestingwithhilt.ui.theme.Black
 import com.example.databasetestingwithhilt.ui.theme.OutFitFontFamily
 import com.example.databasetestingwithhilt.ui.theme.White
-import com.example.databasetestingwithhilt.ui.theme.lightBlue
-import com.example.databasetestingwithhilt.ui.theme.purple
-import com.google.firebase.crashlytics.buildtools.reloc.org.apache.commons.logging.Log
 
 
 @SuppressLint("SuspiciousIndentation")
@@ -72,7 +65,7 @@ import com.google.firebase.crashlytics.buildtools.reloc.org.apache.commons.loggi
 fun SignUpScreen(navController: NavController,
                  viewModel : UserViewModel= hiltViewModel()
 ){
-//    val error by viewModel.autherror.collectAsState()
+
     val context = LocalContext.current
     val state by viewModel.authState.collectAsState()
 
@@ -88,7 +81,7 @@ fun SignUpScreen(navController: NavController,
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                //.background(Brush.verticalGradient(listOf(Color(0xFFBDD7F2), Color.White)))
+            
         ) {
             // Back Button (Top-left)
 
