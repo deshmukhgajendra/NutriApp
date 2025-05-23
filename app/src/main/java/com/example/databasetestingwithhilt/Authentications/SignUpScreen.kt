@@ -67,16 +67,16 @@ fun SignUpScreen(navController: NavController,
 ){
 
     val context = LocalContext.current
-    val state by viewModel.authState.collectAsState()
+   // val state by viewModel.authState.collectAsState()
 
 
-    LaunchedEffect(state) {
-        if(state != null){
-            val intent = Intent(context,PersonalInformation::class.java)
-            context.startActivity(intent)
-            (context as Activity).finish()
-        }
-    }
+//    LaunchedEffect(state) {
+//        if(state != null){
+//            val intent = Intent(context,PersonalInformation::class.java)
+//            context.startActivity(intent)
+//            (context as Activity).finish()
+//        }
+//    }
 
         Box(
             modifier = Modifier

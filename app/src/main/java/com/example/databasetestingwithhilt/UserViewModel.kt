@@ -20,6 +20,7 @@ import com.example.databasetestingwithhilt.Database.SleepRepository
 import com.example.databasetestingwithhilt.NutritionScreen.NutrientRequest
 import com.example.databasetestingwithhilt.NutritionScreen.NutritionixApiObject
 import com.example.databasetestingwithhilt.NutritionScreen.NutritionixResponse
+import com.example.databasetestingwithhilt.PersonalInformation.PersonalInformation
 import com.example.databasetestingwithhilt.SearchScreen.FoodItem
 import com.example.databasetestingwithhilt.SearchScreen.SearchApiObject
 import com.google.firebase.auth.FirebaseAuth
@@ -402,7 +403,7 @@ class UserViewModel @Inject constructor(
             authRepository.register(email,password).addOnCompleteListener { task ->
                 if (task.isSuccessful){
                     _authState.value= authRepository.firebaseAuth.currentUser
-                    val i = Intent(context.applicationContext,MainActivity::class.java)
+                    val i = Intent(context.applicationContext,PersonalInformation::class.java)
                     context.startActivity(i)
                     (context as Activity).finish()
                 }else{
