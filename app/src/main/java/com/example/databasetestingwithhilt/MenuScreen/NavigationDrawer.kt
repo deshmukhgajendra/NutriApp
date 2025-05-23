@@ -182,7 +182,9 @@ fun NavigationDrawerScreen(viewModel: UserViewModel = hiltViewModel()) {
                 ) {
                     Log.d("NavigationDrawerScreen", "Log Out lambda executed")
                     viewModel.logout()
-                    val i = Intent(context, Authentication::class.java)
+                    val i = Intent(context, Authentication::class.java).apply {
+                        flags =Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                    }
                     context.startActivity(i)
                     (context as? Activity)?.finish()
                 }

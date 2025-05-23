@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">DatabaseTestingWithHilt</string>
+    <string name="app_name">Restify</string>
     <string name="calories">Calories</string>
     <string name="title_activity_personal_information">PersonalInformation</string>
     <string name="title_activity_authentication">Authentication</string>

@@ -84,7 +84,7 @@ fun Splashscreen(firebaseAuth: FirebaseAuth) {
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color.White),
+            .background(Color.Black),
         contentAlignment = Alignment.Center
     ) {
         Image(
@@ -97,7 +97,7 @@ fun Splashscreen(firebaseAuth: FirebaseAuth) {
             LinearProgressIndicator(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(30.dp, bottom = 40.dp)
+                    .padding(start= 30.dp, bottom = 50.dp,end= 30.dp)
                     .align(Alignment.BottomCenter),
                 color = White,
                 trackColor = purple

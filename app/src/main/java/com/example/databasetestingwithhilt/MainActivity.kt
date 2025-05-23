@@ -1,5 +1,6 @@
 package com.example.databasetestingwithhilt
 
+import android.app.Activity
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
@@ -109,6 +110,7 @@ val context = LocalContext.current
                     IconButton(onClick = {
                         val i = Intent(context, NavigationDrawer::class.java)
                         context.startActivity(i)
+                        //(context as Activity).finish()
                     },
                         modifier = Modifier
                             .size(50.dp)
