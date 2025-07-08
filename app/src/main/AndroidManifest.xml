@@ -23,7 +23,7 @@
 
 
         <activity
-            android:name=".Authentications.SplashScreen"
+            android:name=".UiScreens.AuthenticationScreen.SplashScreen"
             android:exported="true"
             android:label="@string/title_activity_splash_screen"
             android:theme="@style/Theme.DatabaseTestingWithHilt" >
@@ -34,17 +34,17 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".MenuScreen.NavigationDrawer"
+            android:name=".UiScreens.NavigationDrawer"
             android:exported="false"
             android:label="@string/title_activity_navigation_drawer"
             android:theme="@style/Theme.DatabaseTestingWithHilt" />
         <activity
-            android:name=".SleepScreen.ScreenSaver"
+            android:name=".UiScreens.SleepScreen.ScreenSaver"
             android:exported="false"
             android:label="@string/title_activity_screen_saver"
             android:theme="@style/Theme.DatabaseTestingWithHilt" />
         <activity
-            android:name=".Authentications.Authentication"
+            android:name=".UiScreens.Authentication"
             android:exported="true"
             android:label="@string/title_activity_authentication"
             android:theme="@style/Theme.DatabaseTestingWithHilt"
@@ -52,14 +52,14 @@
 
         </activity>
         <activity
-            android:name=".PersonalInformation.PersonalInformation"
+            android:name=".UiScreens.PersonalInformation"
             android:exported="true"
             android:label="@string/title_activity_personal_information"
             android:theme="@style/Theme.DatabaseTestingWithHilt" >
 
         </activity>
         <activity
-            android:name=".MainActivity"
+            android:name=".UiScreens.MainActivity"
             android:exported="true"
             android:label="@string/app_name"
             android:theme="@style/Theme.DatabaseTestingWithHilt" />

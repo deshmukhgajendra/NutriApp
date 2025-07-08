@@ -7,15 +7,11 @@ import androidx.annotation.RequiresApi
 import androidx.hilt.work.HiltWorker
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
-import com.example.databasetestingwithhilt.Authentications.AuthRepository
-import com.example.databasetestingwithhilt.Database.NutrientRepository
-import com.example.databasetestingwithhilt.Database.SleepEntity
-import com.example.databasetestingwithhilt.Database.SleepRepository
-import com.example.databasetestingwithhilt.StepsCounter.StepRepository
-import com.example.databasetestingwithhilt.UserViewModel
+import com.example.databasetestingwithhilt.repository.NutrientRepository
+import com.example.databasetestingwithhilt.repository.SleepRepository
+import com.example.databasetestingwithhilt.repository.StepRepository
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
-import java.time.LocalDate
 
 
 @HiltWorker

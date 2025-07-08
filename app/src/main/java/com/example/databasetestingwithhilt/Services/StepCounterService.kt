@@ -5,10 +5,9 @@ import android.app.NotificationManager
 import android.app.Service
 import android.content.Intent
 import android.os.IBinder
-import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationCompat.Builder
-import com.example.databasetestingwithhilt.StepsCounter.StepRepository
-import com.example.databasetestingwithhilt.StepsCounter.StepSensorManager
+import com.example.databasetestingwithhilt.repository.StepRepository
+import com.example.databasetestingwithhilt.util.StepSensorManager
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
