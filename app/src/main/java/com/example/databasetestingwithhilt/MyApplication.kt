@@ -1,6 +1,9 @@
 package com.example.databasetestingwithhilt
 
 import android.app.Application
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.os.Build
 import androidx.hilt.work.HiltWorkerFactory
 import androidx.work.*
 import com.example.databasetestingwithhilt.WorkManager.SaveDataWorker
@@ -24,6 +27,7 @@ class MyApplication : Application(), Configuration.Provider {
 
     override fun onCreate() {
         super.onCreate()
+        createNotificationChannel()
         scheduleDailyWork()
     }
 
@@ -55,5 +59,21 @@ class MyApplication : Application(), Configuration.Provider {
             ExistingPeriodicWorkPolicy.REPLACE,
             workRequest
         )
+    }
+
+    fun createNotificationChannel(){
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
+
+            val channel = NotificationChannel(
+                "default_channel",
+                "Steps Counter",
+                NotificationManager.IMPORTANCE_HIGH
+            ).apply {
+                description="To track daily steps"
+            }
+
+            val manager = getSystemService(NotificationManager::class.java)
+            manager?.createNotificationChannel(channel)
+        }
     }
 }

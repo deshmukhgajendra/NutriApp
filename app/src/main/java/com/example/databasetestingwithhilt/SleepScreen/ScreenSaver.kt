@@ -4,7 +4,7 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
+import android.widget.TextClock
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -35,14 +35,17 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.viewinterop.AndroidView
+import androidx.core.content.ContextCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.databasetestingwithhilt.R
 import com.example.databasetestingwithhilt.SleepScreen.ui.theme.DatabaseTestingWithHiltTheme
 import com.example.databasetestingwithhilt.UserViewModel
+import com.example.databasetestingwithhilt.ui.theme.OutFitFontFamily
 import com.example.databasetestingwithhilt.ui.theme.lightBlue
 import com.example.databasetestingwithhilt.ui.theme.yellow
 import dagger.hilt.android.AndroidEntryPoint
@@ -90,18 +93,29 @@ fun SleepScreenSaver(viewModel: UserViewModel = hiltViewModel() ) {
                 verticalAlignment = Alignment.Bottom,
                 horizontalArrangement = Arrangement.Center
             ) {
-                Text(
-                    text = "01:37",
-                    fontSize = 64.sp,
-                    color = Color.White,
-                    textAlign = TextAlign.Center
+                AndroidView(
+                    factory = { context ->
+                        TextClock(context).apply {
+                            // set hour format
+                            format12Hour = "hh:mm"
+                            // set time zone
+                            timeZone = timeZone
+                            // set text size
+                            textSize = 70f
+                            // set text color
+                            setTextColor(ContextCompat.getColor(context, R.color.white))
+                        }
+                    },
+                  //  modifier = Modifier.padding(5.dp),
                 )
                 Text(
                     text = "PM",
-                    fontSize = 24.sp,
+                    fontSize = 30.sp,
                     color = Color.White,
                     modifier = Modifier.padding(start = 4.dp),
-                    textAlign = TextAlign.Center
+                    textAlign = TextAlign.Center,
+                    fontFamily = OutFitFontFamily,
+                    fontWeight = FontWeight.Normal
                 )
             }
             Text(
@@ -109,7 +123,9 @@ fun SleepScreenSaver(viewModel: UserViewModel = hiltViewModel() ) {
                 fontSize = 20.sp,
                 color = Color.White.copy(alpha = 0.7f),
                 textAlign = TextAlign.Center,
-                modifier = Modifier.padding(top = 8.dp)
+                fontFamily = OutFitFontFamily,
+                fontWeight = FontWeight.Normal,
+                modifier = Modifier.padding(top = 2.dp)
             )
         }
 
@@ -149,12 +165,16 @@ fun SleepScreenSaver(viewModel: UserViewModel = hiltViewModel() ) {
                         fontSize = 20.sp,
                         textAlign = TextAlign.Start,
                         color = Color.White,
+                        fontFamily = OutFitFontFamily,
+                        fontWeight = FontWeight.Bold,
                         modifier = Modifier.weight(1f)
                     )
                     Text(
                         text = "12:15 PM",
                         textAlign = TextAlign.End,
-                        color = Color.White
+                        color = Color.White,
+                        fontFamily = OutFitFontFamily,
+                        fontWeight = FontWeight.Normal
                     )
                 }
             }
@@ -189,12 +209,16 @@ fun SleepScreenSaver(viewModel: UserViewModel = hiltViewModel() ) {
                         fontSize = 20.sp,
                         textAlign = TextAlign.Start,
                         color = Color.White,
+                        fontFamily = OutFitFontFamily,
+                        fontWeight = FontWeight.Bold,
                         modifier = Modifier.weight(1f)
                     )
                     Text(
                         text = "Off",
                         textAlign = TextAlign.End,
-                        color = Color.White
+                        color = Color.White,
+                        fontFamily = OutFitFontFamily,
+                        fontWeight = FontWeight.Normal
                     )
                 }
             }
@@ -203,7 +227,6 @@ fun SleepScreenSaver(viewModel: UserViewModel = hiltViewModel() ) {
 
             Button(
                 onClick = {
-//
                val waketime = getCurrentTime()
                     viewModel.SaveWakeTime(waketime)
 
@@ -212,12 +235,18 @@ fun SleepScreenSaver(viewModel: UserViewModel = hiltViewModel() ) {
                 },
                 modifier = Modifier
                     .padding(horizontal = 30.dp)
+                    .height(50.dp)
                     .fillMaxWidth(),
                 colors = ButtonDefaults.buttonColors(
                     containerColor = Color.White
                 )
             ) {
-                Text(text = "Wake Up", fontSize = 20.sp)
+                Text(
+                    text = "Wake Up",
+                    fontSize = 20.sp,
+                    fontFamily = OutFitFontFamily,
+                    fontWeight = FontWeight.Bold
+                )
             }
         }
     }

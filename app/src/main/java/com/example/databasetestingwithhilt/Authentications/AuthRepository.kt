@@ -4,7 +4,10 @@ import com.example.databasetestingwithhilt.Database.PersonalEntity
 import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.ValueEventListener
 import javax.inject.Inject
 
 class AuthRepository @Inject constructor(
@@ -24,8 +27,27 @@ class AuthRepository @Inject constructor(
        // Log.d("Gajendra", "User logged out")
     }
 
-    fun getCurrentUserName(): String?{
-        return firebaseAuth.currentUser?.displayName
+
+    fun getCurrentUserName(onResult: (String?) -> Unit) {
+        val uid = firebaseAuth.currentUser?.uid
+        if (uid != null) {
+            val nameRef = databaseReference.child("users").child(uid)
+                .child("Personal_Data")
+                .child("name")
+
+            nameRef.addListenerForSingleValueEvent(object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    val name = snapshot.getValue(String::class.java)
+                    onResult(name) // pass value back to caller
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+                    onResult(null)
+                }
+            })
+        } else {
+            onResult(null)
+        }
     }
 
     fun getCurrenUsertEmail(): String?{

@@ -1,35 +1,48 @@
 package com.example.databasetestingwithhilt
 
-import android.app.Activity
+import android.Manifest
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.BottomAppBar
+import androidx.compose.material3.Button
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -41,6 +54,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -53,9 +68,11 @@ import com.example.databasetestingwithhilt.NutritionScreen.FoodLogDetails
 import com.example.databasetestingwithhilt.NutritionScreen.NutritionDetailsScreen
 import com.example.databasetestingwithhilt.NutritionScreen.NutritionScreen
 import com.example.databasetestingwithhilt.SearchScreen.SearchScreen
+import com.example.databasetestingwithhilt.Services.StepCounterService
 import com.example.databasetestingwithhilt.SleepScreen.SleepScreen
 import com.example.databasetestingwithhilt.ui.theme.DatabaseTestingWithHiltTheme
 import com.example.databasetestingwithhilt.ui.theme.OutFitFontFamily
+import com.example.databasetestingwithhilt.ui.theme.White
 import com.example.databasetestingwithhilt.ui.theme.purple
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -63,10 +80,21 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
-   val userViewModel : UserViewModel by viewModels()
+
     @RequiresApi(Build.VERSION_CODES.S)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        requestNecessaryPermissions()
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
+            val intent = Intent(this ,StepCounterService::class.java)
+            startForegroundService(intent)
+        }else{
+            val intent = Intent(this, StepCounterService::class.java)
+            startService(intent)
+        }
+
         enableEdgeToEdge()
         setContent {
             DatabaseTestingWithHiltTheme {
@@ -77,8 +105,41 @@ class MainActivity : ComponentActivity() {
         }
     }
 
+    fun requestNecessaryPermissions(){
+        val permissionToRequest = mutableListOf<String>()
 
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q){
+            if (ContextCompat.checkSelfPermission(this,Manifest.permission.ACTIVITY_RECOGNITION)
+                != PackageManager.PERMISSION_GRANTED){
+                permissionToRequest.add(Manifest.permission.ACTIVITY_RECOGNITION)
+            }
+        }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU){
+            if (ContextCompat.checkSelfPermission(this,Manifest.permission.POST_NOTIFICATIONS)
+                != PackageManager.PERMISSION_GRANTED){
+                permissionToRequest.add(Manifest.permission.POST_NOTIFICATIONS)
+            }
+        }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE){
+            if (ContextCompat.checkSelfPermission(this,Manifest.permission.FOREGROUND_SERVICE_HEALTH)
+                != PackageManager.PERMISSION_GRANTED){
+                permissionToRequest.add(Manifest.permission.FOREGROUND_SERVICE_HEALTH)
+            }
+        }
+
+        if (permissionToRequest.isNotEmpty()){
+            ActivityCompat.requestPermissions(
+                this,
+                permissionToRequest.toTypedArray(),
+                100
+            )
+        }
+    }
 }
+
+
 
 @RequiresApi(Build.VERSION_CODES.S)
 @OptIn(ExperimentalMaterial3Api::class)
@@ -87,6 +148,8 @@ fun app() {
 
 val context = LocalContext.current
     val navController = rememberNavController()
+    val sheetState = rememberModalBottomSheetState()
+    var showBottomSheet = remember { mutableStateOf(false) }
 
     Scaffold(
         topBar = {
@@ -149,7 +212,7 @@ val context = LocalContext.current
         },
         bottomBar = {
 
-            bottomBar(navController)
+            bottomBar(navController,showBottomSheet)
 
         }
     ) { innerPadding ->
@@ -162,14 +225,83 @@ val context = LocalContext.current
                 contentDescription = null,
                 contentScale = ContentScale.Crop
             )
-            NavigateToScreen(navController,innerPadding)
-        }
 
+            if (showBottomSheet.value){
+                ModalBottomSheet(
+                    onDismissRequest = {showBottomSheet.value = false },
+                    sheetState = sheetState
+                ) { // sheet content
+
+                    GridWithButtons(navController,showBottomSheet)
+                }
+            }
+                NavigateToScreen(navController,innerPadding)
+        }
     }
 }
 
 @Composable
-fun bottomBar(navController: NavController) {
+fun GridWithButtons(navController: NavController,showBottomSheet : MutableState<Boolean>) {
+    LazyVerticalGrid(
+        columns = GridCells.Fixed(2), // Two columns
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp),
+        horizontalArrangement = Arrangement.spacedBy(16.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp)
+    ) {
+        items(4) { index ->
+            Button(
+                onClick = { /* Handle button click */
+                    when (index) {
+                        0 -> {navController.navigate("Search")
+                        showBottomSheet.value = false}
+                        1 -> {navController.navigate("Sleep")
+                        showBottomSheet.value = false}
+                    }
+                },
+                shape = RoundedCornerShape(8.dp),
+                modifier = Modifier
+                    .size(100.dp)
+            ) {
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center
+                ) {
+                    Icon(
+                        painter = when (index) {
+                            0 -> painterResource(R.drawable.search)
+                            1 -> painterResource(R.drawable.sleep)
+                            2 -> painterResource(R.drawable.baseline_water_drop_24)
+                            else -> painterResource(R.drawable.workout_svgrepo_com)
+                        },
+                        contentDescription = null,
+                        modifier = Modifier.size(24.dp),
+                        tint = White
+                    )
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Text(
+                        text = when (index){
+                            0 -> "Log Food"
+                            1 -> "Log Sleep"
+                            2 -> "Log Water"
+                            else -> "Log Workout"
+                        },
+                        fontSize = 12.sp,
+                        fontFamily = OutFitFontFamily,
+                        fontWeight = FontWeight.Normal,
+                        color = White
+                    )
+                }
+            }
+        }
+    }
+}
+
+
+
+@Composable
+fun bottomBar(navController: NavController, showBottomSheet : MutableState<Boolean>) {
     BottomAppBar(
         containerColor = MaterialTheme.colorScheme.primary,
         contentColor = MaterialTheme.colorScheme.tertiary
@@ -222,7 +354,10 @@ fun bottomBar(navController: NavController) {
                 .padding(8.dp),
             contentAlignment = Alignment.Center
         ) {
-            IconButton(onClick = { navController.navigate("Search") }) {
+            IconButton(onClick = {
+               // navController.navigate("Search")
+                showBottomSheet.value = true
+            }) {
                 Icon(
                     Icons.Filled.Add,
                     contentDescription = "FAB",

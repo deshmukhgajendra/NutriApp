@@ -11,6 +11,7 @@ import com.example.databasetestingwithhilt.Authentications.AuthRepository
 import com.example.databasetestingwithhilt.Database.NutrientRepository
 import com.example.databasetestingwithhilt.Database.SleepEntity
 import com.example.databasetestingwithhilt.Database.SleepRepository
+import com.example.databasetestingwithhilt.StepsCounter.StepRepository
 import com.example.databasetestingwithhilt.UserViewModel
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
@@ -22,7 +23,8 @@ class SaveDataWorker @AssistedInject constructor(
     @Assisted appContext: Context,
     @Assisted workerParams: WorkerParameters,
     val sleepRepository: SleepRepository,
-    val nutrientRepository: NutrientRepository
+    val nutrientRepository: NutrientRepository,
+    val stepRepository: StepRepository
 ) : CoroutineWorker(appContext, workerParams) {
 
 
@@ -32,6 +34,7 @@ class SaveDataWorker @AssistedInject constructor(
                 //  Log.d("SaveDataWorker", "Worker started")
                 sleepRepository.syncAllRecordToFirebase()
                 nutrientRepository.syncNutrientDataToFirebase()
+                stepRepository.saveStepsRecordTofirebase()
 
            //     Log.d("kaam", "doWork: work done ")
                 Result.success()

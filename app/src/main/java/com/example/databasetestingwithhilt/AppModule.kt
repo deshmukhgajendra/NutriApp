@@ -1,7 +1,9 @@
 package com.example.databasetestingwithhilt
 
 import android.app.Application
+import android.app.NotificationManager
 import android.content.Context
+import androidx.core.app.NotificationCompat
 import androidx.room.Room
 import com.example.databasetestingwithhilt.Database.AppDatabase
 import com.example.databasetestingwithhilt.Database.FoodDao
@@ -17,6 +19,8 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 import androidx.work.WorkManager
+import com.example.databasetestingwithhilt.StepsCounter.StepRepository
+import com.example.databasetestingwithhilt.StepsCounter.StepSensorManager
 
 
 @Module
@@ -66,6 +70,34 @@ object AppModule {
     @Singleton
     fun provideWorkManagerInstance(app: Application): WorkManager{
         return WorkManager.getInstance(app)
+    }
+
+    @Provides
+    @Singleton
+    fun providesSensorManager(@ApplicationContext context: Context):StepSensorManager{
+        return StepSensorManager(context)
+    }
+
+    @Provides
+    @Singleton
+    fun providesNotificationManager(@ApplicationContext context: Context):NotificationManager{
+        return context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+    }
+
+    @Provides
+    @Singleton
+    fun providesNotificationBuilder(@ApplicationContext context: Context):NotificationCompat.Builder{
+        return NotificationCompat.Builder(
+            context,"default_channel"
+        )
+            .setSmallIcon(R.drawable.shoe_prints_svgrepo_com)
+            .setPriority(NotificationCompat.PRIORITY_MAX)
+    }
+
+    @Provides
+    @Singleton
+    fun providesStepRepository(firebaseAuth: FirebaseAuth, databaseReference: DatabaseReference):StepRepository{
+        return StepRepository(firebaseAuth,databaseReference)
     }
 
 }

@@ -1,7 +1,6 @@
 package com.example.databasetestingwithhilt.NutritionScreen
 
 import android.annotation.SuppressLint
-import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -50,7 +49,6 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -58,6 +56,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.databasetestingwithhilt.R
+import com.example.databasetestingwithhilt.StepsCounter.StepViewModel
 import com.example.databasetestingwithhilt.UserViewModel
 import com.example.databasetestingwithhilt.ui.theme.OutFitFontFamily
 import com.example.databasetestingwithhilt.ui.theme.White
@@ -105,16 +104,17 @@ fun NutritionScreen(navController: NavController,viewModel: UserViewModel = hilt
 //        viewModel.getRequiredProteins()
 //        viewModel.getRequiredCarbs()
 //        viewModel.getRequiredFats()
+
         viewModel.fetchRequiredNutrients()
         viewModel.getLiveCalorieCount()
         viewModel.getLiveFatsCount()
         viewModel.getLiveCarbsCount()
         viewModel.getLiveProteinCount()
 
-        Log.d("xyz", "RequiredCalories: $requiredCalories")
-        Log.d("xyz", "RequiredProtein: $requiredProtein")
-        Log.d("xyz", "RequiredFats: $requiredFats")
-        Log.d("xyz", "RequiredCarbs: $requiredCarbs")
+//        Log.d("xyz", "liveClorieCount: $liveClorieCount")
+//        Log.d("xyz", "RequiredProtein: $requiredProtein")
+//        Log.d("xyz", "RequiredFats: $requiredFats")
+//        Log.d("xyz", "RequiredCarbs: $requiredCarbs")
     }
 }
 
@@ -124,6 +124,9 @@ fun CircularProgressBarCards(navController: NavController,Progress: Float, max: 
 
     val progressFraction = if (max > 0) (Progress / max).coerceIn(0f, 1f) else 0f
     val remainingCalories = (max - Progress).coerceAtLeast(0f).toInt()
+
+   // Log.d("abc", "CircularProgressBarCards:$progressFraction ")
+   // Log.d("abc", "liveClorieProgressValue: $Progress")
 
     Card(
         modifier = Modifier
@@ -508,7 +511,9 @@ fun HabitCard(){
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun StepAndExerciseCard() {
+fun StepAndExerciseCard(viewModel: StepViewModel= hiltViewModel()) {
+
+    val steps by viewModel.steps.collectAsState()
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -548,12 +553,12 @@ fun StepAndExerciseCard() {
                         modifier = Modifier.size(24.dp)
                     )
                     Text(
-                        text = "Connect to track steps.",
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = Color.Gray,
+                        text = "$steps",
+                        style = MaterialTheme.typography.titleMedium,
+                        color = Color.White,
                         modifier = Modifier.padding(10.dp),
                         fontFamily = OutFitFontFamily,
-                        fontWeight = FontWeight.Normal
+                        fontWeight = FontWeight.Bold
                     )
                     Icon(
                         imageVector = Icons.Default.KeyboardArrowRight,

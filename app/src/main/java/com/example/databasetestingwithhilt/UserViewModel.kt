@@ -354,11 +354,7 @@ class UserViewModel @Inject constructor(
 
     // to save personal data
 
-    fun updatePersonalEntity(
 
-    ){
-
-    }
     fun saveUserData(personalEntity: PersonalEntity){
 
         authRepository.saveUserData(personalEntity){sucess ->
@@ -372,6 +368,7 @@ class UserViewModel @Inject constructor(
             _requiredCalorie.value=repository.getRequiredCalories()
         }
     }
+
     fun fetchRequiredNutrients(){
         viewModelScope.launch {
             _requiredCalorie.value=repository.getRequiredCalories()
@@ -424,9 +421,11 @@ class UserViewModel @Inject constructor(
 
     fun getUserDetails(){
         viewModelScope.launch {
-            _userName.value=authRepository.getCurrentUserName()
+             authRepository.getCurrentUserName{name ->
+                 _userName.value=name
+             }
             _userEmail.value=authRepository.getCurrenUsertEmail()
-         //   Log.d("auth", "getUserDetails: ${_userName.value}")
+            Log.d("authName", "getUserDetails: ${_userName.value}")
          //   Log.d("auth", "getUserDetails: ${_userEmail.value}")
         }
     }
