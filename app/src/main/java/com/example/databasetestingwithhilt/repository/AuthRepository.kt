@@ -1,7 +1,16 @@
 package com.example.databasetestingwithhilt.repository
 
+import android.content.Context
+import android.content.Intent
+import com.example.databasetestingwithhilt.R
 import com.example.databasetestingwithhilt.model.PersonalEntity
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount
+import com.google.android.gms.auth.api.signin.GoogleSignInClient
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.tasks.Task
+import com.google.firebase.auth.AuthCredential
 import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
@@ -12,8 +21,41 @@ import javax.inject.Inject
 
 class AuthRepository @Inject constructor(
      val firebaseAuth: FirebaseAuth,
-     val databaseReference: DatabaseReference
+     val databaseReference: DatabaseReference,
+    val context: Context,
+    val googleSignInClient : GoogleSignInClient
 ){
+
+//   private val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+//        .requestIdToken(context.getString(R.string.default_web_client_id))
+//        .requestEmail()
+//        .build()
+//
+//   private val googleSignInClient = GoogleSignIn.getClient(context,gso)
+
+//    fun getSignInIntent(): Intent = googleSignInClient.signInIntent
+
+//    fun getSignInAccountFromIntent(data :Intent?):GoogleSignInAccount{
+//        return GoogleSignIn.getSignedInAccountFromIntent(data)
+//            .getResult(ApiException::class.java)
+//    }
+
+
+    fun getGoogleSignInIntent(): Intent = googleSignInClient.signInIntent
+
+    fun firebaseAuthWithGoogle(credential: AuthCredential, onResult: (Boolean,String?)->Unit ){
+        firebaseAuth.signInWithCredential(credential)
+            .addOnCompleteListener { task->
+                if(task.isSuccessful){
+                    val user = task.result?.user
+                    onResult(true,null)
+                }else{
+                    onResult(false, task.exception?.message)
+                }
+            }
+    }
+
+
     fun register (email : String, password : String): Task<AuthResult>{
         return firebaseAuth.createUserWithEmailAndPassword(email,password)
     }
@@ -28,56 +70,6 @@ class AuthRepository @Inject constructor(
     }
 
 
-    fun getCurrentUserName(onResult: (String?) -> Unit) {
-        val uid = firebaseAuth.currentUser?.uid
-        if (uid != null) {
-            val nameRef = databaseReference.child("users").child(uid)
-                .child("Personal_Data")
-                .child("name")
 
-            nameRef.addListenerForSingleValueEvent(object : ValueEventListener {
-                override fun onDataChange(snapshot: DataSnapshot) {
-                    val name = snapshot.getValue(String::class.java)
-                    onResult(name) // pass value back to caller
-                }
-
-                override fun onCancelled(error: DatabaseError) {
-                    onResult(null)
-                }
-            })
-        } else {
-            onResult(null)
-        }
-    }
-
-    fun getCurrenUsertEmail(): String?{
-        return firebaseAuth.currentUser?.email
-    }
-
-    fun getUserId(): String?{
-        return firebaseAuth.currentUser?.uid
-    }
-
-    fun saveUserData(personalEntity: PersonalEntity, onComplete:(Boolean) ->Unit){
-
-        val currentUser = firebaseAuth.currentUser
-        if (currentUser != null){
-            val userId = currentUser.uid
-         //   Log.d("gajendra", "saveUserData: $userId")
-            databaseReference.child("users").child(userId).child("Personal_Data")
-                .setValue(personalEntity)
-                .addOnCompleteListener{ task ->
-                    if (task.isSuccessful) {
-                      //  Log.d("gajendra", "Data saved successfully")
-                        onComplete(true)
-                    } else {
-                      //  Log.e("gajendra", "Error saving data", task.exception)
-                        onComplete(false)
-                    }
-                }
-        }else{
-            onComplete(false)
-        }
-    }
 }
 

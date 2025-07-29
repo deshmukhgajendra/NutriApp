@@ -70,7 +70,9 @@ dependencies {
     implementation(libs.firebase.crashlytics.buildtools)
     implementation(libs.androidx.runtime.livedata)
     implementation(libs.firebase.database)
-   // implementation(libs.androidx.work.runtime.ktx)
+    implementation ("com.google.android.gms:play-services-auth:20.7.0")
+
+    // implementation(libs.androidx.work.runtime.ktx)
    // implementation(libs.androidx.hilt.work)
     implementation(libs.androidx.core.i18n)
     // implementation(libs.core)

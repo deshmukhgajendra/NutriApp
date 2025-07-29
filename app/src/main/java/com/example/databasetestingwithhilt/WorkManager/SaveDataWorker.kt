@@ -7,6 +7,7 @@ import androidx.annotation.RequiresApi
 import androidx.hilt.work.HiltWorker
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
+import com.example.databasetestingwithhilt.repository.FirebaseRepository
 import com.example.databasetestingwithhilt.repository.NutrientRepository
 import com.example.databasetestingwithhilt.repository.SleepRepository
 import com.example.databasetestingwithhilt.repository.StepRepository
@@ -20,7 +21,8 @@ class SaveDataWorker @AssistedInject constructor(
     @Assisted workerParams: WorkerParameters,
     val sleepRepository: SleepRepository,
     val nutrientRepository: NutrientRepository,
-    val stepRepository: StepRepository
+    val stepRepository: StepRepository,
+    val firebaseRepository: FirebaseRepository
 ) : CoroutineWorker(appContext, workerParams) {
 
 
@@ -29,7 +31,7 @@ class SaveDataWorker @AssistedInject constructor(
             return try {
                 //  Log.d("SaveDataWorker", "Worker started")
                 sleepRepository.syncAllRecordToFirebase()
-                nutrientRepository.syncNutrientDataToFirebase()
+                firebaseRepository.syncNutrientDataToFirebase()
                 stepRepository.saveStepsRecordTofirebase()
 
            //     Log.d("kaam", "doWork: work done ")

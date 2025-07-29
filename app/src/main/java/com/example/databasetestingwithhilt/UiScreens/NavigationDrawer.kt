@@ -57,6 +57,8 @@ import com.example.databasetestingwithhilt.ui.theme.lightGray
 import com.example.databasetestingwithhilt.ui.theme.orange
 import com.example.databasetestingwithhilt.ui.theme.purple
 import com.example.databasetestingwithhilt.ui.theme.sea
+import com.example.databasetestingwithhilt.viewmodel.AuthenticationViewModel
+import com.example.databasetestingwithhilt.viewmodel.FirebaseViewmodel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -77,13 +79,16 @@ class NavigationDrawer : ComponentActivity() {
 }
 
 @Composable
-fun NavigationDrawerScreen(viewModel: UserViewModel = hiltViewModel()) {
-    val userName by viewModel.userName.observeAsState()
-    val userEmail by viewModel.userEmail.observeAsState()
+fun NavigationDrawerScreen(viewModel: UserViewModel = hiltViewModel(),
+                           authViewModel :AuthenticationViewModel= hiltViewModel(),
+                           firebaseViewmodel: FirebaseViewmodel = hiltViewModel()
+) {
+    val userName by firebaseViewmodel.userName.observeAsState()
+    val userEmail by firebaseViewmodel.userEmail.observeAsState()
     val context = LocalContext.current
 
     LaunchedEffect(Unit) {
-        viewModel.getUserDetails()
+        firebaseViewmodel.getUserDetails()
     }
 
     val scrollState = rememberScrollState()
@@ -133,14 +138,17 @@ fun NavigationDrawerScreen(viewModel: UserViewModel = hiltViewModel()) {
                         fontSize = 25.sp,
                         textAlign = TextAlign.Start,
                         fontFamily = OutFitFontFamily,
-                        fontWeight = FontWeight.Bold
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.secondary
                     )
                     Text(
                         text = "$userName",
                         fontSize = 30.sp,
                         fontFamily = OutFitFontFamily,
                         fontWeight = FontWeight.Bold,
-                        textAlign = TextAlign.Start
+                        textAlign = TextAlign.Start,
+                        color = MaterialTheme.colorScheme.secondary
+
                     )
                 }
             }
@@ -169,7 +177,7 @@ fun NavigationDrawerScreen(viewModel: UserViewModel = hiltViewModel()) {
                 listItem("Log Out",R.drawable.baseline_logout_24, purple
                 ) {
                     Log.d("NavigationDrawerScreen", "Log Out lambda executed")
-                    viewModel.logout()
+                    authViewModel.logout()
                     val i = Intent(context, Authentication::class.java).apply {
                         flags =Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                     }

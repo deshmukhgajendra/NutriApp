@@ -15,11 +15,13 @@ import androidx.compose.material3.Typography
 private val DarkColorScheme = darkColorScheme(
     primary = Black,
     secondary = White,
+    tertiary = gray
 )
 
 private val LightColorScheme = lightColorScheme(
     primary = White,
     secondary = Black,
+    tertiary = Black
 )
 
 // Renamed the Typography object to AppTypography to avoid conflicts

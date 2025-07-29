@@ -50,7 +50,7 @@ fun MenuScreen() {
             modifier = Modifier
                 .padding(16.dp),
             shape = RoundedCornerShape(16.dp), // Rounded corners
-            colors = CardDefaults.cardColors(containerColor = gray) // Set card background color
+            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primary) // Set card background color
         ) {
             Column(
                 modifier = Modifier
@@ -78,7 +78,7 @@ fun MenuScreen() {
             modifier = Modifier
                 .padding(16.dp),
             shape = RoundedCornerShape(16.dp), // Rounded corners
-            colors = CardDefaults.cardColors(containerColor = gray) // Set card background color
+            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primary) // Set card background color
         ) {
             Column(
                 modifier = Modifier
@@ -134,7 +134,8 @@ fun CustomButtonRow(
                 style = TextStyle(
                     fontFamily = OutFitFontFamily,
                     fontWeight = FontWeight.Medium,
-                    fontSize = 16.sp
+                    fontSize = 16.sp,
+                    color = MaterialTheme.colorScheme.secondary
                 ),
                 modifier = Modifier.weight(1f)
             )

@@ -38,10 +38,10 @@ class StepRepository @Inject constructor(
                 .setValue(stepCount)
                 .addOnCompleteListener { task->
                     if (task.isSuccessful){
-                        Log.d("gajendra", "Steps-Record --> Data saved successfully")
+                     //   Log.d("gajendra", "Steps-Record --> Data saved successfully")
                         resetStepsCount()
                     }else{
-                        Log.d("gajendra", "Steps-Record --> Failed to save data")
+                      //  Log.d("gajendra", "Steps-Record --> Failed to save data")
 
                     }
                 }

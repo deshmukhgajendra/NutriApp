@@ -1,6 +1,7 @@
 package com.example.databasetestingwithhilt.UiScreens.NutritionScreen
 
 import android.annotation.SuppressLint
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -64,19 +65,23 @@ import com.example.databasetestingwithhilt.ui.theme.darkGreen
 import com.example.databasetestingwithhilt.ui.theme.gray
 import com.example.databasetestingwithhilt.ui.theme.purple
 import com.example.databasetestingwithhilt.ui.theme.sea
+import com.example.databasetestingwithhilt.viewmodel.FirebaseViewmodel
 
 
 @SuppressLint("SuspiciousIndentation")
 @Composable
-fun NutritionScreen(navController: NavController,viewModel: UserViewModel = hiltViewModel()){
+fun NutritionScreen(navController: NavController,
+                    viewModel: UserViewModel = hiltViewModel(),
+                    firebaseViewmodel: FirebaseViewmodel = hiltViewModel()
+){
 
     val foods by viewModel.foods.collectAsState()
     val error by viewModel.error.collectAsState()
     val scrollState = rememberScrollState()
-    val requiredCalories by viewModel.requiredCalories.collectAsState(initial = 0f)
-    val requiredProtein by viewModel.requiredProtein.collectAsState(initial = 0f)
-    val requiredCarbs by viewModel.requiredCarbs.collectAsState(initial = 0f)
-    val requiredFats by viewModel.requiredFats.collectAsState(initial = 0f)
+    val requiredCalories by firebaseViewmodel.requiredCalories.collectAsState(initial = 0f)
+    val requiredProtein by firebaseViewmodel.requiredProtein.collectAsState(initial = 0f)
+    val requiredCarbs by firebaseViewmodel.requiredCarbs.collectAsState(initial = 0f)
+    val requiredFats by firebaseViewmodel.requiredFats.collectAsState(initial = 0f)
     val liveClorieCount by viewModel.liveCalorieCount.collectAsState()
     val liveProteinCount by viewModel.liveProteinCount.collectAsState()
     val liveCarbsCount by viewModel.liveCarbsCount.collectAsState()
@@ -105,7 +110,7 @@ fun NutritionScreen(navController: NavController,viewModel: UserViewModel = hilt
 //        viewModel.getRequiredCarbs()
 //        viewModel.getRequiredFats()
 
-        viewModel.fetchRequiredNutrients()
+        firebaseViewmodel.fetchRequiredNutrients()
         viewModel.getLiveCalorieCount()
         viewModel.getLiveFatsCount()
         viewModel.getLiveCarbsCount()
@@ -125,8 +130,11 @@ fun CircularProgressBarCards(navController: NavController,Progress: Float, max: 
     val progressFraction = if (max > 0) (Progress / max).coerceIn(0f, 1f) else 0f
     val remainingCalories = (max - Progress).coerceAtLeast(0f).toInt()
 
-   // Log.d("abc", "CircularProgressBarCards:$progressFraction ")
-   // Log.d("abc", "liveClorieProgressValue: $Progress")
+//    Log.d("abc", "CircularProgressBarCards:$progressFraction ")
+//    Log.d("abc", "liveClorieProgressValue: $Progress")
+//    Log.d("abc","max value from firebase : $max")
+//    Log.d("abc","requiredvalue value from firebase : $requiredCalories")
+
 
     Card(
         modifier = Modifier
@@ -137,7 +145,7 @@ fun CircularProgressBarCards(navController: NavController,Progress: Float, max: 
                 shape = RoundedCornerShape(16.dp)
             ),
         elevation = CardDefaults.cardElevation(8.dp),
-        colors = CardDefaults.cardColors(containerColor = Color.Black)
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primary)
     ) {
         Box(
             modifier = Modifier
@@ -168,7 +176,7 @@ fun CircularProgressBarCards(navController: NavController,Progress: Float, max: 
                             fontSize = 24.sp,
                             fontFamily = OutFitFontFamily,
                             fontWeight = FontWeight.Bold,
-                            color = colorResource(R.color.white),
+                            color = MaterialTheme.colorScheme.secondary,
                             textAlign = TextAlign.Start
                         )
                         Text(
@@ -176,7 +184,7 @@ fun CircularProgressBarCards(navController: NavController,Progress: Float, max: 
                             fontSize = 16.sp,
                             fontFamily = OutFitFontFamily,
                             fontWeight = FontWeight.Normal,
-                            color = Color.Gray,
+                            color = MaterialTheme.colorScheme.tertiary,
                             textAlign = TextAlign.Start
                         )
                     }
@@ -202,12 +210,12 @@ fun CircularProgressBarCards(navController: NavController,Progress: Float, max: 
                         Column(horizontalAlignment = Alignment.CenterHorizontally) {
                             Text(
                                 text = "$remainingCalories",
-                                color = Color.White,
+                                color = MaterialTheme.colorScheme.secondary,
                                 fontFamily = OutFitFontFamily,
                                 fontWeight = FontWeight.Bold)
                             Text(
                                 text = "Remaining",
-                                color = Color.White,
+                                color = MaterialTheme.colorScheme.secondary,
                                 fontFamily = OutFitFontFamily,
                                 fontWeight = FontWeight.Bold)
                         }
@@ -224,18 +232,20 @@ fun CircularProgressBarCards(navController: NavController,Progress: Float, max: 
                                 Icon(
                                     painter = painterResource(R.drawable.flag),
                                     contentDescription = null,
-                                    tint = Color.White,
+                                    tint = MaterialTheme.colorScheme.secondary,
                                 )
                                 Spacer(modifier = Modifier.padding(4.dp))
                                 Column {
                                     Text(
                                         text = "Base Goal",
                                         fontFamily = OutFitFontFamily,
-                                        fontWeight = FontWeight.Bold)
+                                        fontWeight = FontWeight.Bold,
+                                        color = MaterialTheme.colorScheme.secondary)
                                     Text(
                                         text = "$requiredCalories",
                                         fontFamily = OutFitFontFamily,
-                                        fontWeight = FontWeight.Bold)
+                                        fontWeight = FontWeight.Bold,
+                                        color = MaterialTheme.colorScheme.secondary)
                                 }
                             }
                         }
@@ -255,11 +265,13 @@ fun CircularProgressBarCards(navController: NavController,Progress: Float, max: 
                                     Text(
                                         text = "Food",
                                         fontFamily = OutFitFontFamily,
-                                        fontWeight = FontWeight.Bold)
+                                        fontWeight = FontWeight.Bold,
+                                        color = MaterialTheme.colorScheme.secondary)
                                     Text(
                                         text = "${Progress.toInt()}",
                                         fontFamily = OutFitFontFamily,
-                                        fontWeight = FontWeight.Bold)
+                                        fontWeight = FontWeight.Bold,
+                                        color = MaterialTheme.colorScheme.secondary)
                                 }
                             }
                         }
@@ -279,11 +291,13 @@ fun CircularProgressBarCards(navController: NavController,Progress: Float, max: 
                                     Text(
                                         text = "Exercise",
                                         fontFamily = OutFitFontFamily,
-                                        fontWeight = FontWeight.Bold)
+                                        fontWeight = FontWeight.Bold,
+                                        color = MaterialTheme.colorScheme.secondary)
                                     Text(
                                         text = "2585",
                                         fontFamily = OutFitFontFamily,
-                                        fontWeight = FontWeight.Bold)
+                                        fontWeight = FontWeight.Bold,
+                                        color = MaterialTheme.colorScheme.secondary)
                                 }
                             }
                         }
@@ -311,7 +325,7 @@ fun MacrosCard(liveProtein: Float, liveCarbs: Float, liveFats: Float,
                 shape = RoundedCornerShape(16.dp)
             ),
         elevation = CardDefaults.cardElevation(8.dp),
-        colors = CardDefaults.cardColors(containerColor = Color.Black)
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primary)
     ) {
         Column(
             modifier = Modifier
@@ -322,7 +336,7 @@ fun MacrosCard(liveProtein: Float, liveCarbs: Float, liveFats: Float,
             Text(
                 text = "Macros",
                 fontSize = 24.sp,
-                color = colorResource(R.color.white),
+                color = MaterialTheme.colorScheme.secondary,
                 textAlign = TextAlign.Start,
                 fontFamily = OutFitFontFamily,
                 fontWeight = FontWeight.Bold
@@ -362,7 +376,7 @@ fun MacroProgress(label: String, Progress: Float, max: Float, color: Color) {
             )
             Text(
                 text = "${(progressFraction * 100).toInt()}%",
-                color = Color.White,
+                color = MaterialTheme.colorScheme.secondary,
                 fontSize = 14.sp,
                 textAlign = TextAlign.Center,
                 fontFamily = OutFitFontFamily,
@@ -373,7 +387,7 @@ fun MacroProgress(label: String, Progress: Float, max: Float, color: Color) {
         Text(
             text = label,
             fontSize = 15.sp,
-            color = Color.White,
+            color = MaterialTheme.colorScheme.secondary,
             textAlign = TextAlign.Center,
             fontFamily = OutFitFontFamily,
             fontWeight = FontWeight.Bold
@@ -525,7 +539,7 @@ fun StepAndExerciseCard(viewModel: StepViewModel = hiltViewModel()) {
             modifier = Modifier
                 .weight(1f)
                 .height(120.dp),
-            colors = CardDefaults.cardColors(containerColor = Color.Black),
+            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primary),
             shape = RoundedCornerShape(12.dp)
         ) {
             Column(
@@ -537,7 +551,7 @@ fun StepAndExerciseCard(viewModel: StepViewModel = hiltViewModel()) {
                 Text(
                     text = "Steps",
                     style = MaterialTheme.typography.titleMedium,
-                    color = Color.White,
+                    color = MaterialTheme.colorScheme.secondary,
                     fontFamily = OutFitFontFamily,
                     fontWeight = FontWeight.Bold
                 )
@@ -549,13 +563,13 @@ fun StepAndExerciseCard(viewModel: StepViewModel = hiltViewModel()) {
                     Icon(
                         painter = painterResource(R.drawable.shoe_prints_svgrepo_com),
                         contentDescription = null,
-                        tint = Color(0xFFFF4D4D), // Red color for icon
+                        tint = Color(0xFFFF4D4D),
                         modifier = Modifier.size(24.dp)
                     )
                     Text(
                         text = "$steps",
                         style = MaterialTheme.typography.titleMedium,
-                        color = Color.White,
+                        color = MaterialTheme.colorScheme.secondary,
                         modifier = Modifier.padding(10.dp),
                         fontFamily = OutFitFontFamily,
                         fontWeight = FontWeight.Bold
@@ -577,7 +591,7 @@ fun StepAndExerciseCard(viewModel: StepViewModel = hiltViewModel()) {
             modifier = Modifier
                 .weight(1f)
                 .height(120.dp),
-            colors = CardDefaults.cardColors(containerColor = Color.Black),
+            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primary),
             shape = RoundedCornerShape(12.dp)
         ) {
             Column(
@@ -593,14 +607,14 @@ fun StepAndExerciseCard(viewModel: StepViewModel = hiltViewModel()) {
                     Text(
                         text = "Exercise",
                         style = MaterialTheme.typography.titleMedium,
-                        color = Color.White,
+                        color = MaterialTheme.colorScheme.secondary,
                         fontFamily = OutFitFontFamily,
                         fontWeight = FontWeight.Bold
                     )
                     Icon(
                         imageVector = Icons.Default.Add,
                         contentDescription = null,
-                        tint = Color.Gray,
+                        tint = MaterialTheme.colorScheme.secondary,
                         modifier = Modifier.size(24.dp)
                     )
                 }
@@ -619,7 +633,7 @@ fun StepAndExerciseCard(viewModel: StepViewModel = hiltViewModel()) {
                     Text(
                         text = "0 cal",
                         style = MaterialTheme.typography.bodyMedium,
-                        color = Color.Gray,
+                        color = MaterialTheme.colorScheme.secondary,
                         fontFamily = OutFitFontFamily,
                         fontWeight = FontWeight.Normal
                     )
@@ -638,7 +652,7 @@ fun StepAndExerciseCard(viewModel: StepViewModel = hiltViewModel()) {
                     Text(
                         text = "0:00 hr",
                         style = MaterialTheme.typography.bodyMedium,
-                        color = Color.Gray,
+                        color = MaterialTheme.colorScheme.secondary,
                         fontFamily = OutFitFontFamily,
                         fontWeight = FontWeight.Normal
                     )
@@ -654,13 +668,13 @@ fun DiscoverSection() {
         modifier = Modifier
             .wrapContentHeight()
             .fillMaxWidth()
-            .background(Color(0xFF1C1C1E))
+            .background( MaterialTheme.colorScheme.primary)
             .padding(16.dp)
     ) {
         Text(
             text = "Discover",
             style = MaterialTheme.typography.titleLarge,
-            color = Color.White,
+            color = MaterialTheme.colorScheme.secondary,
             modifier = Modifier.padding(bottom = 16.dp),
             fontFamily = OutFitFontFamily,
             fontWeight = FontWeight.Bold
@@ -696,7 +710,7 @@ fun DiscoverCard(title: String, subtitle: String, iconRes: Int) {
         modifier = Modifier
             .fillMaxWidth()
             .height(120.dp),
-        colors = CardDefaults.cardColors(containerColor = Color(0xFF1C1C1E)),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primary),
         shape = RoundedCornerShape(12.dp),
         elevation = CardDefaults.cardElevation(4.dp)
     ) {
@@ -716,14 +730,14 @@ fun DiscoverCard(title: String, subtitle: String, iconRes: Int) {
             Text(
                 text = title,
                 style = MaterialTheme.typography.titleMedium,
-                color = Color.White,
+                color = MaterialTheme.colorScheme.secondary,
                 fontFamily = OutFitFontFamily,
                 fontWeight = FontWeight.Bold
             )
             Text(
                 text = subtitle,
                 style = MaterialTheme.typography.bodySmall,
-                color = Color.Gray,
+                color = MaterialTheme.colorScheme.secondary,
                 textAlign = TextAlign.Center,
                 fontFamily = OutFitFontFamily,
                 fontWeight = FontWeight.Normal

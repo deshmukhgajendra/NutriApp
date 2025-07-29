@@ -2,12 +2,14 @@ package com.example.databasetestingwithhilt.UiScreens
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
+import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -24,6 +26,21 @@ class Authentication : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+//        val context = LocalContext.current
+//        val launcher = rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+//            val task = GoogleSignIn.getSignedInAccountFromIntent(result.data)
+//            try {
+//                val account = task.getResult(ApiException::class.java)
+//                account?.idToken?.let { token ->
+//                    viewModel.signInWithGoogleToken(token) {
+//                        navController.navigate("Home")
+//                    }
+//                }
+//            } catch (e: Exception) {
+//                viewModel.setError(e.message ?: "Sign-In failed")
+//            }
+//        }
         enableEdgeToEdge()
         setContent {
             DatabaseTestingWithHiltTheme {

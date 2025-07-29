@@ -54,9 +54,9 @@ class SleepRepository @Inject constructor(
                     .setValue(sleepData)
                     .addOnCompleteListener { task ->
                         if (task.isSuccessful) {
-                            Log.d("gajendra", "SleepRecord --> Data saved successfully")
+                          //  Log.d("gajendra", "SleepRecord --> Data saved successfully")
                         } else {
-                            Log.d("gajendra", "SleepRecord --> Failed to save data")
+                           // Log.d("gajendra", "SleepRecord --> Failed to save data")
                         }
                     }
             }
@@ -123,7 +123,7 @@ class SleepRepository @Inject constructor(
                 .await()
 
             // Debug logging
-            Log.d("FirebaseData", "Snapshot: ${snapshot.value}")
+           // Log.d("FirebaseData", "Snapshot: ${snapshot.value}")
 
             val sleepTimeStr = snapshot.child("SleepTime").getValue(String::class.java)
                 ?: throw Exception("SleepTime not found")
@@ -135,7 +135,7 @@ class SleepRepository @Inject constructor(
                 convertTimeToFloat(wakeTimeStr)
             )
         } catch (e: Exception) {
-            Log.e("SleepRepository", "Error fetching data", e)
+          //  Log.e("SleepRepository", "Error fetching data", e)
             throw e
         }
     }
@@ -155,7 +155,7 @@ class SleepRepository @Inject constructor(
 
             total + (minutes.toFloat() / 60)
         } catch (e: Exception) {
-            Log.e("TimeConversion", "Error converting $timeString", e)
+          //  Log.e("TimeConversion", "Error converting $timeString", e)
             0f
         }
     }

@@ -20,8 +20,13 @@ import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 import androidx.work.WorkManager
 import com.example.databasetestingwithhilt.R
+import com.example.databasetestingwithhilt.repository.AuthRepository
+import com.example.databasetestingwithhilt.repository.FirebaseRepository
 import com.example.databasetestingwithhilt.repository.StepRepository
 import com.example.databasetestingwithhilt.util.StepSensorManager
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInClient
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 
 
 @Module
@@ -99,6 +104,34 @@ object AppModule {
     @Singleton
     fun providesStepRepository(firebaseAuth: FirebaseAuth, databaseReference: DatabaseReference): StepRepository {
         return StepRepository(firebaseAuth,databaseReference)
+    }
+
+    @Provides
+    @Singleton
+    fun providesAuthRepository(@ApplicationContext context: Context
+                               ,firebaseAuth: FirebaseAuth
+                               ,databaseReference: DatabaseReference
+                                ,googleSignInClient: GoogleSignInClient
+    ):AuthRepository{
+        return AuthRepository(firebaseAuth,databaseReference,context,googleSignInClient)
+    }
+
+    @Provides
+    @Singleton
+    fun providesFirebaseRepository(dao : FoodDao,firebaseAuth: FirebaseAuth, databaseReference: DatabaseReference):FirebaseRepository{
+        return FirebaseRepository(dao,firebaseAuth,databaseReference)
+    }
+
+    @Provides
+    @Singleton
+    fun providesGoogleSignInClient( @ApplicationContext context: Context):GoogleSignInClient{
+
+        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+            .requestIdToken(context.getString(R.string.default_web_client_id))
+            .requestEmail()
+            .build()
+        return GoogleSignIn.getClient(context,gso)
+
     }
 
 }

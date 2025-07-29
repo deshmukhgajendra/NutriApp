@@ -1,6 +1,8 @@
 package com.example.databasetestingwithhilt.UiScreens.AuthenticationScreen
 
 import android.annotation.SuppressLint
+import android.app.Activity
+import android.content.Intent
 import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -30,6 +32,9 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -48,29 +53,39 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.databasetestingwithhilt.R
-import com.example.databasetestingwithhilt.viewmodel.UserViewModel
+import com.example.databasetestingwithhilt.UiScreens.PersonalInformations.PersonalInformation
 import com.example.databasetestingwithhilt.ui.theme.Black
 import com.example.databasetestingwithhilt.ui.theme.OutFitFontFamily
 import com.example.databasetestingwithhilt.ui.theme.White
+import com.example.databasetestingwithhilt.viewmodel.AuthenticationViewModel
+
 
 
 @SuppressLint("SuspiciousIndentation")
 @Composable
 fun SignUpScreen(navController: NavController,
-                 viewModel : UserViewModel = hiltViewModel()
+                authViewModel : AuthenticationViewModel = hiltViewModel()
 ){
 
     val context = LocalContext.current
-   // val state by viewModel.authState.collectAsState()
+    val state by authViewModel.authState.collectAsState()
 
 
-//    LaunchedEffect(state) {
-//        if(state != null){
-//            val intent = Intent(context,PersonalInformation::class.java)
-//            context.startActivity(intent)
-//            (context as Activity).finish()
-//        }
+//    // Google Sign-In launcher
+//    val launcher = rememberLauncherForActivityResult(
+//        contract = ActivityResultContracts.StartActivityForResult()
+//    ) { result ->
+//        val intent = result.data
+//        authViewModel.googleSignIn(intent)
 //    }
+
+    LaunchedEffect(state) {
+        if(state != null){
+            val intent = Intent(context, PersonalInformation::class.java)
+            context.startActivity(intent)
+            (context as Activity).finish()
+        }
+    }
 
         Box(
             modifier = Modifier
@@ -134,7 +149,7 @@ fun SignUpScreen(navController: NavController,
                     Spacer(modifier = Modifier.height(20.dp))
 
                     // Input Fields
-                    val fullName = remember { mutableStateOf("") }
+                  //  val fullName = remember { mutableStateOf("") }
                     val email = remember { mutableStateOf("") }
                     val password = remember { mutableStateOf("") }
                     val isChecked = remember { mutableStateOf(false) }
@@ -142,33 +157,33 @@ fun SignUpScreen(navController: NavController,
                     Column(
                         modifier = Modifier.fillMaxWidth(0.9f)
                     ) {
-                        OutlinedTextField(
-                            value = fullName.value,
-                            onValueChange = { fullName.value = it },
-                            label = {
-                                Text(
-                                    "Enter Full Name",
-                                    fontFamily = OutFitFontFamily,
-                                    fontWeight = FontWeight.Normal) },
-                            singleLine = true,
-                            modifier = Modifier.fillMaxWidth(),
-                            shape = RoundedCornerShape(18.dp),
-                            colors = TextFieldDefaults.colors(
-                                focusedTextColor = Color.White,
-                                unfocusedTextColor = Color.White,
-
-                                focusedContainerColor = Color.Transparent,
-                                unfocusedContainerColor = Color.Transparent,
-
-                                focusedLabelColor = Color.White,
-                                unfocusedLabelColor = Color.Gray,
-
-                                focusedIndicatorColor = Color.White,
-                                unfocusedIndicatorColor = Color.Gray,
-
-                                cursorColor = Color.White
-                            )
-                        )
+//                        OutlinedTextField(
+//                            value = fullName.value,
+//                            onValueChange = { fullName.value = it },
+//                            label = {
+//                                Text(
+//                                    "Enter Full Name",
+//                                    fontFamily = OutFitFontFamily,
+//                                    fontWeight = FontWeight.Normal) },
+//                            singleLine = true,
+//                            modifier = Modifier.fillMaxWidth(),
+//                            shape = RoundedCornerShape(18.dp),
+//                            colors = TextFieldDefaults.colors(
+//                                focusedTextColor = Color.White,
+//                                unfocusedTextColor = Color.White,
+//
+//                                focusedContainerColor = Color.Transparent,
+//                                unfocusedContainerColor = Color.Transparent,
+//
+//                                focusedLabelColor = Color.White,
+//                                unfocusedLabelColor = Color.Gray,
+//
+//                                focusedIndicatorColor = Color.White,
+//                                unfocusedIndicatorColor = Color.Gray,
+//
+//                                cursorColor = Color.White
+//                            )
+//                        )
 
                         Spacer(modifier = Modifier.height(10.dp))
 
@@ -253,7 +268,7 @@ fun SignUpScreen(navController: NavController,
                         // Sign-Up Button
                         Button(
                             onClick = {
-                                viewModel.register(email.value,password.value,context)
+                                authViewModel.register(email.value,password.value,context)
                                 Toast.makeText(context, "Account Created Successfully", Toast.LENGTH_SHORT).show()
 
                             },
@@ -290,24 +305,20 @@ fun SignUpScreen(navController: NavController,
                             modifier = Modifier.fillMaxWidth(),
                             horizontalArrangement = Arrangement.Center
                         ) {
-                            IconButton(onClick = { /* Handle Facebook Login */ }) {
+                            IconButton(onClick = { /* Handle Phone Login */ }) {
                                 Icon(
-                                    painter = painterResource(id = R.drawable.facebook),
-                                    contentDescription = "Facebook",
+                                    painter = painterResource(id = R.drawable.baseline_call_24),
+                                    contentDescription = "Phone",
                                     tint = Color.Unspecified
                                 )
                             }
-                            IconButton(onClick = { /* Handle Google Login */ }) {
+                            IconButton(onClick = {
+//                                val signInIntent = authViewModel.getGoogleSignInIntent()
+//                                launcher.launch(signInIntent)
+                            }) {
                                 Icon(
                                     painter = painterResource(id = R.drawable.google),
                                     contentDescription = "Google",
-                                    tint = Color.Unspecified
-                                )
-                            }
-                            IconButton(onClick = { /* Handle Apple Login */ }) {
-                                Icon(
-                                    painter = painterResource(id = R.drawable.apple),
-                                    contentDescription = "Apple",
                                     tint = Color.Unspecified
                                 )
                             }
@@ -335,4 +346,3 @@ fun SignUpScreen(navController: NavController,
             }
         }
     }
-

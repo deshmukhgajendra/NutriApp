@@ -50,12 +50,12 @@ fun SleepScreen(viewModel: UserViewModel = hiltViewModel()) {
         modifier = Modifier
             .fillMaxSize()
             .background(color = Color.Black),
-        horizontalAlignment = Alignment.CenterHorizontally // Center content horizontally
+        horizontalAlignment = Alignment.CenterHorizontally 
     ) {
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(300.dp), // Adjust height to ensure vertical centering
+                .height(300.dp),
             contentAlignment = Alignment.Center
         ) {
             CircularProgressIndicator(

@@ -28,6 +28,7 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -59,6 +60,7 @@ import com.example.databasetestingwithhilt.ui.theme.OutFitFontFamily
 import com.example.databasetestingwithhilt.ui.theme.White
 import com.example.databasetestingwithhilt.ui.theme.gray
 import com.example.databasetestingwithhilt.ui.theme.lightGray
+import com.example.databasetestingwithhilt.viewmodel.FirebaseViewmodel
 import java.text.SimpleDateFormat
 import java.time.LocalDate
 import java.util.Calendar
@@ -67,27 +69,29 @@ import java.util.Locale
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun DashBoardScreen(viewModel : UserViewModel = hiltViewModel()) {
+fun DashBoardScreen(viewModel : UserViewModel = hiltViewModel(),
+                    firebaseViewmodel: FirebaseViewmodel= hiltViewModel()
+) {
     val selectedDate = remember { mutableStateOf(LocalDate.now()) }
-    val protein by viewModel.proteinValue
-    val fats by viewModel.fatsValue
-    val carbs by viewModel.carbsValue
-    val calories by viewModel.caloriesValue
+    val protein by firebaseViewmodel.proteinValue
+    val fats by firebaseViewmodel.fatsValue
+    val carbs by firebaseViewmodel.carbsValue
+    val calories by firebaseViewmodel.caloriesValue
     val sleepData by viewModel.sleepData
     val isLoading by viewModel.isLoading
     val error by viewModel.errorsleep
-    val requiredCalories by viewModel.requiredCalories.collectAsState(initial = 0f)
+    val requiredCalories by firebaseViewmodel.requiredCalories.collectAsState(initial = 0f)
 
 
     //val error by viewModel.errorfirebase
     val date = remember { "1-5-2025" }
 
     LaunchedEffect(date) {
-        viewModel.fetchProtein(date)
-        viewModel.fetchFats(date)
-        viewModel.fetchCarbs(date)
-        viewModel.fetchCalorie(date)
-        viewModel.fetchRequiredCalories()
+        firebaseViewmodel.fetchProtein(date)
+        firebaseViewmodel.fetchFats(date)
+        firebaseViewmodel.fetchCarbs(date)
+        firebaseViewmodel.fetchCalorie(date)
+        firebaseViewmodel.fetchRequiredCalories()
         viewModel.fetchSleepData(date)
     }
     LazyColumn(
@@ -112,7 +116,7 @@ fun DashBoardScreen(viewModel : UserViewModel = hiltViewModel()) {
                         shape = RoundedCornerShape(8.dp)
                     ),
                 elevation = CardDefaults.cardElevation(8.dp),
-                colors = CardDefaults.cardColors(Color.Black)
+                colors = CardDefaults.cardColors(MaterialTheme.colorScheme.primary)
             ) {
                 Column {
                     NutritionPieChart(protein,carbs,fats)
@@ -129,14 +133,14 @@ fun DashBoardScreen(viewModel : UserViewModel = hiltViewModel()) {
                             text = "Total Calories",
                             textAlign = TextAlign.Start,
                             modifier = Modifier.weight(1f),
-                            color = White,
+                            color = MaterialTheme.colorScheme.secondary,
                             fontFamily = OutFitFontFamily,
                             fontWeight = FontWeight.Bold
                         )
                         Text(
                             text = "${calories?.toInt()}",
                             textAlign = TextAlign.End,
-                            color = White,
+                            color = MaterialTheme.colorScheme.secondary,
                             fontFamily = OutFitFontFamily,
                             fontWeight = FontWeight.Bold
                         )
@@ -153,14 +157,14 @@ fun DashBoardScreen(viewModel : UserViewModel = hiltViewModel()) {
                             text = "Net Calories",
                             textAlign = TextAlign.Start,
                             modifier = Modifier.weight(1f),
-                            color = White,
+                            color = MaterialTheme.colorScheme.secondary,
                             fontFamily = OutFitFontFamily,
                             fontWeight = FontWeight.Bold
                         )
                         Text(
                             text = "${calories?.toInt()}",
                             textAlign = TextAlign.End,
-                            color = White,
+                            color = MaterialTheme.colorScheme.secondary,
                             fontFamily = OutFitFontFamily,
                             fontWeight = FontWeight.Bold
                         )
@@ -177,14 +181,14 @@ fun DashBoardScreen(viewModel : UserViewModel = hiltViewModel()) {
                             text = "Goal",
                             textAlign = TextAlign.Start,
                             modifier = Modifier.weight(1f),
-                            color = White,
+                            color = MaterialTheme.colorScheme.secondary,
                             fontFamily = OutFitFontFamily,
                             fontWeight = FontWeight.Bold
                         )
                         Text(
                             text = "${requiredCalories.toInt()}",
                             textAlign = TextAlign.End,
-                            color = White,
+                            color = MaterialTheme.colorScheme.secondary,
                             fontFamily = OutFitFontFamily,
                             fontWeight = FontWeight.Bold
                         )
@@ -203,7 +207,7 @@ fun DashBoardScreen(viewModel : UserViewModel = hiltViewModel()) {
                         shape = RoundedCornerShape(8.dp)
                     ),
                 elevation = CardDefaults.cardElevation(8.dp),
-                colors = CardDefaults.cardColors(Color.Black)
+                colors = CardDefaults.cardColors(MaterialTheme.colorScheme.primary)
             ) {
                Column(
                    modifier = Modifier.fillMaxSize(),
@@ -213,7 +217,7 @@ fun DashBoardScreen(viewModel : UserViewModel = hiltViewModel()) {
                        textAlign = TextAlign.Center,
                        modifier = Modifier.padding(bottom = 16.dp,top = 16.dp),
                        fontSize = 20.sp,
-                       color = White,
+                       color = MaterialTheme.colorScheme.secondary,
                        fontFamily = OutFitFontFamily,
                        fontWeight = FontWeight.Bold
                    )

@@ -1,4 +1,4 @@
-package com.example.databasetestingwithhilt.UiScreens
+package com.example.databasetestingwithhilt.UiScreens.PersonalInformations
 
 import android.app.Activity
 import android.content.Intent
@@ -52,12 +52,28 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
+import androidx.navigation.NavHost
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 import com.example.databasetestingwithhilt.model.PersonalEntity
 import com.example.databasetestingwithhilt.R
+import com.example.databasetestingwithhilt.UiScreens.MainActivity
+import com.example.databasetestingwithhilt.UiScreens.PersonalInformations.screens.ActivityLevelScreen
+import com.example.databasetestingwithhilt.UiScreens.PersonalInformations.screens.AgeandGenderScreen
+import com.example.databasetestingwithhilt.UiScreens.PersonalInformations.screens.ExerciseFrequencyScreen
+import com.example.databasetestingwithhilt.UiScreens.PersonalInformations.screens.GoalScreen
+import com.example.databasetestingwithhilt.UiScreens.PersonalInformations.screens.HeightAndWeight
+import com.example.databasetestingwithhilt.UiScreens.PersonalInformations.screens.NameScreen
+import com.example.databasetestingwithhilt.UiScreens.PersonalInformations.screens.OccupationTypeScreen
 import com.example.databasetestingwithhilt.viewmodel.UserViewModel
 import com.example.databasetestingwithhilt.ui.theme.DatabaseTestingWithHiltTheme
 import com.example.databasetestingwithhilt.ui.theme.OutFitFontFamily
+import com.example.databasetestingwithhilt.ui.theme.fire
 import com.example.databasetestingwithhilt.ui.theme.gray
+import com.example.databasetestingwithhilt.viewmodel.FirebaseViewmodel
 import dagger.hilt.android.AndroidEntryPoint
 
 
@@ -72,46 +88,52 @@ class PersonalInformation : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             DatabaseTestingWithHiltTheme {
-                Scaffold(
-                topBar = {
-                    CenterAlignedTopAppBar(
-                        colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
-                            containerColor = Color.Transparent
-                        ),
-                        title = {
-                            Text(
-                                text = "Personal Details",
-                                fontSize = 35.sp,
-                                color = Color.White,
-                                fontFamily = OutFitFontFamily,
-                                fontWeight = FontWeight.Bold
-                            )
-                        },
-                        navigationIcon = {
-                            IconButton(
-                                onClick = {}
-                            ) {
-                                Icon(
-                                    painter = painterResource(R.drawable.baseline_arrow_back_24),
-                                    contentDescription = null
-                                )
-                            }
-                        }
-                    )
-                }
-                ) { innerPadding ->
 
-                   // val navController = rememberNavController()
-                   UserNutritionForm()
-                    //navigateToPersonalInformation(navController)
-                }
+                val navController = rememberNavController()
+//                Scaffold(
+//                topBar = {
+//                    CenterAlignedTopAppBar(
+//                        colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
+//                            containerColor = Color.Transparent
+//                        ),
+//                        title = {
+//                            Text(
+//                                text = "Personal Details",
+//                                fontSize = 35.sp,
+//                                color = Color.White,
+//                                fontFamily = OutFitFontFamily,
+//                                fontWeight = FontWeight.Bold
+//                            )
+//                        },
+//                        navigationIcon = {
+//                            IconButton(
+//                                onClick = {}
+//                            ) {
+//                                Icon(
+//                                    painter = painterResource(R.drawable.baseline_arrow_back_24),
+//                                    contentDescription = null
+//                                )
+//                            }
+//                        }
+//                    )
+//                }
+//                ) { innerPadding ->
+//
+//                   // val navController = rememberNavController()
+//                   UserNutritionForm()
+//                    //navigateToPersonalInformation(navController)
+//                }
+
+                personalInfoNavigation(navController)
             }
         }
     }
 }
 
 @Composable
-fun UserNutritionForm(viewModel: UserViewModel = hiltViewModel()) {
+fun UserNutritionForm(viewModel: UserViewModel = hiltViewModel(),
+                      firebaseViewmodel: FirebaseViewmodel = hiltViewModel()
+) {
 
     val context = LocalContext.current
     var name by remember { mutableStateOf("") }
@@ -328,7 +350,7 @@ fun UserNutritionForm(viewModel: UserViewModel = hiltViewModel()) {
                             RequiredCarbs = carbs,
                             RequiredFats = fats
                         )
-                       viewModel.saveUserData(userData)
+                        firebaseViewmodel.saveUserData(userData)
 
                         val i = Intent(context, MainActivity::class.java)
                         context.startActivity(i)
@@ -451,3 +473,34 @@ fun RequiredNutritionValue(
     )
 }
 
+@Composable
+fun personalInfoNavigation(navController: NavHostController,
+                           firebaseViewmodel: FirebaseViewmodel= hiltViewModel()){
+
+    NavHost(navController = navController,
+        startDestination = "Name"
+    ){
+        composable(route = "Name",){
+            NameScreen(navController,firebaseViewmodel)
+        }
+        composable(route = "HeightAndWeight"){
+            HeightAndWeight(navController,firebaseViewmodel)
+        }
+        composable(route = "AgeAndGender"){
+            AgeandGenderScreen(navController,firebaseViewmodel)
+        }
+        composable(route = "Goal"){
+            GoalScreen(navController, firebaseViewmodel)
+        }
+        composable(route = "ExerciseFrequency"){
+            ExerciseFrequencyScreen(navController,firebaseViewmodel)
+        }
+        composable(route = "Occupation"){
+            OccupationTypeScreen(navController,firebaseViewmodel)
+        }
+        composable(route = "ActivityLevel"){
+            ActivityLevelScreen(navController,firebaseViewmodel)
+        }
+
+    }
+}

@@ -9,12 +9,14 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.annotation.RequiresApi
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -37,15 +39,20 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -56,6 +63,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -70,10 +78,14 @@ import com.example.databasetestingwithhilt.R
 import com.example.databasetestingwithhilt.UiScreens.SearchScreen.SearchScreen
 import com.example.databasetestingwithhilt.Services.StepCounterService
 import com.example.databasetestingwithhilt.UiScreens.SleepScreen.SleepScreen
+import com.example.databasetestingwithhilt.ui.theme.Black
 import com.example.databasetestingwithhilt.ui.theme.DatabaseTestingWithHiltTheme
 import com.example.databasetestingwithhilt.ui.theme.OutFitFontFamily
 import com.example.databasetestingwithhilt.ui.theme.White
+import com.example.databasetestingwithhilt.ui.theme.lightBlue
 import com.example.databasetestingwithhilt.ui.theme.purple
+import com.example.databasetestingwithhilt.ui.theme.sea
+import com.example.databasetestingwithhilt.viewmodel.FirebaseViewmodel
 import dagger.hilt.android.AndroidEntryPoint
 
 
@@ -139,35 +151,46 @@ class MainActivity : ComponentActivity() {
     }
 }
 
-
-
 @RequiresApi(Build.VERSION_CODES.S)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun app() {
+fun app(firebaseViewmodel :FirebaseViewmodel= hiltViewModel()) {
 
 val context = LocalContext.current
     val navController = rememberNavController()
     val sheetState = rememberModalBottomSheetState()
     var showBottomSheet = remember { mutableStateOf(false) }
+    val userName by firebaseViewmodel.userName.observeAsState()
+
 
     Scaffold(
         topBar = {
-            CenterAlignedTopAppBar(
-
+            TopAppBar(
                 colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
                     containerColor = Color.Transparent
                 ),
                 title = {
-                    Text(
-                        text = "Restify",
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis,
-                        color = purple,
-                        fontSize = 35.sp,
-                        fontFamily = OutFitFontFamily,
-                        fontWeight = FontWeight.Bold
-                    )
+                    Column {
+                        Text(
+                            text = "Restify",
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis,
+                            color = White,
+                            fontSize = 22.sp,
+                            fontFamily = OutFitFontFamily,
+                            fontWeight = FontWeight.Bold
+                        )
+
+                        Text(
+                            text = "Hello Gajendra",
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis,
+                            color = White,
+                            fontSize = 12.sp,
+                            fontFamily = OutFitFontFamily,
+                            fontWeight = FontWeight.Normal
+                        )
+                    }
                 },
                 navigationIcon = {
                     IconButton(onClick = {
@@ -194,7 +217,7 @@ val context = LocalContext.current
                         context.startActivity(i)
                     },
                         modifier = Modifier
-                            .size(60.dp)
+                            .size(50.dp)
                             .padding(8.dp)
 
                     ) {
@@ -219,12 +242,40 @@ val context = LocalContext.current
         Box(
             modifier = Modifier
                 .fillMaxSize()
+                .background(Black)
         ) {
-            Image(
-                painter = painterResource(R.drawable.mainbackground),
-                contentDescription = null,
-                contentScale = ContentScale.Crop
-            )
+            Canvas(modifier = Modifier.fillMaxSize()) {
+                val width = size.width
+                val height = size.height
+
+                // Top-right olive glow
+                drawCircle(
+                    brush = Brush.radialGradient(
+                        colors = listOf(
+                            sea, // olive yellow
+                            Color.Transparent
+                        ),
+                        center = Offset(width, 0f),
+                        radius = width * 0.7f
+                    ),
+                    radius = width * 0.7f,
+                    center = Offset(width, 0f)
+                )
+
+                // Bottom-left olive glow
+                drawCircle(
+                    brush = Brush.radialGradient(
+                        colors = listOf(
+                            lightBlue, // olive yellow
+                            Color.Transparent
+                        ),
+                        center = Offset(0f, height),
+                        radius = width * 0.7f
+                    ),
+                    radius = width * 0.7f,
+                    center = Offset(0f, height)
+                )
+            }
 
             if (showBottomSheet.value){
                 ModalBottomSheet(
@@ -302,106 +353,115 @@ fun GridWithButtons(navController: NavController,showBottomSheet : MutableState<
 
 @Composable
 fun bottomBar(navController: NavController, showBottomSheet : MutableState<Boolean>) {
-    BottomAppBar(
-        containerColor = MaterialTheme.colorScheme.primary,
-        contentColor = MaterialTheme.colorScheme.tertiary
-    ) {
-        // Nutrition Button
-        Box(
-            modifier = Modifier
-                .weight(1f)
-                .padding(16.dp)
-                .clip(RoundedCornerShape(16.dp))
-                .background(Color.Transparent)
-                .padding(8.dp),
-            contentAlignment = Alignment.Center
-        ) {
-            IconButton(onClick = { navController.navigate("Nutrition") }) {
-                Icon(
-                    painterResource(R.drawable.nutrition),
-                    contentDescription = "Nutrition",
-                    tint = MaterialTheme.colorScheme.secondary
-                )
-            }
-        }
 
-        // Sleep Button
-        Box(
-            modifier = Modifier
-                .weight(1f)
-                .padding(16.dp)
-                .clip(RoundedCornerShape(16.dp))
-                .background(Color.Transparent)
-                .padding(8.dp),
-            contentAlignment = Alignment.Center
-        ) {
-            IconButton(onClick = {navController.navigate("Sleep")}) {
-                Icon(
-                    painterResource(R.drawable.sleep),
-                    contentDescription = "Sleep",
-                    tint = MaterialTheme.colorScheme.secondary
-                )
-            }
-        }
+    Box(modifier = Modifier
+        .fillMaxWidth()
+        .clip(RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp, bottomStart = 24.dp, bottomEnd = 24.dp))
+        .background(MaterialTheme.colorScheme.primary)
+    ){
 
-        // FAB Button
-        Box(
-            modifier = Modifier
-                .weight(1f)
-                .padding(16.dp)
-                .clip(RoundedCornerShape(16.dp))
-                .background(purple)
-                .padding(8.dp),
-            contentAlignment = Alignment.Center
+        BottomAppBar(
+            containerColor = Color.Transparent, // ❗ So Box's background shows
+            contentColor = MaterialTheme.colorScheme.tertiary,
+            tonalElevation = 0.dp // Optional: no shadow overlap
         ) {
-            IconButton(onClick = {
-               // navController.navigate("Search")
-                showBottomSheet.value = true
-            }) {
-                Icon(
-                    Icons.Filled.Add,
-                    contentDescription = "FAB",
-                    tint = MaterialTheme.colorScheme.secondary
-                )
-            }
-        }
-
-        // Dashboard Button
-        Box(
-            modifier = Modifier
-                .weight(1f)
-                .padding(16.dp)
-                .clip(RoundedCornerShape(16.dp))
-                .background(Color.Transparent)
-                .padding(8.dp),
-            contentAlignment = Alignment.Center
-        ) {
-            IconButton(onClick = { navController.navigate("Dashboard")}
+            // Nutrition Button
+            Box(
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(16.dp)
+                    .clip(RoundedCornerShape(16.dp))
+                    .background(Color.Transparent)
+                    .padding(8.dp),
+                contentAlignment = Alignment.Center
             ) {
-                Icon(
-                    painterResource(R.drawable.dashboard),
-                    contentDescription = "Dashboard",
-                    tint = MaterialTheme.colorScheme.secondary
-                )
+                IconButton(onClick = { navController.navigate("Nutrition") }) {
+                    Icon(
+                        painterResource(R.drawable.nutrition),
+                        contentDescription = "Nutrition",
+                        tint = MaterialTheme.colorScheme.secondary
+                    )
+                }
             }
-        }
 
-        // Menu Button
-        Box(
-            modifier = Modifier
-                .weight(1f)
-                .padding(16.dp)
-                .clip(RoundedCornerShape(16.dp))
-                .background(Color.Transparent)
-                .padding(8.dp),
-            contentAlignment = Alignment.Center
-        ) {
-            IconButton(onClick = { navController.navigate("Menu") }) {
-                Icon(
-                    Icons.Filled.Menu,
-                    contentDescription = "Menu",
-                    tint = MaterialTheme.colorScheme.secondary
-                )
+            // Sleep Button
+            Box(
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(16.dp)
+                    .clip(RoundedCornerShape(16.dp))
+                    .background(Color.Transparent)
+                    .padding(8.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                IconButton(onClick = {navController.navigate("Sleep")}) {
+                    Icon(
+                        painterResource(R.drawable.sleep),
+                        contentDescription = "Sleep",
+                        tint = MaterialTheme.colorScheme.secondary
+                    )
+                }
+            }
+
+            // FAB Button
+            Box(
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(16.dp)
+                    .clip(RoundedCornerShape(16.dp))
+                    .background(purple)
+                    .padding(8.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                IconButton(onClick = {
+                    // navController.navigate("Search")
+                    showBottomSheet.value = true
+                }) {
+                    Icon(
+                        Icons.Filled.Add,
+                        contentDescription = "FAB",
+                        tint = MaterialTheme.colorScheme.secondary
+                    )
+                }
+            }
+
+            // Dashboard Button
+            Box(
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(16.dp)
+                    .clip(RoundedCornerShape(16.dp))
+                    .background(Color.Transparent)
+                    .padding(8.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                IconButton(onClick = { navController.navigate("Dashboard")}
+                ) {
+                    Icon(
+                        painterResource(R.drawable.dashboard),
+                        contentDescription = "Dashboard",
+                        tint = MaterialTheme.colorScheme.secondary
+                    )
+                }
+            }
+
+            // Menu Button
+            Box(
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(16.dp)
+                    .clip(RoundedCornerShape(16.dp))
+                    .background(Color.Transparent)
+                    .padding(8.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                IconButton(onClick = { navController.navigate("Menu") }) {
+                    Icon(
+                        Icons.Filled.Menu,
+                        contentDescription = "Menu",
+                        tint = MaterialTheme.colorScheme.secondary
+                    )
+                }
             }
         }
     }

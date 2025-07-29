@@ -3,6 +3,8 @@ package com.example.databasetestingwithhilt.UiScreens.AuthenticationScreen
 import android.app.Activity
 import android.content.Intent
 import android.util.Log
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -55,18 +57,54 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.databasetestingwithhilt.UiScreens.MainActivity
 import com.example.databasetestingwithhilt.R
+import com.example.databasetestingwithhilt.UiScreens.PersonalInformations.PersonalInformation
 import com.example.databasetestingwithhilt.viewmodel.UserViewModel
 import com.example.databasetestingwithhilt.ui.theme.OutFitFontFamily
 import com.example.databasetestingwithhilt.ui.theme.White
+import com.example.databasetestingwithhilt.viewmodel.AuthenticationViewModel
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.common.api.ApiException
 
 
 @Composable
 fun SignInScreen(navController: NavController,
-                 viewModel: UserViewModel = hiltViewModel()
+                 authViewModel: AuthenticationViewModel = hiltViewModel()
 ){
 
-    val state by  viewModel.authState.collectAsState()
+    val state by  authViewModel.authState.collectAsState()
     val context = LocalContext.current
+
+//    // Google Sign-In launcher
+//    val launcher = rememberLauncherForActivityResult(
+//        contract = ActivityResultContracts.StartActivityForResult()
+//    ) { result ->
+//        val intent = result.data
+//        authViewModel.googleSignIn(intent)
+//    }
+
+    val launcher = rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        val task = GoogleSignIn.getSignedInAccountFromIntent(result.data)
+        try {
+            val account = task.getResult(ApiException::class.java)
+            account?.idToken?.let { token ->
+                authViewModel.signInWithGoogleToken(token) { goToMain ->
+                    if (goToMain){
+                        context.startActivity(Intent(context,MainActivity::class.java))
+                    }else{
+                        context.startActivity(Intent(context,PersonalInformation::class.java))
+                    }
+
+
+//                    val intent = Intent(context,MainActivity::class.java)
+//                    context.startActivity(intent)
+//                    (context as? Activity)?.finish()
+                }
+            }
+        } catch (e: Exception) {
+            authViewModel.setError(e.message ?: "Sign-In failed")
+        }
+    }
+
     LaunchedEffect(state) {
         if (state != null){
             try {
@@ -112,7 +150,7 @@ fun SignInScreen(navController: NavController,
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .fillMaxHeight(0.75f)  // Covers 1/4th of the screen height
+                .fillMaxHeight(0.75f)  
                 .align(Alignment.BottomCenter)
                 .clip(
                     RoundedCornerShape(
@@ -215,20 +253,9 @@ fun SignInScreen(navController: NavController,
 
                     Spacer(modifier = Modifier.height(10.dp))
 
-                    Row (
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Checkbox(
-                            checked = isChecked.value,
-                            onCheckedChange = {isChecked.value=it}
-                        )
-                        ClickableText(
-                            text= AnnotatedString("Remember me"),
-                            onClick = {},
-                            style =  TextStyle(color = White, fontSize = 14.sp)
-                        )
-                        Spacer(modifier = Modifier.width(40.dp))
-
+//                    Row (
+//                        verticalAlignment = Alignment.CenterVertically
+//                    ) {
                         TextButton(
                             onClick = {}
                         ){
@@ -238,14 +265,14 @@ fun SignInScreen(navController: NavController,
                                 fontFamily = OutFitFontFamily,
                                 fontWeight = FontWeight.Normal)
                         }
-                    }
+                  //  }
 
 
 
                     // Sign-Up Button
                     Button(
                         onClick = {
-                            viewModel.login(email.value,password.value,context)
+                            authViewModel.emailPasswordLogin(email.value,password.value,context)
                         },
                         modifier = Modifier
                             .fillMaxWidth()
@@ -277,24 +304,22 @@ fun SignInScreen(navController: NavController,
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.Center
                     ) {
-                        IconButton(onClick = { /* Handle Facebook Login */ }) {
+                        IconButton(onClick = { /* Handle phone Login */ }) {
                             Icon(
-                                painter = painterResource(id = R.drawable.facebook),
-                                contentDescription = "Facebook",
+                                painter = painterResource(id = R.drawable.baseline_call_24),
+                                contentDescription = "Phone",
                                 tint = Color.Unspecified
                             )
                         }
-                        IconButton(onClick = { /* Handle Google Login */ }) {
+                        IconButton(onClick = {
+//                            val signInIntent = authViewModel.getGoogleSignInIntent()
+//                            launcher.launch(signInIntent)
+                            launcher.launch(authViewModel.getGoogleIntent())
+
+                        }) {
                             Icon(
                                 painter = painterResource(id = R.drawable.google),
                                 contentDescription = "Google",
-                                tint = Color.Unspecified
-                            )
-                        }
-                        IconButton(onClick = { /* Handle Apple Login */ }) {
-                            Icon(
-                                painter = painterResource(id = R.drawable.apple),
-                                contentDescription = "Apple",
                                 tint = Color.Unspecified
                             )
                         }
