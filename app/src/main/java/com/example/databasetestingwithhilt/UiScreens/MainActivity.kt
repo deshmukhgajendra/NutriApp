@@ -10,13 +10,11 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Canvas
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -31,7 +29,6 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Button
-import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -54,7 +51,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -77,6 +73,7 @@ import com.example.databasetestingwithhilt.UiScreens.NutritionScreen.NutritionSc
 import com.example.databasetestingwithhilt.R
 import com.example.databasetestingwithhilt.UiScreens.SearchScreen.SearchScreen
 import com.example.databasetestingwithhilt.Services.StepCounterService
+import com.example.databasetestingwithhilt.UiScreens.NavDrawer.NavigationDrawer
 import com.example.databasetestingwithhilt.UiScreens.SleepScreen.SleepScreen
 import com.example.databasetestingwithhilt.ui.theme.Black
 import com.example.databasetestingwithhilt.ui.theme.DatabaseTestingWithHiltTheme

@@ -35,7 +35,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".UiScreens.NavigationDrawer"
+            android:name=".UiScreens.NavDrawer.NavigationDrawer"
             android:exported="false"
             android:label="@string/title_activity_navigation_drawer"
             android:theme="@style/Theme.DatabaseTestingWithHilt" />

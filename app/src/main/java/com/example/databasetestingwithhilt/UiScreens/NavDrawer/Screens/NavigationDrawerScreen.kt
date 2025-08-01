@@ -1,12 +1,8 @@
-package com.example.databasetestingwithhilt.UiScreens
+package com.example.databasetestingwithhilt.UiScreens.NavDrawer.Screens
 
 import android.app.Activity
 import android.content.Intent
-import android.os.Bundle
 import android.util.Log
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
-import androidx.activity.enableEdgeToEdge
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -29,7 +25,6 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -48,9 +43,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.example.databasetestingwithhilt.UiScreens.theme.DatabaseTestingWithHiltTheme
+import androidx.navigation.NavController
 import com.example.databasetestingwithhilt.R
-import com.example.databasetestingwithhilt.viewmodel.UserViewModel
+import com.example.databasetestingwithhilt.UiScreens.Authentication
 import com.example.databasetestingwithhilt.ui.theme.OutFitFontFamily
 import com.example.databasetestingwithhilt.ui.theme.White
 import com.example.databasetestingwithhilt.ui.theme.lightGray
@@ -59,29 +54,13 @@ import com.example.databasetestingwithhilt.ui.theme.purple
 import com.example.databasetestingwithhilt.ui.theme.sea
 import com.example.databasetestingwithhilt.viewmodel.AuthenticationViewModel
 import com.example.databasetestingwithhilt.viewmodel.FirebaseViewmodel
-import dagger.hilt.android.AndroidEntryPoint
-
-@AndroidEntryPoint
-class NavigationDrawer : ComponentActivity() {
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
-        setContent {
-            DatabaseTestingWithHiltTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-
-                    NavigationDrawerScreen()
-
-                }
-            }
-        }
-    }
-}
+import com.example.databasetestingwithhilt.viewmodel.UserViewModel
 
 @Composable
 fun NavigationDrawerScreen(viewModel: UserViewModel = hiltViewModel(),
-                           authViewModel :AuthenticationViewModel= hiltViewModel(),
-                           firebaseViewmodel: FirebaseViewmodel = hiltViewModel()
+                           authViewModel : AuthenticationViewModel = hiltViewModel(),
+                           firebaseViewmodel: FirebaseViewmodel = hiltViewModel(),
+                           navController: NavController
 ) {
     val userName by firebaseViewmodel.userName.observeAsState()
     val userEmail by firebaseViewmodel.userEmail.observeAsState()
@@ -169,17 +148,17 @@ fun NavigationDrawerScreen(viewModel: UserViewModel = hiltViewModel(),
                     fontWeight = FontWeight.Normal,
                     modifier = Modifier.padding(bottom = 11.dp, start = 10.dp, top = 11.dp)
                 )
-                listItem("Edit Profile",R.drawable.baseline_assignment_24, purple, {})
-                listItem("My Goals", R.drawable.flag, purple, {})
-                listItem("My apps & Devices",R.drawable.baseline_smartphone_24, purple, {})
-                listItem("Delete Account",R.drawable.baseline_no_accounts_24, purple, {})
-                listItem("Change Password",R.drawable.baseline_password_24,purple, {})
-                listItem("Log Out",R.drawable.baseline_logout_24, purple
+                listItem("Edit Profile", R.drawable.baseline_assignment_24, purple, {navController.navigate("EditProfile")})
+                listItem("My Goals", R.drawable.flag, purple, {navController.navigate("MyGoals")})
+                listItem("My apps & Devices", R.drawable.baseline_smartphone_24, purple, {})
+                listItem("Delete Account", R.drawable.baseline_no_accounts_24, purple, {navController.navigate("DeleteAccount")})
+                listItem("Change Password", R.drawable.baseline_password_24, purple, {navController.navigate("ChangePassword")})
+                listItem("Log Out", R.drawable.baseline_logout_24, purple
                 ) {
                     Log.d("NavigationDrawerScreen", "Log Out lambda executed")
                     authViewModel.logout()
                     val i = Intent(context, Authentication::class.java).apply {
-                        flags =Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                        flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                     }
                     context.startActivity(i)
                     (context as? Activity)?.finish()
@@ -194,11 +173,11 @@ fun NavigationDrawerScreen(viewModel: UserViewModel = hiltViewModel(),
                     color = lightGray,
                     modifier = Modifier.padding(bottom = 11.dp, start = 10.dp, top = 11.dp)
                 )
-                listItem("Appearances",R.drawable.baseline_preview_24, sea, {})
-                listItem("Diary Settings",R.drawable.baseline_assignment_add_24, sea, {})
-                listItem("Reminders",R.drawable.alarm, sea, {})
-                listItem("Steps",R.drawable.shoe_prints_svgrepo_com, sea, {})
-                listItem("Push Notification",R.drawable.alarm, sea, {})
+                listItem("Appearances", R.drawable.baseline_preview_24, sea, {})
+                listItem("Diary Settings", R.drawable.baseline_assignment_add_24, sea, {})
+                listItem("Reminders", R.drawable.alarm, sea, {})
+                listItem("Steps", R.drawable.shoe_prints_svgrepo_com, sea, {})
+                listItem("Push Notification", R.drawable.alarm, sea, {})
                 Divider(
                     thickness = 5.dp,
                     modifier = Modifier.padding(bottom = 4.dp)
@@ -209,11 +188,11 @@ fun NavigationDrawerScreen(viewModel: UserViewModel = hiltViewModel(),
                     color = lightGray,
                     modifier = Modifier.padding(bottom = 11.dp, start = 10.dp, top = 11.dp)
                 )
-                listItem("About Us",R.drawable.baseline_tag_faces_24, orange, {})
-                listItem("Contact Support",R.drawable.baseline_call_24, orange, {})
-                listItem("FAQs/Feedback",R.drawable.baseline_feedback_24, orange, {})
-                listItem("Join Beta Program",R.drawable.round_question_mark_24, orange, {})
-                listItem("Troubleshooting",R.drawable.baseline_security_24, orange, {})
+                listItem("About Us", R.drawable.baseline_tag_faces_24, orange, {})
+                listItem("Contact Support", R.drawable.baseline_call_24, orange, {})
+                listItem("FAQs/Feedback", R.drawable.baseline_feedback_24, orange, {})
+                listItem("Join Beta Program", R.drawable.round_question_mark_24, orange, {})
+                listItem("Troubleshooting", R.drawable.baseline_security_24, orange, {})
             }
         }
     }
@@ -230,36 +209,36 @@ fun listItem(buttonTitle: String,
             .padding(vertical = 8.dp)
     ) {
         Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clickable { onClick() }
-        ,verticalAlignment = Alignment.CenterVertically
-    ) {
-        Box(
             modifier = Modifier
-                .size(35.dp)
-                .clip(RoundedCornerShape(20))
-                .background(color),
-            contentAlignment = Alignment.Center
+                .fillMaxWidth()
+                .clickable { onClick() }
+            ,verticalAlignment = Alignment.CenterVertically
         ) {
-            Icon(
-                painter = painterResource(id = iconResId),
-                contentDescription = "Icon for $buttonTitle",
-                tint = White,
-                modifier = Modifier.size(25.dp)
+            Box(
+                modifier = Modifier
+                    .size(35.dp)
+                    .clip(RoundedCornerShape(20))
+                    .background(color),
+                contentAlignment = Alignment.Center
+            ) {
+                Icon(
+                    painter = painterResource(id = iconResId),
+                    contentDescription = "Icon for $buttonTitle",
+                    tint = White,
+                    modifier = Modifier.size(25.dp)
+                )
+            }
+            Spacer(modifier = Modifier.width(18.dp))
+            Text(
+                text = buttonTitle,
+                style = TextStyle(
+                    fontFamily = OutFitFontFamily,
+                    fontWeight = FontWeight.Medium,
+                    fontSize = 16.sp
+                ),
+                modifier = Modifier.weight(1f)
             )
         }
-        Spacer(modifier = Modifier.width(18.dp))
-        Text(
-            text = buttonTitle,
-            style = TextStyle(
-                fontFamily = OutFitFontFamily,
-                fontWeight = FontWeight.Medium,
-                fontSize = 16.sp
-            ),
-            modifier = Modifier.weight(1f)
-        )
-    }
         Divider(
             thickness = 1.dp,
             color = MaterialTheme.colorScheme.surfaceVariant,
