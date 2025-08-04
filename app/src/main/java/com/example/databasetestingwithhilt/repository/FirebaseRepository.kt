@@ -3,6 +3,7 @@ package com.example.databasetestingwithhilt.repository
 import android.util.Log
 import com.example.databasetestingwithhilt.data.local.FoodDao
 import com.example.databasetestingwithhilt.model.PersonalEntity
+import com.example.databasetestingwithhilt.ui.theme.fire
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -10,6 +11,7 @@ import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import kotlinx.coroutines.tasks.await
+import java.lang.Error
 import java.time.LocalDate
 import javax.inject.Inject
 
@@ -38,6 +40,29 @@ class FirebaseRepository @Inject constructor(
             })
         } else {
             onResult(null)
+        }
+    }
+
+    fun getPersonalData(
+        onSucess: (Map<String, Any?>) -> Unit,
+        onError: (String) -> Unit
+    ){
+        val uid = firebaseAuth.currentUser?.uid
+        if (uid != null){
+            val result = databaseReference.child("users").child(uid)
+                .child("Personal_Data")
+                .get()
+                .addOnSuccessListener { snapshot->
+                    val data =snapshot.value as? Map<String, Any?>
+                    if (data != null){
+                        onSucess(data)
+                    }else{
+                        onError("No Data Found")
+                    }
+                }
+                .addOnFailureListener{
+                    onError(it.message ?: " Something Went Wrong")
+                }
         }
     }
 

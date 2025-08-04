@@ -14,6 +14,7 @@ import com.example.databasetestingwithhilt.repository.FirebaseRepository
 import com.example.databasetestingwithhilt.repository.NutrientRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -70,6 +71,12 @@ class FirebaseViewmodel @Inject constructor(
     private val _errorcalorie= mutableStateOf<String?>(null)
     val  errorCalorie : State<String?> = _errorcalorie
 
+    private val _personalData= MutableStateFlow<Map<String, Any?>>(emptyMap())
+    val personalData:StateFlow<Map<String, Any?>> = _personalData
+
+    private val _error = MutableStateFlow<String?>(null)
+    val error: StateFlow<String?> = _error
+
     var name by mutableStateOf("")
     var age by mutableStateOf(0)
     var gender by mutableStateOf("")
@@ -84,6 +91,10 @@ class FirebaseViewmodel @Inject constructor(
     var RequiredCarbs by mutableStateOf(0f)
     var RequiredFats by mutableStateOf(0f)
 
+
+    init {
+        getUserDetails()
+    }
     fun saveUserData(personalEntity: PersonalEntity){
         firebaseRepository.saveUserData(personalEntity){sucess ->
             _saveResult.value =sucess
@@ -167,12 +178,25 @@ class FirebaseViewmodel @Inject constructor(
 //        }
 //    }
 
+
     fun getUserDetails(){
         viewModelScope.launch {
             firebaseRepository.getCurrentUserName{name ->
                 _userName.value=name
             }
-            _userEmail.value=firebaseRepository.getCurrenUsertEmail()
+            launch {
+                firebaseRepository.getPersonalData(
+
+                    onSucess = {data ->
+                        _personalData.value=data
+
+                    },
+                    onError = {erroemsg->
+                        _error.value=erroemsg
+                    }
+
+                )
+            }
           //  Log.d("authName", "getUserDetails: ${_userName.value}")
             //   Log.d("auth", "getUserDetails: ${_userEmail.value}")
         }

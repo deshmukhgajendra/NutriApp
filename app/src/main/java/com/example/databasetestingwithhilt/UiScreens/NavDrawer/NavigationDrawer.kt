@@ -113,7 +113,9 @@ class NavigationDrawer : ComponentActivity() {
 //}
 
 @Composable
-fun navigation(navController :NavHostController = rememberNavController()){
+fun navigation(navController :NavHostController = rememberNavController(),
+               firebaseViewmodel: FirebaseViewmodel= hiltViewModel()
+){
 
     NavHost(navController = navController,
         startDestination = "NavigationDrawerScreen"
@@ -122,7 +124,7 @@ fun navigation(navController :NavHostController = rememberNavController()){
             NavigationDrawerScreen(navController = navController)
         }
         composable(route = "EditProfile"){
-            EditProfile(navController = navController)
+            EditProfile(navController = navController,firebaseViewmodel)
         }
         composable(route = "MyGoal"){
             MyGoal()
