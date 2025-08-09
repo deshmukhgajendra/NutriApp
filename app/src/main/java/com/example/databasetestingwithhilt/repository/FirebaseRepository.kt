@@ -1,9 +1,12 @@
 package com.example.databasetestingwithhilt.repository
 
+import android.annotation.SuppressLint
 import android.util.Log
+import com.example.databasetestingwithhilt.UiScreens.PersonalInformations.RequiredNutritionValue
 import com.example.databasetestingwithhilt.data.local.FoodDao
 import com.example.databasetestingwithhilt.model.PersonalEntity
 import com.example.databasetestingwithhilt.ui.theme.fire
+import com.example.databasetestingwithhilt.viewmodel.FirebaseViewmodel
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -11,7 +14,6 @@ import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import kotlinx.coroutines.tasks.await
-import java.lang.Error
 import java.time.LocalDate
 import javax.inject.Inject
 
@@ -43,6 +45,7 @@ class FirebaseRepository @Inject constructor(
         }
     }
 
+    @SuppressLint("SuspiciousIndentation")
     fun getPersonalData(
         onSucess: (Map<String, Any?>) -> Unit,
         onError: (String) -> Unit
@@ -56,6 +59,37 @@ class FirebaseRepository @Inject constructor(
                     val data =snapshot.value as? Map<String, Any?>
                     if (data != null){
                         onSucess(data)
+
+                        val nutrientvalues= RequiredNutritionValue(
+                    age = data.getValue("age").toString().toInt(),
+                    gender = data.getValue("gender").toString(),
+                    weight = data.getValue("weight").toString().toFloat(),
+                    height = data.getValue("height").toString().toFloat(),
+                    activity_level = data.getValue("activityLevel").toString(),
+                    goal = data.getValue("goal").toString()
+
+                )
+                        val calorie = nutrientvalues["Calories"] ?:0f
+                val protein = nutrientvalues["Protein"] ?:0f
+                val carbs = nutrientvalues["Carbs"] ?:0f
+                val fats = nutrientvalues["Fats"] ?:0f
+                val userData = PersonalEntity(
+                    name = data.getValue("name").toString(),
+                    age = data.getValue("age").toString().toInt(),
+                    gender = data.getValue("gender").toString(),
+                    weight = data.getValue("weight").toString().toFloat(),
+                    height = data.getValue("height").toString().toFloat(),
+                    activityLevel = data.getValue("activityLevel").toString(),
+                    goal = data.getValue("goal").toString(),
+                    exerciseFrequency = data.getValue("exerciseFrequency").toString().toInt(),
+                    occupationType = data.getValue("occupationType").toString(),
+                    RequiredCalorie = calorie,
+                    RequiredProtein = protein,
+                    RequiredCarbs = carbs,
+                    RequiredFats = fats
+                )
+                            saveUserData(userData, onComplete = {})
+
                     }else{
                         onError("No Data Found")
                     }
@@ -322,5 +356,76 @@ class FirebaseRepository @Inject constructor(
         }catch (e : Exception){
             throw Exception("Failed to fetch protein: ${e.message}")
         }
+    }
+
+
+//    fun getUpdatedFirebaseData(): Map<String, Any?>{
+//        val uid = firebaseAuth.currentUser?.uid
+//
+//        val data = uid?.let {
+//            databaseReference.child("users").child(it)
+//                .child("Personal_Data")
+//                .get()
+//                .addOnSuccessListener { snapshot ->
+//                    val data = snapshot.value as Map<String, Any>
+//                    return@addOnSuccessListener data
+//                }
+//                .addOnFailureListener{
+//                }
+//        }
+//
+//    }
+    fun updatePersonalData(key: String,value:String){
+        val userId =firebaseAuth.currentUser?.uid?: return
+
+        val path = databaseReference.child("users")
+            .child(userId)
+            .child("Personal_Data")
+
+        val updates = mapOf<String, Any?>(key to value)
+
+
+        path.updateChildren(updates)
+            .addOnCompleteListener {
+
+
+//                val nutrientvalues= RequiredNutritionValue(
+//                    age = updates.getValue("Age").toString().toInt(),
+//                    gender = updates.getValue("Gender").toString(),
+//                    weight = updates.getValue("Weight").toString().toFloat(),
+//                    height = updates.getValue("Height").toString().toFloat(),
+//                    activity_level = updates.getValue("ActivityLevel").toString(),
+//                    goal = updates.getValue("Goal").toString()
+//
+//                )
+//
+//                val calorie = nutrientvalues["Calories"] ?:0f
+//                val protein = nutrientvalues["Protein"] ?:0f
+//                val carbs = nutrientvalues["Carbs"] ?:0f
+//                val fats = nutrientvalues["Fats"] ?:0f
+//                val userData = PersonalEntity(
+//                    name = updates.getValue("Name").toString(),
+//                    age = updates.getValue("Age").toString().toInt(),
+//                    gender = updates.getValue("Gender").toString(),
+//                    weight = updates.getValue("Weight").toString().toFloat(),
+//                    height = updates.getValue("Height").toString().toFloat(),
+//                    activityLevel = updates.getValue("Activitylevel").toString(),
+//                    goal = updates.getValue("Goal").toString(),
+//                    exerciseFrequency = updates.getValue("ExerciseFrequency").toString().toInt(),
+//                    occupationType = updates.getValue("OccupationType").toString(),
+//                    RequiredCalorie = calorie,
+//                    RequiredProtein = protein,
+//                    RequiredCarbs = carbs,
+//                    RequiredFats = fats
+//                )
+            //    saveUserData(userData, onComplete = {})
+               // RequiredNutritionValue()
+                Log.d("FirebaseUpdate", "$key updated successfully to $value")
+
+            }
+            .addOnFailureListener{error->
+                Log.e("FirebaseUpdate", "Failed to update $key: ${error.message}")
+
+            }
     }
 }

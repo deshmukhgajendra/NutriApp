@@ -201,4 +201,8 @@ class FirebaseViewmodel @Inject constructor(
             //   Log.d("auth", "getUserDetails: ${_userEmail.value}")
         }
     }
+    fun updateFirebaseValue(key:String, value:String){
+        firebaseRepository.updatePersonalData(key,value)
+        getUserDetails()
+    }
 }

@@ -24,6 +24,7 @@ import com.example.databasetestingwithhilt.repository.AuthRepository
 import com.example.databasetestingwithhilt.repository.FirebaseRepository
 import com.example.databasetestingwithhilt.repository.StepRepository
 import com.example.databasetestingwithhilt.util.StepSensorManager
+import com.example.databasetestingwithhilt.viewmodel.FirebaseViewmodel
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
@@ -118,7 +119,9 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun providesFirebaseRepository(dao : FoodDao,firebaseAuth: FirebaseAuth, databaseReference: DatabaseReference):FirebaseRepository{
+    fun providesFirebaseRepository(dao : FoodDao,
+                                   firebaseAuth: FirebaseAuth,
+                                   databaseReference: DatabaseReference):FirebaseRepository{
         return FirebaseRepository(dao,firebaseAuth,databaseReference)
     }
 

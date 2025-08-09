@@ -132,7 +132,7 @@ fun ActivityLevelScreen(navController: NavController,firebaseViewmodel: Firebase
            Button(
                onClick = {
                    firebaseViewmodel.activityLevel = selectedActivityLevel
-                   // navController.navigate("Occupation")
+
 
 
 

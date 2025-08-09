@@ -27,6 +27,7 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -121,8 +122,8 @@ fun EditProfile(navController: NavController,firebaseViewmodel: FirebaseViewmode
                     infoDialogBoxState.value=false
                     selectedField.value=null
                 },
-                onSave = {
-
+                onSave = {updatedValue->
+                    firebaseViewmodel.updateFirebaseValue(selectedField.value!!,updatedValue)
                     infoDialogBoxState.value=false
                     selectedField.value=null
                 }
@@ -229,7 +230,7 @@ fun CustomTextDialogBox(
                 "goal", "occupationType", "gender" -> {
                     val options = when (key) {
                         "goal" -> listOf("Lose Weight", "Maintain", "Gain Muscle")
-                        "occupationType" -> listOf("Sedentary", "Active", "Very Active")
+                        "occupationType" -> listOf("Desk Job", "Standing Job", "Manual Labor", "Mixed")
                         "gender" -> listOf("Male", "Female", "Other")
                         else -> emptyList()
                     }
@@ -264,7 +265,9 @@ fun CustomTextDialogBox(
             }
         },
         confirmButton = {
-            TextButton(onClick = { onSave(inputValue) }) {
+            TextButton(onClick = {
+                onSave(inputValue)
+            }) {
                 Text("Save")
             }
         },
