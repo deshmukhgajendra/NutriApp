@@ -55,7 +55,6 @@ class AuthRepository @Inject constructor(
             }
     }
 
-
     fun register (email : String, password : String): Task<AuthResult>{
         return firebaseAuth.createUserWithEmailAndPassword(email,password)
     }
@@ -69,7 +68,13 @@ class AuthRepository @Inject constructor(
        // Log.d("Gajendra", "User logged out")
     }
 
-
+//    fun deleteAccount(password: String){
+//
+//        val user = firebaseAuth.currentUser
+//        try {
+//
+//        }
+//
+//    }
 
 }
-

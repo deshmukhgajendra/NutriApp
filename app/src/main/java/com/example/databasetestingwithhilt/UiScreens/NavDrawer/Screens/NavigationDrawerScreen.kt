@@ -2,7 +2,6 @@ package com.example.databasetestingwithhilt.UiScreens.NavDrawer.Screens
 
 import android.app.Activity
 import android.content.Intent
-import android.util.Log
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -22,14 +21,19 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Divider
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -65,6 +69,7 @@ fun NavigationDrawerScreen(viewModel: UserViewModel = hiltViewModel(),
     val userName by firebaseViewmodel.userName.observeAsState()
     val userEmail by firebaseViewmodel.userEmail.observeAsState()
     val context = LocalContext.current
+    val dialogBoxState = remember { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
         firebaseViewmodel.getUserDetails()
@@ -155,13 +160,12 @@ fun NavigationDrawerScreen(viewModel: UserViewModel = hiltViewModel(),
                 listItem("Change Password", R.drawable.baseline_password_24, purple, {navController.navigate("ChangePassword")})
                 listItem("Log Out", R.drawable.baseline_logout_24, purple
                 ) {
-                    Log.d("NavigationDrawerScreen", "Log Out lambda executed")
-                    authViewModel.logout()
-                    val i = Intent(context, Authentication::class.java).apply {
-                        flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                    }
-                    context.startActivity(i)
-                    (context as? Activity)?.finish()
+                   dialogBoxState.value=true
+//                    val i = Intent(context, Authentication::class.java).apply {
+//                        flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+//                    }
+//                    context.startActivity(i)
+//                    (context as? Activity)?.finish()
                 }
                 Divider(
                     thickness = 5.dp,
@@ -196,13 +200,29 @@ fun NavigationDrawerScreen(viewModel: UserViewModel = hiltViewModel(),
             }
         }
     }
+
+    logOutAlertDialog(
+        onConfirm = {
+            authViewModel.logout()
+            val i = Intent(context, Authentication::class.java).apply {
+                flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+            }
+            context.startActivity(i)
+            (context as? Activity)?.finish()
+            dialogBoxState.value=false
+                    },
+        onDismiss = {
+            dialogBoxState.value=false},
+        dialgoBoxState = dialogBoxState.value
+    )
 }
 
 @Composable
 fun listItem(buttonTitle: String,
              @DrawableRes iconResId: Int,
              color: Color,
-             onClick: () -> Unit) {
+             onClick: () -> Unit
+) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -245,5 +265,48 @@ fun listItem(buttonTitle: String,
             modifier = Modifier.fillMaxWidth()
                 .padding(top= 12.dp)
         )
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun logOutAlertDialog(
+    onDismiss : () -> Unit,
+    onConfirm : () -> Unit,
+    dialgoBoxState : Boolean
+){
+    if (dialgoBoxState){
+      AlertDialog(
+          onDismissRequest = { onDismiss() },
+          title = {
+              Text(
+                  text = "Log Out",
+                  fontWeight = FontWeight.Bold
+              )
+          },
+          text = {
+              Text(
+                  text = "Are you sure want to log out?"
+              )
+          },
+          confirmButton = {
+             TextButton(
+                 onClick = {onConfirm()}
+             ) {
+                 Text(
+                     text = "Confirm"
+                 )
+             }
+
+          },
+          dismissButton = {
+              TextButton(onClick = {onDismiss()}
+              ) {
+                  Text(
+                      text = "Cancel"
+                  )
+              }
+              }
+      )
     }
 }

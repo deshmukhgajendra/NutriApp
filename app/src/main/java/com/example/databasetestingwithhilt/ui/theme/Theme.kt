@@ -15,7 +15,7 @@ import androidx.compose.material3.Typography
 private val DarkColorScheme = darkColorScheme(
     primary = Black,
     secondary = White,
-    tertiary = gray
+    tertiary = lightGray
 )
 
 private val LightColorScheme = lightColorScheme(

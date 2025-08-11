@@ -9,4 +9,7 @@
     <string name="default_web_client_id">734412278725-eged6if9ol368tjarnsqgofjn0kg4fm1.apps.googleusercontent.com
 </string>
     <string name="alert">This will recalculate your calories and nutrient goals which will overwrite any customer settings. Would you like to continue?</string>
+    <string name="deleteConsent">    I understand that this will permanently delete my Restify account, that my information can\'t be recovered, and that this action can\'t be undone.\n\n
+    I understand that I will permanently lose access to all of the data associated with my profile including food entries, workouts, steps entries, weight entries, notes, newsfeed posts, and photos.\n\n
+    I understand that if I choose to rejoin Restify my username will not be available.</string>
 </resources>
