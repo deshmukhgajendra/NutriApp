@@ -155,17 +155,12 @@ fun NavigationDrawerScreen(viewModel: UserViewModel = hiltViewModel(),
                 )
                 listItem("Edit Profile", R.drawable.baseline_assignment_24, purple, {navController.navigate("EditProfile")})
                 listItem("My Goals", R.drawable.flag, purple, {navController.navigate("MyGoals")})
-                listItem("My apps & Devices", R.drawable.baseline_smartphone_24, purple, {})
+                listItem("My apps & Devices", R.drawable.baseline_smartphone_24, purple, {navController.navigate("MyAppsAndDevices")})
                 listItem("Delete Account", R.drawable.baseline_no_accounts_24, purple, {navController.navigate("DeleteAccount")})
                 listItem("Change Password", R.drawable.baseline_password_24, purple, {navController.navigate("ChangePassword")})
                 listItem("Log Out", R.drawable.baseline_logout_24, purple
                 ) {
                    dialogBoxState.value=true
-//                    val i = Intent(context, Authentication::class.java).apply {
-//                        flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-//                    }
-//                    context.startActivity(i)
-//                    (context as? Activity)?.finish()
                 }
                 Divider(
                     thickness = 5.dp,
@@ -177,10 +172,10 @@ fun NavigationDrawerScreen(viewModel: UserViewModel = hiltViewModel(),
                     color = lightGray,
                     modifier = Modifier.padding(bottom = 11.dp, start = 10.dp, top = 11.dp)
                 )
-                listItem("Appearances", R.drawable.baseline_preview_24, sea, {})
+                listItem("Appearances", R.drawable.baseline_preview_24, sea, {navController.navigate("Appearances")})
                 listItem("Diary Settings", R.drawable.baseline_assignment_add_24, sea, {})
-                listItem("Reminders", R.drawable.alarm, sea, {})
-                listItem("Steps", R.drawable.shoe_prints_svgrepo_com, sea, {})
+                listItem("Reminders", R.drawable.alarm, sea, {navController.navigate("Reminders")})
+                listItem("Steps", R.drawable.shoe_prints_svgrepo_com, sea, {navController.navigate("Steps")})
                 listItem("Push Notification", R.drawable.alarm, sea, {})
                 Divider(
                     thickness = 5.dp,
