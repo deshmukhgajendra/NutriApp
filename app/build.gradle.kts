@@ -115,4 +115,7 @@ dependencies {
     // WorkManager (Background tasks)
     implementation ("androidx.work:work-runtime-ktx:2.9.0")
 
+    //health connect
+    implementation ("androidx.health.connect:connect-client:1.2.0-alpha01")
+
 }
